@@ -1,26 +1,158 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Color definitions from the Figma design system */
+  --palette-primary-normal: #41695c;
+  --palette-primary-hover: #356052;
+  --palette-primary-disabled: #e6efea;
+
+  --palette-background-normal: #f5f5f2;
+  --palette-background-toggle: #d5e5de;
+
+  --palette-neutral-50: #f8faf9;
+  --palette-neutral-100: #e1e7e4;
+  --palette-neutral-200: #d5e5de;
+  --palette-neutral-300: #cdd6d1;
+
+  --palette-status-positive: #3cb371;
+  --palette-status-cautionary: #f4b942;
+  --palette-status-destructive: #f06b6b;
+
+  --palette-gray-normal: #1f2937;
+  --palette-gray-strong: #374151;
+  --palette-gray-neutral: #6b7280;
+  --palette-gray-alternative: #d1d5db;
+  --palette-gray-assistive: #e5e7eb;
+  --palette-gray-disable: #f3f4f6;
+
+  --palette-interactive-hover: #d5e5de;
+  --palette-interactive-focus: #a7c8bc;
+  --palette-interactive-disabled: #e6efea;
+  --palette-interactive-selected: #cfe3dd;
+
+  --palette-border-light: #c7c7c7;
+  --palette-border-dark: #374151;
+  --palette-divider: #f0f2f4;
+  --palette-shadow: #d1d5db;
+
+  --font-family-sans: "Pretendard", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  --font-family-mono: var(--font-geist-mono), monospace;
+
+  --type-display-price: 48px;
+  --type-display-price--line-height: 60px;
+  --type-display-price--font-weight: 700;
+
+  --type-heading-1: 40px;
+  --type-heading-1--line-height: 52px;
+  --type-heading-1--font-weight: 700;
+  --type-heading-2: 32px;
+  --type-heading-2--line-height: 42px;
+  --type-heading-2--font-weight: 700;
+  --type-heading-3: 28px;
+  --type-heading-3--line-height: 36px;
+  --type-heading-3--font-weight: 600;
+  --type-heading-4: 24px;
+  --type-heading-4--line-height: 32px;
+  --type-heading-4--font-weight: 600;
+  --type-heading-5: 20px;
+  --type-heading-5--line-height: 28px;
+  --type-heading-5--font-weight: 500;
+
+  --type-body-sub: 18px;
+  --type-body-sub--line-height: 28px;
+  --type-body-sub--font-weight: 400;
+  --type-body-large: 18px;
+  --type-body-large--line-height: 28px;
+  --type-body-large--font-weight: 400;
+  --type-body-default: 16px;
+  --type-body-default--line-height: 24px;
+  --type-body-default--font-weight: 400;
+  --type-body-small: 14px;
+  --type-body-small--line-height: 20px;
+  --type-body-small--font-weight: 400;
+  --type-caption: 12px;
+  --type-caption--line-height: 18px;
+  --type-caption--font-weight: 400;
+  --type-label-button: 16px;
+  --type-label-button--line-height: 24px;
+  --type-label-button--font-weight: 500;
+  --type-label-small: 14px;
+  --type-label-small--line-height: 20px;
+  --type-label-small--font-weight: 500;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-primary: var(--palette-primary-normal);
+  --color-primary-hover: var(--palette-primary-hover);
+  --color-primary-disabled: var(--palette-primary-disabled);
+  --color-background: var(--palette-background-normal);
+  --color-background-toggle: var(--palette-background-toggle);
+  --color-neutral-50: var(--palette-neutral-50);
+  --color-neutral-100: var(--palette-neutral-100);
+  --color-neutral-200: var(--palette-neutral-200);
+  --color-neutral-300: var(--palette-neutral-300);
+  --color-status-positive: var(--palette-status-positive);
+  --color-status-cautionary: var(--palette-status-cautionary);
+  --color-status-destructive: var(--palette-status-destructive);
+  --color-gray-normal: var(--palette-gray-normal);
+  --color-gray-strong: var(--palette-gray-strong);
+  --color-gray-neutral: var(--palette-gray-neutral);
+  --color-gray-alternative: var(--palette-gray-alternative);
+  --color-gray-assistive: var(--palette-gray-assistive);
+  --color-gray-disable: var(--palette-gray-disable);
+  --color-interactive-hover: var(--palette-interactive-hover);
+  --color-interactive-focus: var(--palette-interactive-focus);
+  --color-interactive-disabled: var(--palette-interactive-disabled);
+  --color-interactive-selected: var(--palette-interactive-selected);
+  --color-border-light: var(--palette-border-light);
+  --color-border-dark: var(--palette-border-dark);
+  --color-divider: var(--palette-divider);
+  --color-shadow: var(--palette-shadow);
+  --text-display-price: var(--type-display-price);
+  --text-display-price--line-height: var(--type-display-price--line-height);
+  --text-display-price--font-weight: var(--type-display-price--font-weight);
+  --text-heading-1: var(--type-heading-1);
+  --text-heading-1--line-height: var(--type-heading-1--line-height);
+  --text-heading-1--font-weight: var(--type-heading-1--font-weight);
+  --text-heading-2: var(--type-heading-2);
+  --text-heading-2--line-height: var(--type-heading-2--line-height);
+  --text-heading-2--font-weight: var(--type-heading-2--font-weight);
+  --text-heading-3: var(--type-heading-3);
+  --text-heading-3--line-height: var(--type-heading-3--line-height);
+  --text-heading-3--font-weight: var(--type-heading-3--font-weight);
+  --text-heading-4: var(--type-heading-4);
+  --text-heading-4--line-height: var(--type-heading-4--line-height);
+  --text-heading-4--font-weight: var(--type-heading-4--font-weight);
+  --text-heading-5: var(--type-heading-5);
+  --text-heading-5--line-height: var(--type-heading-5--line-height);
+  --text-heading-5--font-weight: var(--type-heading-5--font-weight);
+  --text-body-sub: var(--type-body-sub);
+  --text-body-sub--line-height: var(--type-body-sub--line-height);
+  --text-body-sub--font-weight: var(--type-body-sub--font-weight);
+  --text-body-large: var(--type-body-large);
+  --text-body-large--line-height: var(--type-body-large--line-height);
+  --text-body-large--font-weight: var(--type-body-large--font-weight);
+  --text-body-default: var(--type-body-default);
+  --text-body-default--line-height: var(--type-body-default--line-height);
+  --text-body-default--font-weight: var(--type-body-default--font-weight);
+  --text-body-small: var(--type-body-small);
+  --text-body-small--line-height: var(--type-body-small--line-height);
+  --text-body-small--font-weight: var(--type-body-small--font-weight);
+  --text-caption: var(--type-caption);
+  --text-caption--line-height: var(--type-caption--line-height);
+  --text-caption--font-weight: var(--type-caption--font-weight);
+  --text-label-button: var(--type-label-button);
+  --text-label-button--line-height: var(--type-label-button--line-height);
+  --text-label-button--font-weight: var(--type-label-button--font-weight);
+  --text-label-small: var(--type-label-small);
+  --text-label-small--line-height: var(--type-label-small--line-height);
+  --text-label-small--font-weight: var(--type-label-small--font-weight);
+  --font-sans: var(--font-family-sans);
+  --font-mono: var(--font-family-mono);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--palette-background-normal);
+  color: var(--palette-gray-normal);
+  font-family: var(--font-family-sans);
 }
