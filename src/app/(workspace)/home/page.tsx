@@ -1,10 +1,10 @@
-import { RoutePlaceholder } from "../../../components/layout";
+import { Suspense } from "react";
+import { ReturnHome } from "../../../../features/returning/returnHome";
 
-export default function WorkspaceHomeRoute() {
+export default function Route() {
   return (
-    <RoutePlaceholder
-      title="홈"
-      description="로그인 후 서비스 홈 화면이 연결될 경로입니다."
-    />
+    <Suspense fallback={<p role="status">계획을 불러오는 중이에요.</p>}>
+      <ReturnHome />
+    </Suspense>
   );
 }

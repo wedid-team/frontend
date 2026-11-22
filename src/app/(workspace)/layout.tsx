@@ -1,11 +1,6 @@
-import { WorkspaceShell } from "../../components/layout";
-import { workspaceNavigationItems } from "../../components/layout/workspaceNavigation";
 import type { ReactNode } from "react";
+import { WorkspaceRouter } from "../../../features/venues/workspaceRouter";
 
 export default function WorkspaceLayout({ children }: { children: ReactNode }) {
-  return (
-    <WorkspaceShell navigationItems={workspaceNavigationItems}>
-      {children}
-    </WorkspaceShell>
-  );
+  return <WorkspaceRouter>{children}</WorkspaceRouter>;
 }

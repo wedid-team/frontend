@@ -1,10 +1,10 @@
-import { RoutePlaceholder } from "../../../components/layout";
+import { Suspense } from "react";
+import { ReturnRoadmap } from "../../../../features/returning/returnHome";
 
-export default function RoadmapRoute() {
+export default function Route() {
   return (
-    <RoutePlaceholder
-      title="준비 로드맵"
-      description="로드맵과 단계 진행 화면이 연결될 경로입니다."
-    />
+    <Suspense fallback={<p role="status">계획을 불러오는 중이에요.</p>}>
+      <ReturnRoadmap />
+    </Suspense>
   );
 }
