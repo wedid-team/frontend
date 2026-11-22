@@ -17,7 +17,7 @@ import {
   readSharedEstimate,
   unknownGuestCount,
 } from "./model.ts";
-import { getMockEstimate } from "./mockEstimate.ts";
+import { getMockEstimate, loadMockEstimate } from "./mockEstimate.ts";
 
 test("지역은 필수이고 하객 수 미정은 유효하다", () => {
   assert.equal(hasRegionAnswers({ ...initialAnswers, guests: "아직 모르겠어요" }), false);
@@ -216,4 +216,15 @@ test("스탠다드 단품 합산은 각 항목 범위의 합이고 예산대 예
   for (const tier of ["basic", "premium", "luxury"]) {
     assert.equal(getMockEstimate(initialAnswers, tier).stylingBreakdown, null);
   }
+});
+
+test("다시 계산은 전달받은 조건을 반환하고 취소된 계산은 결과를 반환하지 않는다", async () => {
+  const draft = { ...initialAnswers, budget: "3000", budgetUnknown: false };
+  const aborted = new AbortController();
+  const cancelled = loadMockEstimate(draft, "standard", aborted.signal);
+  aborted.abort();
+  await assert.rejects(cancelled, { name: "AbortError" });
+  const result = await loadMockEstimate(draft, "standard", new AbortController().signal);
+  assert.deepEqual(result.conditions, draft);
+  assert.equal(initialAnswers.budgetUnknown, true);
 });
