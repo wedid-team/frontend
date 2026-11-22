@@ -113,10 +113,36 @@
 .calculationDetails summary::-webkit-details-marker {
   display: none;
 }
-.calculationDetails > p {
-  margin-top: 12px;
+.calculationDetails[open] summary img {
+  transform: rotate(180deg);
+}
+.breakdownPanel {
+  padding: 18px 20px;
+  margin-top: 14px;
+  border-radius: 16px;
+  background: var(--ink50);
+  font-size: 14px;
+}
+.breakdownPanel dl {
+  margin-top: 8px;
+}
+.breakdownPanel dl > div {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 4px 12px;
+  padding-block: 7px;
+  color: var(--ink700);
+}
+.breakdownPanel .breakdownTotal {
+  border-top: 1px solid var(--line2);
+  color: var(--text);
+  font-weight: 700;
+}
+.breakdownPanel p {
+  margin-top: 10px;
   color: var(--text2);
-  font-size: 13px;
+  font-size: 12px;
 }
 .combinationHeading {
   display: flex;

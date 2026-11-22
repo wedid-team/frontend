@@ -2,6 +2,10 @@ import type { EstimateTier, WeddingAnswers } from "./model";
 
 const mockVenue = { min: 1550, max: 1900 };
 
+export function formatMockRange({ min, max }: { min: number; max: number }) {
+  return `${min.toLocaleString("ko-KR")}만 ~ ${max.toLocaleString("ko-KR")}만원`;
+}
+
 /** Figma 예시용 고정 데이터. 지역/인원에 따른 실제 견적 계산이 아니다. */
 const mockTiers = {
   basic: {
@@ -40,6 +44,19 @@ export const tierOptions = Object.entries(mockTiers).map(([value, tier]) => ({
   amountRange: tier.amountRange,
   recommended: value === "standard",
 }));
+const mockStylingItems = [
+  { label: "스튜디오", min: 95, max: 120 },
+  { label: "드레스", min: 110, max: 135 },
+  { label: "메이크업", min: 50, max: 65 },
+] as const;
+
+const mockStylingBreakdown = {
+  items: mockStylingItems,
+  total: mockStylingItems.reduce(
+    (total, item) => ({ min: total.min + item.min, max: total.max + item.max }),
+    { min: 0, max: 0 },
+  ),
+};
 export const mockCombinations = [
   {
     label: "실속형",
@@ -76,7 +93,8 @@ export function getMockEstimate(answers: WeddingAnswers, tier: EstimateTier) {
     conditions: answers,
     tier,
     ...mockTiers[tier],
-    venueRange: `${mockVenue.min.toLocaleString("ko-KR")}만 ~ ${mockVenue.max.toLocaleString("ko-KR")}만원`,
+    venueRange: formatMockRange(mockVenue),
+    stylingBreakdown: tier === "standard" ? mockStylingBreakdown : null,
     // 실제 비용 계산이 아닌, 위 고정 예시 금액의 구성 비율 표시용 데이터다.
     venueShare: (mockVenue.max / mockTiers[tier].totalMax) * 100,
   };
