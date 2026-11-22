@@ -219,5 +219,57 @@ export function daysUntilWedding(answers: WeddingAnswers, today: Date) {
 }
 
 export function isTier(value: unknown): value is EstimateTier {
-  return ["basic", "standard", "premium", "luxury"].includes(String(value));
+  return typeof value === "string" && ["basic", "standard", "premium", "luxury"].includes(value);
+}
+
+export function sharedEstimatePayload(answers: WeddingAnswers, tier: EstimateTier) {
+  const { region, guests, moods, timing, date, year, month } = answers;
+  const activeTiming =
+    timing === "date"
+      ? { timing, date }
+      : timing === "month"
+        ? { timing, year, month }
+        : { timing };
+  return { answers: { region, guests, moods, ...activeTiming }, tier };
+}
+
+export function createSharedEstimateUrl(
+  pageUrl: string,
+  answers: WeddingAnswers,
+  tier: EstimateTier,
+  sharedAt: Date,
+) {
+  const url = new URL(firstVisitHref("result"), pageUrl);
+  url.searchParams.set(
+    "plan",
+    JSON.stringify({ ...sharedEstimatePayload(answers, tier), sharedAt: sharedAt.toISOString() }),
+  );
+  return url.toString();
+}
+
+export function readSharedEstimate(plan: string | null) {
+  if (!plan || plan.length >= 5000) return null;
+  try {
+    const value: unknown = JSON.parse(plan);
+    if (!value || typeof value !== "object") return null;
+    const { answers: rawAnswers, tier, sharedAt } = value as Record<string, unknown>;
+    const answers = sanitizeAnswers(rawAnswers);
+    if (
+      !hasRegionAnswers(answers) ||
+      !hasTimingAnswers({ ...answers, budgetUnknown: true }) ||
+      !isTier(tier)
+    ) {
+      return null;
+    }
+    return {
+      answers: { ...initialAnswers, ...sharedEstimatePayload(answers, tier).answers },
+      tier,
+      sharedAt:
+        typeof sharedAt === "string" && Number.isFinite(Date.parse(sharedAt))
+          ? new Date(sharedAt)
+          : null,
+    };
+  } catch {
+    return null;
+  }
 }
