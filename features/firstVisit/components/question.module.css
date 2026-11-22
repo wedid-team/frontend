@@ -140,6 +140,28 @@
   color: var(--text);
   padding-inline: 16px;
 }
+.question .fieldNote {
+  margin-top: 24px;
+  color: var(--text2);
+  font-size: 13px;
+}
+.regionSelect {
+  position: relative;
+}
+.regionSelect span[aria-hidden] {
+  display: none;
+}
+.selectChevron {
+  position: absolute;
+  right: 18px;
+  top: 21px;
+  pointer-events: none;
+}
+.guestChoices fieldset > div {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
 .guestChoices label,
 .moodChoices label,
 .timingChoices label,
@@ -148,6 +170,15 @@
   border-radius: 14px;
   padding: 16px 18px;
   border-color: var(--line2);
+}
+.guestChoices label:last-child {
+  grid-column: 1/-1;
+  border-style: dashed;
+}
+.guestChoices input {
+  width: 20px;
+  height: 20px;
+  flex-basis: 20px;
 }
 .guestChoices label:has(input:checked),
 .moodChoices label:has(input:checked),
@@ -236,6 +267,9 @@
   }
   .question + .question {
     margin-top: 48px;
+  }
+  .guestChoices fieldset > div {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
   .guestChoices label,
   .moodChoices label {
