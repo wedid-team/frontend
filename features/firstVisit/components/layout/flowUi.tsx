@@ -1,6 +1,6 @@
 import Image from "next/image";
-import { assets, type IconAsset } from "../assets";
-import type { FlowScreen } from "../model";
+import { assets, type IconAsset } from "../../assets";
+import type { FlowScreen } from "../../model";
 import styles from "./flowUi.module.css";
 
 export type FlowActions = { navigate: (screen: FlowScreen) => void; openLogin: () => void };

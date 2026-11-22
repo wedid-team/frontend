@@ -1,14 +1,14 @@
 .conditions {
-  composes: conditions from "./flowUi.module.css";
+  composes: conditions from "../layout/flowUi.module.css";
 }
 .sectionHeading {
-  composes: sectionHeading from "./flowUi.module.css";
+  composes: sectionHeading from "../layout/flowUi.module.css";
 }
 .panel {
-  composes: panel from "./flowUi.module.css";
+  composes: panel from "../layout/flowUi.module.css";
 }
 .textButton {
-  composes: textButton from "./flowUi.module.css";
+  composes: textButton from "../layout/flowUi.module.css";
 }
 .roadmapPage {
   display: grid;

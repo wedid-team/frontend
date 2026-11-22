@@ -1,8 +1,8 @@
 import { CheckboxCardGroup } from "@/src/components/common";
 import type { CSSProperties } from "react";
-import { assets } from "../assets";
-import { moodOptions, selectMoods, type WeddingAnswers } from "../model";
-import { FlowIcon } from "./flowUi";
+import { assets } from "../../assets";
+import { moodOptions, selectMoods, type WeddingAnswers } from "../../model";
+import { FlowIcon } from "../layout/flowUi";
 import { QuestionField } from "./questionLayout";
 import styles from "./question.module.css";
 

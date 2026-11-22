@@ -1,8 +1,8 @@
 import { useEffect, useRef, type FormEvent, type ReactNode } from "react";
 import { Button, StepIndicator } from "@/src/components/common";
-import { assets } from "../assets";
-import { budgetLabel, timingLabel, type WeddingAnswers, type FlowScreen } from "../model";
-import { Brand, FlowIcon } from "./flowUi";
+import { assets } from "../../assets";
+import { budgetLabel, timingLabel, type WeddingAnswers, type FlowScreen } from "../../model";
+import { Brand, FlowIcon } from "../layout/flowUi";
 import styles from "./question.module.css";
 
 export type QuestionStep = "region" | "timing" | "mood";

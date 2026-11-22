@@ -3,12 +3,12 @@
 import { useState, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/src/components/common";
-import { assets } from "../assets";
-import { firstVisitHref, type FlowScreen } from "../model";
-import { FirstVisitHeader } from "./firstVisitHeader";
-import { FirstVisitFooter } from "./firstVisitFooter";
-import { FlowIcon } from "./flowUi";
-import { SavePlanLoginModal } from "./savePlanLoginModal";
+import { assets } from "../../assets";
+import { firstVisitHref, type FlowScreen } from "../../model";
+import { FirstVisitHeader } from "../layout/firstVisitHeader";
+import { FirstVisitFooter } from "../layout/firstVisitFooter";
+import { FlowIcon } from "../layout/flowUi";
+import { SavePlanLoginModal } from "../auth/savePlanLoginModal";
 import {
   CostFeaturePreview,
   DashboardPreview,

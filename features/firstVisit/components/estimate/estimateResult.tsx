@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { EstimateSummary } from "./estimateSummary";
-import { EditConditionsDrawer } from "./editConditionsDrawer";
+import { EditConditionsDrawer } from "../conditions/editConditionsDrawer";
 import { Button, TierCardGroup } from "@/src/components/common";
-import { assets } from "../assets";
+import { assets } from "../../assets";
 import {
   assumedGuestRange,
   conditionLabel,
@@ -10,9 +10,9 @@ import {
   unknownGuestCount,
   type EstimateTier,
   type WeddingAnswers,
-} from "../model";
-import { formatMockRange, getMockEstimate, mockCombinations, tierOptions } from "../mockEstimate";
-import { FlowIcon, MockNotice, type FlowActions } from "./flowUi";
+} from "../../model";
+import { formatMockRange, getMockEstimate, mockCombinations, tierOptions } from "../../mockEstimate";
+import { FlowIcon, MockNotice, type FlowActions } from "../layout/flowUi";
 import styles from "./estimateResult.module.css";
 
 type EstimateResultProps = FlowActions & {

@@ -1,20 +1,20 @@
 import { useState } from "react";
 import { RoadmapSidebar } from "./roadmapSidebar";
 import { RoadmapTimeline } from "./roadmapTimeline";
-import { EditConditionsDrawer } from "./editConditionsDrawer";
-import { mockRoadmapSteps, previewMonthRange } from "../mockRoadmap";
+import { EditConditionsDrawer } from "../conditions/editConditionsDrawer";
+import { mockRoadmapSteps, previewMonthRange } from "../../mockRoadmap";
 import Image from "next/image";
 import { Button } from "@/src/components/common";
-import { assets } from "../assets";
+import { assets } from "../../assets";
 import {
   budgetLabel,
   conditionLabel,
   daysUntilWedding,
   type EstimateTier,
   type WeddingAnswers,
-} from "../model";
-import { getMockEstimate } from "../mockEstimate";
-import { FlowIcon, MockNotice, type FlowActions } from "./flowUi";
+} from "../../model";
+import { getMockEstimate } from "../../mockEstimate";
+import { FlowIcon, MockNotice, type FlowActions } from "../layout/flowUi";
 import styles from "./roadmapPreview.module.css";
 
 type RoadmapPreviewProps = FlowActions & {

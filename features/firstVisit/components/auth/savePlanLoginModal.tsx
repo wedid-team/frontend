@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import { Button } from "@/src/components/common";
-import { assets } from "../assets";
-import { FlowIcon } from "./flowUi";
+import { assets } from "../../assets";
+import { FlowIcon } from "../layout/flowUi";
 import styles from "./savePlanLoginModal.module.css";
 
 export function SavePlanLoginModal({ onClose }: { onClose: () => void }) {

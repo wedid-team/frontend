@@ -1,5 +1,5 @@
-import { assets } from "../assets";
-import { FlowIcon } from "./flowUi";
+import { assets } from "../../assets";
+import { FlowIcon } from "../layout/flowUi";
 import styles from "./estimateLoading.module.css";
 
 export function EstimateLoading({ restoring = false }: { restoring?: boolean }) {

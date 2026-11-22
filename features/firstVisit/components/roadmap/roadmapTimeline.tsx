@@ -1,9 +1,9 @@
 import { Button } from "@/src/components/common";
-import { assets } from "../assets";
-import { timingLabel, type WeddingAnswers } from "../model";
-import { previewMonthRange, type PreviewStep } from "../mockRoadmap";
-import type { getMockEstimate } from "../mockEstimate";
-import { FlowIcon } from "./flowUi";
+import { assets } from "../../assets";
+import { timingLabel, type WeddingAnswers } from "../../model";
+import { previewMonthRange, type PreviewStep } from "../../mockRoadmap";
+import type { getMockEstimate } from "../../mockEstimate";
+import { FlowIcon } from "../layout/flowUi";
 import styles from "./roadmapTimeline.module.css";
 
 export function RoadmapTimeline({

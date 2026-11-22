@@ -1,17 +1,17 @@
 .panel {
-  composes: panel from "./flowUi.module.css";
+  composes: panel from "../layout/flowUi.module.css";
 }
 .sectionHeading {
-  composes: sectionHeading from "./flowUi.module.css";
+  composes: sectionHeading from "../layout/flowUi.module.css";
 }
 .textButton {
-  composes: textButton from "./flowUi.module.css";
+  composes: textButton from "../layout/flowUi.module.css";
 }
 .conditions {
-  composes: conditions from "./flowUi.module.css";
+  composes: conditions from "../layout/flowUi.module.css";
 }
 .inlineActions {
-  composes: inlineActions from "./flowUi.module.css";
+  composes: inlineActions from "../layout/flowUi.module.css";
 }
 .resultPage {
   min-height: calc(100vh - 64px);

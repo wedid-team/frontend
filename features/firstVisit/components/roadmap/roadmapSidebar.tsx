@@ -1,7 +1,7 @@
-import { assets } from "../assets";
-import { timingLabel, type WeddingAnswers } from "../model";
-import { previewProgress, type PreviewStep } from "../mockRoadmap";
-import { FlowIcon, type FlowActions } from "./flowUi";
+import { assets } from "../../assets";
+import { timingLabel, type WeddingAnswers } from "../../model";
+import { previewProgress, type PreviewStep } from "../../mockRoadmap";
+import { FlowIcon, type FlowActions } from "../layout/flowUi";
 import styles from "./roadmapSidebar.module.css";
 
 export function RoadmapSidebar({

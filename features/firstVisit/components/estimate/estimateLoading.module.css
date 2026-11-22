@@ -1,5 +1,5 @@
 .panel {
-  composes: panel from "./flowUi.module.css";
+  composes: panel from "../layout/flowUi.module.css";
 }
 .loadingPage {
   min-height: calc(100vh - 64px);

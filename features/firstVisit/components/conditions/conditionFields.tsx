@@ -1,6 +1,6 @@
 import { AmountField, Select, TextField } from "@/src/components/common";
-import { formatBudgetAmount, parseBudgetInput, type WeddingAnswers } from "../model";
-import styles from "./question.module.css";
+import { formatBudgetAmount, parseBudgetInput, type WeddingAnswers } from "../../model";
+import styles from "../questions/question.module.css";
 
 export type ConditionFieldProps = {
   answers: WeddingAnswers;

@@ -6,8 +6,8 @@ import {
   parseBudgetInput,
   type FlowScreen,
   type WeddingAnswers,
-} from "../model";
-import type { FlowActions } from "./flowUi";
+} from "../../model";
+import type { FlowActions } from "../layout/flowUi";
 import { QuestionLayout, type QuestionStep } from "./questionLayout";
 import { RegionGuestStep } from "./regionGuestStep";
 import { WeddingDateBudgetStep } from "./weddingDateBudgetStep";

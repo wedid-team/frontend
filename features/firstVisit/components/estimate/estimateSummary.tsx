@@ -1,6 +1,6 @@
 import { useState, type FormEvent } from "react";
 import { Button } from "@/src/components/common";
-import { assets } from "../assets";
+import { assets } from "../../assets";
 import {
   budgetLabel,
   createSharedEstimateUrl,
@@ -9,10 +9,10 @@ import {
   sharedEstimatePayload,
   type WeddingAnswers,
   type EstimateTier,
-} from "../model";
-import type { getMockEstimate } from "../mockEstimate";
-import { FlowIcon, type FlowActions } from "./flowUi";
-import { BudgetAmountField } from "./conditionFields";
+} from "../../model";
+import type { getMockEstimate } from "../../mockEstimate";
+import { FlowIcon, type FlowActions } from "../layout/flowUi";
+import { BudgetAmountField } from "../conditions/conditionFields";
 import styles from "./estimateSummary.module.css";
 
 export function EstimateSummary({

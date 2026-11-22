@@ -1,5 +1,5 @@
 .textButton {
-  composes: textButton from "./flowUi.module.css";
+  composes: textButton from "../layout/flowUi.module.css";
 }
 .wizard {
   display: grid;

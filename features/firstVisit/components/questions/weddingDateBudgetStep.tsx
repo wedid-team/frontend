@@ -4,12 +4,12 @@ import {
   increaseBudgetInput,
   parseBudgetInput,
   type WeddingAnswers,
-} from "../model";
+} from "../../model";
 import {
   BudgetAmountField,
   WeddingTimingFields,
   type ConditionFieldProps,
-} from "./conditionFields";
+} from "../conditions/conditionFields";
 import { QuestionField } from "./questionLayout";
 import styles from "./question.module.css";
 

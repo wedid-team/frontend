@@ -1,8 +1,8 @@
 .sectionHeading {
-  composes: sectionHeading from "./flowUi.module.css";
+  composes: sectionHeading from "../layout/flowUi.module.css";
 }
 .panel {
-  composes: panel from "./flowUi.module.css";
+  composes: panel from "../layout/flowUi.module.css";
 }
 
 .timelinePanel {

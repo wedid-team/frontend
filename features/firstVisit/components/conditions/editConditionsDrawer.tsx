@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { Button, CheckboxCardGroup, Select } from "@/src/components/common";
-import { assets } from "../assets";
+import { assets } from "../../assets";
 import {
   conditionLabel,
   formatBudgetAmount,
@@ -14,10 +14,10 @@ import {
   timingOptions,
   type EstimateTier,
   type WeddingAnswers,
-} from "../model";
-import { loadMockEstimate } from "../mockEstimate";
+} from "../../model";
+import { loadMockEstimate } from "../../mockEstimate";
 import { BudgetAmountField, WeddingTimingFields } from "./conditionFields";
-import { FlowIcon } from "./flowUi";
+import { FlowIcon } from "../layout/flowUi";
 import styles from "./editConditionsDrawer.module.css";
 
 export function EditConditionsDrawer({

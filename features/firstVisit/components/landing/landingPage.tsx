@@ -1,8 +1,8 @@
 import Image from "next/image";
 import { Button } from "@/src/components/common";
-import { assets } from "../assets";
-import { FlowIcon, type FlowActions } from "./flowUi";
-import { FirstVisitFooter } from "./firstVisitFooter";
+import { assets } from "../../assets";
+import { FlowIcon, type FlowActions } from "../layout/flowUi";
+import { FirstVisitFooter } from "../layout/firstVisitFooter";
 import styles from "./landingPage.module.css";
 
 const venues = [

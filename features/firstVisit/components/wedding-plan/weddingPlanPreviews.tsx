@@ -1,6 +1,6 @@
 import Image from "next/image";
-import { assets } from "../assets";
-import { FlowIcon } from "./flowUi";
+import { assets } from "../../assets";
+import { FlowIcon } from "../layout/flowUi";
 import styles from "./weddingPlanIntro.module.css";
 
 const tasks = [

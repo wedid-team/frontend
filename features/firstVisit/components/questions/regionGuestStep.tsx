@@ -1,7 +1,7 @@
 import { Select, RadioCardGroup } from "@/src/components/common";
-import { assets } from "../assets";
-import { guestOptions, regionOptions, type WeddingAnswers } from "../model";
-import { FlowIcon } from "./flowUi";
+import { assets } from "../../assets";
+import { guestOptions, regionOptions, type WeddingAnswers } from "../../model";
+import { FlowIcon } from "../layout/flowUi";
 import { QuestionField } from "./questionLayout";
 import styles from "./question.module.css";
 

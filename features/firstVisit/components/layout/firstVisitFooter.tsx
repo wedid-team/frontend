@@ -1,5 +1,5 @@
 import { Brand, type FlowActions } from "./flowUi";
-import styles from "./landingPage.module.css";
+import styles from "../landing/landingPage.module.css";
 
 export function FirstVisitFooter({
   navigate,

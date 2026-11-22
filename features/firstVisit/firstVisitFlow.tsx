@@ -1,13 +1,13 @@
 "use client";
 
 import { useFirstVisitFlow } from "./useFirstVisitFlow";
-import { EstimateLoading } from "./components/estimateLoading";
-import { FirstVisitHeader } from "./components/firstVisitHeader";
-import { LandingPage } from "./components/landingPage";
-import { QuestionScreen } from "./components/questionScreen";
-import { EstimateResult } from "./components/estimateResult";
-import { RoadmapPreview } from "./components/roadmapPreview";
-import { SavePlanLoginModal } from "./components/savePlanLoginModal";
+import { EstimateLoading } from "./components/estimate/estimateLoading";
+import { FirstVisitHeader } from "./components/layout/firstVisitHeader";
+import { LandingPage } from "./components/landing/landingPage";
+import { QuestionScreen } from "./components/questions/questionScreen";
+import { EstimateResult } from "./components/estimate/estimateResult";
+import { RoadmapPreview } from "./components/roadmap/roadmapPreview";
+import { SavePlanLoginModal } from "./components/auth/savePlanLoginModal";
 import styles from "./firstVisit.module.css";
 
 export function FirstVisitFlow() {

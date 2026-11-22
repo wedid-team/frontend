@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { WeddingPlanIntro } from "@/features/firstVisit/components/weddingPlanIntro";
+import { WeddingPlanIntro } from "@/features/firstVisit/components/wedding-plan/weddingPlanIntro";
 
 export const metadata: Metadata = {
   title: "웨딩 플랜 | WeDid",

@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { Button } from "@/src/components/common";
 import { SiteHeader } from "@/src/components/layout";
-import { assets } from "../assets";
-import { weddingPlanPath } from "../model";
+import { assets } from "../../assets";
+import { weddingPlanPath } from "../../model";
 import { Brand, FlowIcon, type FlowActions } from "./flowUi";
 import styles from "./firstVisitHeader.module.css";
 
