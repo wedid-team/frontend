@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { SiteHeader } from "../components/layout";
+import { FirstVisitHeaderBoundary } from "@/features/firstVisit/firstVisitHeaderBoundary";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -11,7 +13,11 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="ko" className="h-full antialiased">
       <body className="min-h-full flex flex-col">
-        <SiteHeader />
+        <Suspense fallback={null}>
+          <FirstVisitHeaderBoundary>
+            <SiteHeader />
+          </FirstVisitHeaderBoundary>
+        </Suspense>
         {children}
       </body>
     </html>
