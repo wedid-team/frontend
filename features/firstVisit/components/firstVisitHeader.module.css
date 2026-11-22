@@ -21,13 +21,16 @@
   align-items: center;
   gap: 40px;
 }
-.headerStart nav > button {
+.headerStart nav > :is(button, a) {
   border: 0;
   background: none;
   padding: 0;
   color: var(--ink700);
   font-size: 15px;
   font-weight: 600;
+}
+.headerStart nav a[aria-current="page"] {
+  color: var(--brand700);
 }
 .headerActions {
   display: flex;
@@ -82,8 +85,17 @@
   .homeHeader {
     padding-inline: 20px;
   }
-  .homeHeader .headerStart nav {
+  .homeHeader .headerStart {
+    gap: 12px;
+  }
+  .homeHeader .headerStart nav > button {
     display: none;
+  }
+  .homeHeader .headerStart nav a {
+    white-space: nowrap;
+  }
+  .homeHeader .headerActions > button {
+    width: 36px;
   }
   .flowHeader {
     padding: 10px 16px;

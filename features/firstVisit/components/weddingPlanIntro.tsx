@@ -41,7 +41,7 @@ export function WeddingPlanIntro() {
 
   return (
     <div className={styles.page}>
-      <FirstVisitHeader home navigate={navigate} openLogin={() => setLoginOpen(true)} />
+      <FirstVisitHeader home intro navigate={navigate} openLogin={() => setLoginOpen(true)} />
       <main>
         <section className={styles.hero}>
           <div className={styles.container}>

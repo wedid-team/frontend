@@ -1,15 +1,18 @@
+import Link from "next/link";
 import { Button } from "@/src/components/common";
 import { SiteHeader } from "@/src/components/layout";
 import { assets } from "../assets";
+import { weddingPlanPath } from "../model";
 import { Brand, FlowIcon, type FlowActions } from "./flowUi";
 import styles from "./firstVisitHeader.module.css";
 
 export function FirstVisitHeader({
   home = false,
   roadmap = false,
+  intro = false,
   navigate,
   openLogin,
-}: FlowActions & { home?: boolean; roadmap?: boolean }) {
+}: FlowActions & { home?: boolean; roadmap?: boolean; intro?: boolean }) {
   return (
     <SiteHeader
       className={home ? styles.homeHeader : styles.flowHeader}
@@ -19,17 +22,9 @@ export function FirstVisitHeader({
             <Brand large={home} onClick={() => navigate("home")} />
             {home ? (
               <nav aria-label="주요 메뉴">
-                <button
-                  onClick={() =>
-                    document.getElementById("weddingPlan")?.scrollIntoView({
-                      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
-                        ? "auto"
-                        : "smooth",
-                    })
-                  }
-                >
+                <Link href={weddingPlanPath} aria-current={intro ? "page" : undefined}>
                   웨딩 플랜
-                </button>
+                </Link>
                 <button onClick={() => navigate("roadmap")}>내 로드맵</button>
               </nav>
             ) : (
