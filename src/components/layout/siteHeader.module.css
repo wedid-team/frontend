@@ -3,14 +3,14 @@
   z-index: 20;
   width: 100%;
   border-bottom: 1px solid var(--palette-divider);
-  background: var(--palette-background-normal);
+  background: var(--surface);
 }
 
 .header__inner {
   box-sizing: border-box;
   display: flex;
   width: 100%;
-  min-height: 78px;
+  min-height: 64px;
   align-items: center;
   justify-content: space-between;
   gap: 24px;
@@ -21,20 +21,25 @@
   flex: 0 0 auto;
 }
 
+.breadcrumbs {
+  margin-right: auto;
+  margin-left: 24px;
+}
+
 .navigation {
   display: flex;
   align-items: center;
   justify-content: flex-end;
   gap: clamp(20px, 3vw, 40px);
-  color: #111111;
+  color: var(--palette-gray-normal);
 }
 
 .navigation__roadmap,
 .navigation__login {
   color: inherit;
-  font-size: 16px;
-  font-weight: 500;
-  line-height: 24px;
+  font-size: var(--type-label-small);
+  font-weight: var(--type-label-small--font-weight);
+  line-height: var(--type-label-small--line-height);
   text-decoration: none;
   white-space: nowrap;
 }
@@ -50,16 +55,16 @@
 
 .account__trigger {
   display: flex;
-  min-height: 56px;
+  min-height: 44px;
   align-items: center;
   gap: 10px;
-  padding: 6px 18px 6px 10px;
+  padding: 4px 14px 4px 8px;
   border: 0;
   border-radius: 999px;
   cursor: pointer;
   font: inherit;
-  font-size: 16px;
-  line-height: 24px;
+  font-size: var(--type-label-small);
+  line-height: var(--type-label-small--line-height);
   list-style: none;
   white-space: nowrap;
 }
@@ -71,12 +76,12 @@
   content: "";
 }
 .account__trigger--soft {
-  background: #e6efea;
-  color: #111111;
+  background: var(--palette-primary-disabled);
+  color: var(--palette-gray-normal);
 }
 .account__trigger--primary {
   background: var(--palette-primary-normal);
-  color: white;
+  color: var(--textInverse);
 }
 
 .account__trigger:focus-visible,
@@ -87,9 +92,9 @@
 
 .account__avatar,
 .account__avatarFallback {
-  width: 36px;
-  height: 36px;
-  flex: 0 0 36px;
+  width: 32px;
+  height: 32px;
+  flex: 0 0 32px;
   border-radius: 50%;
   object-fit: cover;
 }
@@ -99,7 +104,7 @@
   place-items: center;
   background: var(--palette-interactive-selected);
   color: var(--palette-primary-normal);
-  font-size: 15px;
+  font-size: var(--type-label-small);
   font-weight: 700;
 }
 
@@ -127,23 +132,23 @@
   padding: 8px;
   border: 1px solid var(--palette-border-light);
   border-radius: 8px;
-  background: white;
+  background: var(--surface);
   box-shadow: 0 8px 24px rgb(31 41 55 / 12%);
 }
 
 .account__menuTitle {
   padding: 9px 10px;
   color: var(--palette-gray-neutral);
-  font-size: 13px;
-  font-weight: 500;
+  font-size: var(--type-caption);
+  font-weight: var(--type-label-small--font-weight);
 }
 
 .account__menuLink {
   padding: 9px 10px;
   border-radius: 5px;
   color: var(--palette-gray-normal);
-  font-size: 14px;
-  line-height: 20px;
+  font-size: var(--type-body-small);
+  line-height: var(--type-body-small--line-height);
   text-decoration: none;
 }
 
@@ -151,50 +156,52 @@
   background: var(--palette-interactive-hover);
 }
 
-@media (max-width: 520px) {
+@media (max-width: 760px) {
   .header__inner {
-    min-height: 68px;
+    min-height: 60px;
     gap: 12px;
     padding-inline: 16px;
   }
 
-  .header__logo {
-    gap: 6px;
-  }
   .header__logo img:first-child {
     width: 36px;
     height: auto;
   }
+
   .header__logo img:last-child {
     width: 82px;
     height: auto;
   }
+
+  .breadcrumbs {
+    overflow: hidden;
+    margin-left: 8px;
+    white-space: nowrap;
+  }
+
   .navigation {
-    gap: 16px;
+    gap: 12px;
   }
-  .navigation__roadmap,
-  .navigation__login {
-    font-size: 14px;
-  }
+
   .account__trigger {
-    min-height: 44px;
+    min-height: 40px;
     gap: 7px;
-    padding: 4px 12px 4px 6px;
-    font-size: 14px;
+    padding: 4px 10px 4px 6px;
   }
+
   .account__avatar,
   .account__avatarFallback {
-    width: 32px;
-    height: 32px;
-    flex-basis: 32px;
+    width: 30px;
+    height: 30px;
+    flex-basis: 30px;
   }
 }
 
-@media (max-width: 390px) {
-  .navigation {
-    gap: 10px;
-  }
-  .navigation__roadmap {
-    display: none;
-  }
+.header--public,
+.header--workspace {
+  background: var(--surface);
+}
+
+.header--workspace .header__inner {
+  min-height: 64px;
 }

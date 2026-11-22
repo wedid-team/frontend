@@ -9,16 +9,30 @@ export type SelectOption = {
   disabled?: boolean;
 };
 
-type SelectProps = Omit<SelectHTMLAttributes<HTMLSelectElement>, "id"> & {
+export type SelectSize = "default" | "stack" | "small";
+
+type SelectProps = Omit<SelectHTMLAttributes<HTMLSelectElement>, "id" | "size"> & {
   id?: string;
   label?: string;
   placeholder?: string;
   options: SelectOption[];
+  size?: SelectSize;
 };
 
-export function Select({ id, label, options, placeholder, ...selectProps }: SelectProps) {
+export function Select({
+  className,
+  id,
+  label,
+  options,
+  placeholder,
+  size = "default",
+  ...selectProps
+}: SelectProps) {
   const generatedId = useId();
   const fieldId = id ?? generatedId;
+  const selectClasses = [styles.select, styles[`select--${size}`], className]
+    .filter(Boolean)
+    .join(" ");
 
   return (
     <div className={styles.field}>
@@ -28,15 +42,22 @@ export function Select({ id, label, options, placeholder, ...selectProps }: Sele
         </label>
       )}
       <div className={styles.selectWrap}>
-        <select className={styles.select} id={fieldId} {...selectProps}>
-          {placeholder && <option value="">{placeholder}</option>}
+        <select className={selectClasses} id={fieldId} {...selectProps}>
+          {placeholder && (
+            <option disabled value="">
+              {placeholder}
+            </option>
+          )}
           {options.map((option) => (
             <option disabled={option.disabled} key={option.value} value={option.value}>
               {option.label}
             </option>
           ))}
         </select>
-        <span aria-hidden="true" className={styles.selectWrap__chevron} />
+        <span
+          aria-hidden="true"
+          className={`${styles.selectWrap__chevron} ${styles[`selectWrap__chevron--${size}`]}`}
+        />
       </div>
     </div>
   );

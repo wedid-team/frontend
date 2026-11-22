@@ -1,35 +1,31 @@
 "use client";
 
-import { useId, type InputHTMLAttributes } from "react";
-import styles from "./common.module.css";
+import type { InputHTMLAttributes } from "react";
+import { TextField } from "./textField";
 
 type AmountFieldProps = Omit<InputHTMLAttributes<HTMLInputElement>, "id" | "type"> & {
   id?: string;
   label?: string;
+  hint?: string;
+  error?: string;
   unit?: string;
 };
 
-export function AmountField({ id, label, unit = "만 원", ...inputProps }: AmountFieldProps) {
-  const generatedId = useId();
-  const fieldId = id ?? generatedId;
-
+export function AmountField({
+  id,
+  inputMode = "numeric",
+  label,
+  unit = "만 원",
+  ...inputProps
+}: AmountFieldProps) {
   return (
-    <div className={styles.field}>
-      {label && (
-        <label className={styles.field__label} htmlFor={fieldId}>
-          {label}
-        </label>
-      )}
-      <div className={styles.amountInput}>
-        <input
-          className={styles.amountInput__control}
-          id={fieldId}
-          inputMode="numeric"
-          type="text"
-          {...inputProps}
-        />
-        <span className={styles.amountInput__unit}>{unit}</span>
-      </div>
-    </div>
+    <TextField
+      {...inputProps}
+      id={id}
+      inputMode={inputMode}
+      label={label}
+      suffix={unit}
+      type="text"
+    />
   );
 }

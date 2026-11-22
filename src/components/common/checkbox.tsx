@@ -1,25 +1,58 @@
 "use client";
 
-import { useId, type InputHTMLAttributes } from "react";
+import { useId, type InputHTMLAttributes, type ReactNode } from "react";
 import styles from "./common.module.css";
 
-type CheckboxProps = Omit<InputHTMLAttributes<HTMLInputElement>, "id" | "type"> & {
-  id?: string;
-  label: string;
-  description?: string;
-};
+type CheckboxContentProps =
+  { label: string; children?: never } | { label?: never; children: ReactNode };
 
-export function Checkbox({ description, id, label, ...inputProps }: CheckboxProps) {
+export type CheckboxProps = Omit<
+  InputHTMLAttributes<HTMLInputElement>,
+  "children" | "id" | "type"
+> & {
+  id?: string;
+  description?: string;
+} & CheckboxContentProps;
+
+export function Checkbox({
+  "aria-describedby": externalDescribedBy,
+  children,
+  description,
+  disabled,
+  id,
+  label,
+  ...inputProps
+}: CheckboxProps) {
   const generatedId = useId();
   const fieldId = id ?? generatedId;
+  const descriptionId = description ? `${fieldId}-description` : undefined;
+  const describedBy = [externalDescribedBy, descriptionId].filter(Boolean).join(" ");
+  const classes = [styles.checkOption, disabled && styles["checkOption--disabled"]]
+    .filter(Boolean)
+    .join(" ");
 
   return (
-    <label className={styles.checkOption} htmlFor={fieldId}>
-      <input className={styles.checkOption__control} id={fieldId} type="checkbox" {...inputProps} />
+    <div className={classes}>
+      <input
+        {...inputProps}
+        aria-describedby={describedBy || undefined}
+        className={styles.checkOption__control}
+        disabled={disabled}
+        id={fieldId}
+        type="checkbox"
+      />
       <span className={styles.checkOption__copy}>
-        <span className={styles.checkOption__label}>{label}</span>
-        {description && <span className={styles.checkOption__description}>{description}</span>}
+        <label className={styles.checkOption__label} htmlFor={fieldId}>
+          {label ?? children}
+        </label>
+        {description && (
+          <span className={styles.checkOption__description} id={descriptionId}>
+            {description}
+          </span>
+        )}
       </span>
-    </label>
+    </div>
   );
 }
+
+export const ChecklistItem = Checkbox;
