@@ -17,9 +17,16 @@ type EstimateResultProps = FlowActions & {
   answers: WeddingAnswers;
   tier: EstimateTier;
   setTier: (value: EstimateTier) => void;
+  updateAnswers: (patch: Partial<WeddingAnswers>) => void;
 };
 
-export function EstimateResult({ answers, tier, setTier, navigate }: EstimateResultProps) {
+export function EstimateResult({
+  answers,
+  tier,
+  setTier,
+  navigate,
+  updateAnswers,
+}: EstimateResultProps) {
   const result = getMockEstimate(answers, tier);
 
   return (
@@ -94,6 +101,7 @@ export function EstimateResult({ answers, tier, setTier, navigate }: EstimateRes
             answers={answers}
             tier={tier}
             navigate={navigate}
+            onBudgetChange={(budget) => updateAnswers({ budget, budgetUnknown: false })}
           />
         </div>
         <footer className={`${styles.panel} ${styles.nextStep}`}>

@@ -1,9 +1,16 @@
-import { useState } from "react";
+import { useState, type FormEvent } from "react";
 import { Button } from "@/src/components/common";
 import { assets } from "../assets";
-import { budgetLabel, type WeddingAnswers, type EstimateTier } from "../model";
+import {
+  budgetLabel,
+  isValidBudget,
+  parseBudgetInput,
+  type WeddingAnswers,
+  type EstimateTier,
+} from "../model";
 import type { getMockEstimate } from "../mockEstimate";
 import { FlowIcon, type FlowActions } from "./flowUi";
+import { BudgetAmountField } from "./conditionFields";
 import styles from "./estimateSummary.module.css";
 
 export function EstimateSummary({
@@ -11,13 +18,25 @@ export function EstimateSummary({
   answers,
   tier,
   navigate,
+  onBudgetChange,
 }: Pick<FlowActions, "navigate"> & {
   result: ReturnType<typeof getMockEstimate>;
   answers: WeddingAnswers;
   tier: EstimateTier;
+  onBudgetChange: (budget: string) => void;
 }) {
   const [copyStatus, setCopyStatus] = useState<"idle" | "copied" | "failed">("idle");
-  const fitsBudget = !answers.budgetUnknown && Number(answers.budget) >= result.totalMax;
+  const [budget, setBudget] = useState("");
+  const amount = parseBudgetInput(budget).amount;
+  const hasBudget = !answers.budgetUnknown && isValidBudget(answers.budget);
+  const fitsBudget = hasBudget && Number(answers.budget) >= result.totalMax;
+
+  function addBudget(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (!amount) return;
+    onBudgetChange(amount);
+    setBudget("");
+  }
 
   async function copyResult() {
     const url = new URL(window.location.href);
@@ -54,18 +73,33 @@ export function EstimateSummary({
           스드메
         </span>
       </div>
-      <div className={styles.totalBudget}>
-        <span>내 예산</span>
-        <strong>{budgetLabel(answers)}</strong>
-      </div>
-      <p className={styles.budgetStatus}>
-        {fitsBudget && <FlowIcon icon={assets.icons.budgetCheck} />}
-        {answers.budgetUnknown
-          ? "예산을 아직 정하지 않았어요"
-          : fitsBudget
-            ? "예산 안에 들어와요"
-            : "예산보다 높은 예시 금액이에요"}
-      </p>
+      {hasBudget ? (
+        <>
+          <div className={styles.totalBudget}>
+            <span>내 예산</span>
+            <strong>{budgetLabel(answers)}</strong>
+          </div>
+          <p className={styles.budgetStatus}>
+            {fitsBudget && <FlowIcon icon={assets.icons.budgetCheck} />}
+            {fitsBudget ? "예산 안에 들어와요" : "예산보다 높은 예시 금액이에요"}
+          </p>
+        </>
+      ) : (
+        <form className={styles.budgetForm} onSubmit={addBudget}>
+          <p>예산을 넣으면 예산 안에 들어오는지 알려드려요.</p>
+          <div className={styles.budgetEntry}>
+            <BudgetAmountField value={budget} onChange={setBudget} placeholder="3,000" />
+            <Button
+              type="submit"
+              variant="outline"
+              className={styles.budgetSubmit}
+              disabled={!amount}
+            >
+              넣기
+            </Button>
+          </div>
+        </form>
+      )}
       <Button
         size="lg"
         variant="outline"

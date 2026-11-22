@@ -46,7 +46,13 @@ export function FirstVisitFlow() {
       ) : screen === "loading" ? (
         <EstimateLoading />
       ) : screen === "result" ? (
-        <EstimateResult {...actions} answers={answers} tier={tier} setTier={setTier} />
+        <EstimateResult
+          {...actions}
+          answers={answers}
+          tier={tier}
+          setTier={setTier}
+          updateAnswers={updateAnswers}
+        />
       ) : (
         <RoadmapPreview {...actions} answers={answers} tier={tier} today={today} />
       )}

@@ -67,6 +67,42 @@
 .totalBudget > span {
   color: var(--brand200);
 }
+.budgetForm {
+  padding-top: 20px;
+  margin-top: 32px;
+  border-top: 1px solid rgb(255 255 255 / 14%);
+}
+.budgetForm {
+  margin-bottom: 12px;
+}
+.budgetForm > p {
+  margin-bottom: 12px;
+  color: var(--brand200);
+  font-size: 14px;
+}
+.budgetEntry {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 8px;
+}
+.budgetEntry input,
+.budgetEntry .budgetSubmit {
+  min-height: 40px;
+  height: 40px;
+}
+.budgetEntry .budgetSubmit {
+  padding-inline: 12px;
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--brand800);
+}
+.budgetEntry .budgetSubmit:disabled {
+  color: var(--ink500);
+}
+.budgetEntry [role="alert"] {
+  color: #ffb9b9;
+}
 .totalPanel .budgetStatus {
   display: inline-flex;
   align-items: center;
