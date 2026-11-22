@@ -1,7 +1,14 @@
 import { EstimateSummary } from "./estimateSummary";
 import { Button, TierCardGroup } from "@/src/components/common";
 import { assets } from "../assets";
-import { conditionLabel, isTier, type EstimateTier, type WeddingAnswers } from "../model";
+import {
+  assumedGuestRange,
+  conditionLabel,
+  isTier,
+  unknownGuestCount,
+  type EstimateTier,
+  type WeddingAnswers,
+} from "../model";
 import { getMockEstimate, mockCombinations, tierOptions } from "../mockEstimate";
 import { FlowIcon, MockNotice, type FlowActions } from "./flowUi";
 import styles from "./estimateResult.module.css";
@@ -35,7 +42,11 @@ export function EstimateResult({ answers, tier, setTier, navigate }: EstimateRes
             <section className={`${styles.panel} ${styles.venueEstimate}`}>
               <div>
                 <h2 className="tH3">예식장</h2>
-                <p>Figma 예시: 서울(강남 외) 예식장 57곳의 공개 가격 기준 (가운데 50%)</p>
+                <p>
+                  Figma 예시: 서울(강남 외) 예식장 57곳의 공개 가격 기준 (가운데 50%)
+                  {answers.guests === unknownGuestCount &&
+                    ` · 하객 수 미정 · ${assumedGuestRange} 기준`}
+                </p>
               </div>
               <strong>{result.venueRange}</strong>
             </section>

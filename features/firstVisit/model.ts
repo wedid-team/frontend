@@ -30,6 +30,9 @@ export const initialAnswers: WeddingAnswers = {
   moods: [],
 };
 
+export const unknownGuestCount = "아직 모르겠어요";
+export const assumedGuestRange = "150~200명";
+
 // 화면 예시용 선택 데이터. 실제 API의 지역 코드나 통계 구간을 정의하지 않는다.
 export const regionOptions = [
   "서울 강남권",
@@ -50,11 +53,11 @@ export const regionOptions = [
 export const guestOptions = [
   "100명 미만",
   "100~150명",
-  "150~200명",
+  assumedGuestRange,
   "200~250명",
   "250~300명",
   "300명 이상",
-  "아직 모르겠어요",
+  unknownGuestCount,
 ].map((label) => ({ label, value: label }));
 export const moodOptions = ["화사한", "웅장한", "클래식", "그리너리", "럭셔리", "상관없어요"].map(
   (label) => ({ label, value: label }),
@@ -156,7 +159,11 @@ export function budgetLabel(answers: WeddingAnswers) {
 export function conditionLabel(answers: WeddingAnswers) {
   return [
     answers.region || "지역 미정",
-    answers.guests ? `하객 ${answers.guests}` : "하객 미정",
+    answers.guests === unknownGuestCount
+      ? `하객 수 미정 (${assumedGuestRange} 기준)`
+      : answers.guests
+        ? `하객 ${answers.guests}`
+        : "하객 미정",
     timingLabel(answers),
     answers.moods.length ? answers.moods.join(" · ") : "분위기 상관없음",
   ].join(" · ");
