@@ -57,7 +57,13 @@ export function FirstVisitFlow() {
           sharedEstimate={sharedEstimate}
         />
       ) : (
-        <RoadmapPreview {...actions} answers={answers} tier={tier} today={today} />
+        <RoadmapPreview
+          {...actions}
+          answers={answers}
+          tier={tier}
+          today={today}
+          updateAnswers={updateAnswers}
+        />
       )}
       {loginOpen && <SavePlanLoginModal onClose={closeLogin} />}
     </div>

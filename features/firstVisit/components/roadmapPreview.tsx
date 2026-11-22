@@ -1,5 +1,7 @@
+import { useState } from "react";
 import { RoadmapSidebar } from "./roadmapSidebar";
 import { RoadmapTimeline } from "./roadmapTimeline";
+import { EditConditionsDrawer } from "./editConditionsDrawer";
 import { mockRoadmapSteps, previewMonthRange } from "../mockRoadmap";
 import Image from "next/image";
 import { Button } from "@/src/components/common";
@@ -19,14 +21,23 @@ type RoadmapPreviewProps = FlowActions & {
   answers: WeddingAnswers;
   tier: EstimateTier;
   today: Date;
+  updateAnswers: (patch: Partial<WeddingAnswers>) => void;
 };
 
-export function RoadmapPreview({ answers, tier, today, navigate, openLogin }: RoadmapPreviewProps) {
+export function RoadmapPreview({
+  answers,
+  tier,
+  today,
+  navigate,
+  openLogin,
+  updateAnswers,
+}: RoadmapPreviewProps) {
   const result = getMockEstimate(answers, tier);
   const days = daysUntilWedding(answers, today);
   const currentStep = mockRoadmapSteps.find((step) => step.status === "current");
   const currentStepNumber = currentStep ? mockRoadmapSteps.indexOf(currentStep) + 1 : 0;
   const dDay = days === null ? "시기 미정" : days >= 0 ? `D-${days}` : `D+${Math.abs(days)}`;
+  const [editing, setEditing] = useState(false);
   return (
     <main className={styles.roadmapPage}>
       <RoadmapSidebar {...{ answers, dDay, navigate, openLogin }} steps={mockRoadmapSteps} />
@@ -41,7 +52,7 @@ export function RoadmapPreview({ answers, tier, today, navigate, openLogin }: Ro
           <p>결혼식을 위한 일정을 확인하고, 차근차근 준비해보세요.</p>
           <div className={styles.conditions}>
             <span>예식 예정: {conditionLabel(answers)}</span>
-            <button className={styles.textButton} onClick={() => navigate("region")}>
+            <button className={styles.textButton} onClick={() => setEditing(true)}>
               <FlowIcon icon={assets.icons.settings} />
               조건 수정
             </button>
@@ -143,6 +154,17 @@ export function RoadmapPreview({ answers, tier, today, navigate, openLogin }: Ro
           </aside>
         </div>
       </div>
+      {editing && (
+        <EditConditionsDrawer
+          answers={answers}
+          tier={tier}
+          onApply={(nextAnswers) => {
+            updateAnswers(nextAnswers);
+            setEditing(false);
+          }}
+          onClose={() => setEditing(false)}
+        />
+      )}
     </main>
   );
 }
