@@ -10,9 +10,11 @@ import {
   daysUntilWedding,
   assumedGuestRange,
   conditionLabel,
+  createSharedEstimateUrl,
   increaseBudgetInput,
   isValidBudget,
   parseBudgetInput,
+  readSharedEstimate,
   unknownGuestCount,
 } from "./model.ts";
 import { getMockEstimate } from "./mockEstimate.ts";
@@ -127,6 +129,76 @@ test("하객 미정은 가정값을 표시하고 선택한 하객 수와 구분�
     getMockEstimate(unknown, "standard").totalRange,
     getMockEstimate(selected, "standard").totalRange,
   );
+});
+
+test("공유 링크의 조건은 별도 스냅샷으로 검증하며 기존 링크도 읽을 수 있다", () => {
+  const own = {
+    ...initialAnswers,
+    region: "경기",
+    guests: "300명 이상",
+    moods: ["클래식"],
+    budget: "3000",
+    budgetUnknown: false,
+    date: "2027-10-15",
+    year: "2027",
+    month: "10",
+  };
+  const payload = { answers: own, tier: "premium", sharedAt: "2026-11-15T00:00:00.000Z" };
+  const snapshot = readSharedEstimate(JSON.stringify(payload));
+  assert.deepEqual(snapshot.answers, {
+    ...initialAnswers,
+    region: own.region,
+    guests: own.guests,
+    moods: own.moods,
+  });
+  assert.equal(snapshot.sharedAt.toISOString(), payload.sharedAt);
+  snapshot.answers.moods.push("화사한");
+  assert.deepEqual(own.moods, ["클래식"]);
+  assert.equal(
+    readSharedEstimate(JSON.stringify({ answers: own, tier: "standard" })).sharedAt,
+    null,
+  );
+  assert.equal(readSharedEstimate(JSON.stringify({ ...payload, tier: "invalid" })), null);
+  assert.equal(readSharedEstimate(JSON.stringify({ ...payload, answers: {} })), null);
+  assert.equal(readSharedEstimate("invalid JSON"), null);
+});
+
+test("공유 URL에는 화면에서 사용하는 값과 선택된 날짜 형식만 담긴다", () => {
+  const own = {
+    ...initialAnswers,
+    region: "경기",
+    guests: "300명 이상",
+    date: "2027-10-15",
+    year: "2027",
+    month: "11",
+    budget: "3000",
+    budgetUnknown: false,
+  };
+  const sharedAt = new Date("2026-11-15T00:00:00.000Z");
+  for (const [timing, dateFields] of [
+    ["unknown", {}],
+    ["date", { date: own.date }],
+    ["month", { year: own.year, month: own.month }],
+  ]) {
+    const answers = { ...own, timing };
+    const url = new URL(
+      createSharedEstimateUrl("https://wedid.test/?private=1", answers, "standard", sharedAt),
+    );
+    const plan = url.searchParams.get("plan");
+    assert.deepEqual([...url.searchParams.keys()], ["screen", "plan"]);
+    assert.deepEqual(JSON.parse(plan), {
+      answers: { region: own.region, guests: own.guests, moods: [], timing, ...dateFields },
+      tier: "standard",
+      sharedAt: sharedAt.toISOString(),
+    });
+    assert.deepEqual(readSharedEstimate(plan).answers, {
+      ...initialAnswers,
+      region: own.region,
+      guests: own.guests,
+      timing,
+      ...dateFields,
+    });
+  }
 });
 
 test("스탠다드 단품 합산은 각 항목 범위의 합이고 예산대 예시 범위와 구분된다", () => {
