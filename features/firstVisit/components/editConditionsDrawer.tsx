@@ -158,7 +158,7 @@ export function EditConditionsDrawer({
               <BudgetAmountField
                 label="예산 (선택)"
                 placeholder="3,000"
-                hint="비워 두면 ‘아직 없어요’로 계산해요."
+                hint="비워 두면 '아직 없어요'로 계산해요."
                 value={draft.budget}
                 onChange={(budget) => updateDraft({ budget, budgetUnknown: budget === "" })}
               />

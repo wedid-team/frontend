@@ -17,8 +17,8 @@ function AnswerSummary({ answers }: { answers: WeddingAnswers }) {
   const summary = [
     ["지역", answers.region || "—"],
     ["하객", answers.guests || "—"],
-    ["시기", timingLabel(answers)],
-    ["예산", budgetLabel(answers)],
+    ["시기", answers.timing === "unknown" ? "—" : timingLabel(answers)],
+    ["예산", answers.budgetUnknown ? "—" : budgetLabel(answers)],
     ["분위기", answers.moods.join(" · ") || "—"],
   ];
   return (
