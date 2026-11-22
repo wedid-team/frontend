@@ -1,0 +1,60 @@
+.panel {
+  composes: panel from "./flowUi.module.css";
+}
+.loadingPage {
+  min-height: calc(100vh - 64px);
+  background: var(--surfaceSunken);
+  padding: 120px 32px 96px;
+}
+.loadingPage > div {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  gap: 8px;
+  max-width: 1200px;
+  margin: auto;
+  padding: 40px 24px;
+  border-radius: 20px;
+}
+.loadingIcon {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  margin-bottom: 8px;
+  border: 1px solid var(--brand100);
+  border-radius: 18px;
+  background: var(--brand50);
+}
+.loadingIcon img {
+  animation: hourglass 2s ease-in-out infinite;
+}
+.loadingPage h1 {
+  font-size: 20px;
+  font-weight: 650;
+  line-height: 28px;
+}
+.loadingPage p {
+  color: var(--text2);
+  font-size: 14px;
+}
+@keyframes hourglass {
+  0%,
+  30% {
+    transform: rotate(0);
+  }
+  70%,
+  100% {
+    transform: rotate(180deg);
+  }
+}
+@media (max-width: 600px) {
+  .loadingPage {
+    padding: 64px 20px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .loadingIcon img {
+    animation: none;
+  }
+}

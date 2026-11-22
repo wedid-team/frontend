@@ -1,0 +1,145 @@
+.sectionHeading {
+  composes: sectionHeading from "./flowUi.module.css";
+}
+.panel {
+  composes: panel from "./flowUi.module.css";
+}
+
+.timelinePanel {
+  margin-top: 16px;
+}
+.timelinePanel .sectionHeading small {
+  font-size: 13px;
+}
+.timelineOverview {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 6px;
+  margin-top: 28px;
+  padding-bottom: 28px;
+  border-bottom: 1px solid var(--line);
+}
+.timelineOverview > div {
+  min-width: 0;
+  color: var(--text2);
+}
+.timelineOverview i {
+  display: block;
+  height: 4px;
+  margin-bottom: 10px;
+  border-radius: 2px;
+  background: var(--ink100);
+}
+.timelineOverview [data-status="completed"] i,
+.timelineOverview [data-status="current"] i {
+  background: var(--brand600);
+}
+.timelineOverview strong {
+  display: block;
+  font-size: 12px;
+  line-height: 20px;
+  font-weight: 600;
+}
+.timelineOverview small {
+  color: var(--text3);
+  font-size: 11px;
+}
+.timeline {
+  list-style: none;
+  margin: 20px 0 0;
+  padding: 0;
+}
+.timeline li {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding-bottom: 28px;
+}
+.timeline li:not(:last-child)::before {
+  position: absolute;
+  left: 14px;
+  top: 28px;
+  bottom: 0;
+  width: 1px;
+  background: var(--ink200);
+  content: "";
+}
+.timeline li > div {
+  flex: 1;
+  min-width: 0;
+}
+.timelineMarker {
+  z-index: 1;
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border: 1px solid var(--line2);
+  border-radius: 50%;
+  color: var(--text2);
+  background: white;
+  font-size: 12px;
+}
+.timeline li[data-status="completed"] .timelineMarker {
+  background: var(--brand600);
+  border-color: var(--brand600);
+}
+.timeline li[data-status="current"] .timelineMarker {
+  color: var(--brand700);
+  border-color: var(--brand600);
+  box-shadow: 0 0 0 4px var(--brand100);
+}
+.timeline h3 {
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 600;
+}
+.timeline p {
+  margin-top: 6px;
+  color: var(--text2);
+  font-size: 13px;
+  line-height: 21px;
+}
+.timeline li[data-status="upcoming"] h3 {
+  color: var(--text2);
+  font-weight: 400;
+}
+.timeline li > button {
+  flex: none;
+}
+.timeline li:last-child {
+  padding-bottom: 16px;
+}
+.completeBadge {
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--ink50);
+  color: var(--brand700);
+  font-size: 11px;
+}
+@media (max-width: 600px) {
+  .timelineOverview {
+    overflow-x: auto;
+    grid-template-columns: repeat(6, 90px);
+    padding-bottom: 20px;
+  }
+  .timeline {
+    margin-top: 24px;
+  }
+  .timeline li {
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .timeline li > div {
+    flex-basis: calc(100% - 38px);
+  }
+  .timeline li > button,
+  .timeline .completeBadge {
+    margin-left: 38px;
+  }
+  .timeline h3 {
+    font-size: 15px;
+  }
+}

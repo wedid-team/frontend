@@ -1,0 +1,382 @@
+.textButton {
+  composes: textButton from "./flowUi.module.css";
+}
+.wizard {
+  display: grid;
+  grid-template-columns: 420px minmax(0, 1fr);
+  min-height: 100vh;
+  background: var(--surface);
+}
+.questionSidebar {
+  position: sticky;
+  top: 0;
+  display: flex;
+  height: 100vh;
+  min-height: 760px;
+  flex-direction: column;
+  padding: 32px 40px;
+  color: white;
+  background:
+    radial-gradient(ellipse at top right, rgb(167 200 188 / 28%), transparent 36%), var(--brand900);
+}
+.sidebarIntro {
+  margin-top: 72px;
+}
+.sidebarIntro h2 {
+  font-size: 28px;
+  line-height: 36.4px;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+}
+.sidebarIntro p {
+  margin-top: 12px;
+  color: rgb(255 255 255 / 62%);
+  font-size: 16px;
+  line-height: 26px;
+}
+.questionSteps {
+  margin-top: 72px;
+}
+.answerSummary {
+  margin-top: auto;
+  padding: 20px 18px;
+  border: 1px solid rgb(255 255 255 / 12%);
+  border-radius: 18px;
+  background: rgb(255 255 255 / 5%);
+}
+.answerSummary > p {
+  color: rgb(255 255 255 / 60%);
+  font-size: 12px;
+  margin-bottom: 12px;
+}
+.answerSummary dl > div {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
+  margin-top: 8px;
+  font-size: 14px;
+}
+.answerSummary dt {
+  color: rgb(255 255 255 / 45%);
+  flex: none;
+}
+.answerSummary dd {
+  text-align: right;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+.questionForm {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+.questionHeader {
+  display: flex;
+  justify-content: space-between;
+  padding: 28px 48px 0;
+  align-items: flex-start;
+  font-size: 13px;
+  color: var(--text2);
+}
+.questionHeader strong {
+  color: var(--brand700);
+}
+.questionHeader > div {
+  width: 200px;
+}
+.questionHeader .textButton {
+  color: var(--ink700);
+  font-size: 14px;
+}
+.questionProgress {
+  height: 4px;
+  margin-top: 8px;
+  border-radius: 2px;
+  background: var(--ink100);
+}
+.questionProgress i {
+  display: block;
+  height: 4px;
+  border-radius: inherit;
+  background: var(--brand600);
+}
+.questionBody {
+  width: min(100% - 64px, 600px);
+  margin-inline: auto;
+  padding-top: 52px;
+  padding-bottom: 160px;
+}
+.question + .question {
+  margin-top: 72px;
+}
+.questionNumber {
+  color: var(--brand700);
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 21px;
+}
+.question h1 {
+  margin-top: 10px;
+  font-size: 36px;
+  font-weight: 700;
+  line-height: 45px;
+  letter-spacing: -0.03em;
+}
+.question .questionDescription {
+  margin-top: 10px;
+  color: var(--text2);
+  font-size: 16px;
+  line-height: 26px;
+}
+.questionControl {
+  margin-top: 24px;
+}
+.questionControl select {
+  height: 60px;
+  border-radius: 14px;
+  border-color: transparent;
+  background: var(--ink50);
+  color: var(--text);
+  padding-inline: 16px;
+}
+.question .fieldNote {
+  margin-top: 24px;
+  color: var(--text2);
+  font-size: 13px;
+}
+.regionSelect {
+  position: relative;
+}
+.regionSelect span[aria-hidden] {
+  display: none;
+}
+.selectChevron {
+  position: absolute;
+  right: 18px;
+  top: 21px;
+  pointer-events: none;
+}
+.guestChoices fieldset > div {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+.guestChoices label,
+.moodChoices label,
+.timingChoices label,
+.questionControl > fieldset label {
+  min-height: 60px;
+  border-radius: 14px;
+  padding: 16px 18px;
+  border-color: var(--line2);
+}
+.guestChoices label:last-child {
+  grid-column: 1/-1;
+  border-style: dashed;
+}
+.guestChoices input {
+  width: 20px;
+  height: 20px;
+  flex-basis: 20px;
+}
+.guestChoices label:has(input:checked),
+.moodChoices label:has(input:checked),
+.timingChoices label:has(input:checked) {
+  border-color: var(--brand600);
+  color: var(--brand800);
+}
+.timingChoices {
+  display: grid;
+  gap: 10px;
+}
+.timingChoices fieldset > div {
+  gap: 10px;
+}
+.monthFields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.budgetInput > div > div {
+  border-color: transparent;
+  border-radius: 16px;
+  min-height: 64px;
+  background: var(--ink50);
+}
+.budgetInput input {
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  min-height: 62px;
+  padding-inline: 22px;
+}
+.question .budgetHint {
+  margin-top: 6px;
+  color: var(--brand700);
+  font-size: 14px;
+  font-weight: 600;
+}
+.budgetShortcuts {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 12px 0 24px;
+}
+.budgetShortcuts button {
+  padding: 3px 10px;
+  border: 1px solid var(--line2);
+  border-radius: 999px;
+  background: var(--surface);
+  font-size: 13px;
+}
+.budgetShortcuts button:last-child {
+  margin-left: 4px;
+  border: 0;
+}
+.moodChoices fieldset > div {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.moodChoices label:last-child {
+  border-style: dashed;
+}
+.moodChoices input {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  flex-basis: 20px;
+  border: 1px solid var(--ink300);
+  border-radius: 6px;
+}
+.moodChoices input:checked {
+  border-color: var(--brand600);
+  background: var(--brand600) var(--checkmarkImage) center/13px 13px no-repeat;
+}
+.question .moodNote {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 16px;
+  margin-top: 24px;
+  border-radius: 12px;
+  background: var(--brand50);
+  color: var(--brand700);
+  font-size: 13px;
+}
+.moodNote img {
+  flex: none;
+}
+.questionFooter {
+  position: sticky;
+  bottom: 0;
+  margin-top: auto;
+  padding: 16px 32px;
+  border-top: 1px solid var(--line);
+  background: var(--surface);
+}
+.questionFooter > div {
+  display: flex;
+  max-width: 600px;
+  gap: 8px;
+  margin-inline: auto;
+}
+.questionFooter button {
+  height: 48px;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+}
+.questionFooter button:last-child {
+  flex: 1;
+}
+@media (max-width: 1250px) {
+  .wizard {
+    grid-template-columns: 320px minmax(0, 1fr);
+  }
+  .questionSidebar {
+    padding-inline: 28px;
+  }
+  .question h1 {
+    font-size: 30px;
+    line-height: 40px;
+  }
+}
+@media (max-width: 900px) {
+  .wizard {
+    grid-template-columns: 1fr;
+  }
+  .questionSidebar {
+    position: relative;
+    height: auto;
+    min-height: 0;
+    padding: 24px;
+  }
+  .sidebarIntro,
+  .answerSummary {
+    display: none;
+  }
+  .questionSteps {
+    margin-top: 24px;
+  }
+  .questionForm {
+    min-height: calc(100vh - 150px);
+  }
+  .questionHeader {
+    padding: 24px 32px 0;
+  }
+}
+@media (max-width: 600px) {
+  .questionSidebar {
+    padding: 20px;
+  }
+
+  .questionHeader {
+    padding-inline: 20px;
+  }
+  .questionHeader > div {
+    width: 150px;
+  }
+  .questionBody {
+    width: calc(100% - 40px);
+    padding-top: 40px;
+    padding-bottom: 80px;
+  }
+  .question h1 {
+    font-size: 28px;
+    line-height: 38px;
+  }
+  .question + .question {
+    margin-top: 48px;
+  }
+  .guestChoices fieldset > div {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .guestChoices label,
+  .moodChoices label {
+    padding-inline: 12px;
+    gap: 8px;
+  }
+  .guestChoices label > span,
+  .moodChoices label > span {
+    font-size: 14px;
+  }
+  .questionFooter {
+    padding-inline: 20px;
+  }
+  .moodNote {
+    align-items: flex-start;
+    line-height: 21px;
+  }
+  .moodNote img {
+    margin-top: 2px;
+  }
+  .budgetShortcuts {
+    flex-wrap: wrap;
+  }
+}
+
+.questionBody:focus {
+  outline: none;
+}
