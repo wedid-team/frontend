@@ -16,6 +16,30 @@ type FirstVisitState = {
   setTier: (tier: EstimateTier) => void;
 };
 
+const draftStorage = createJSONStorage(() => ({
+  getItem(name) {
+    try {
+      return window.sessionStorage.getItem(name);
+    } catch {
+      return null;
+    }
+  },
+  setItem(name, value) {
+    try {
+      window.sessionStorage.setItem(name, value);
+    } catch {
+      // 저장을 사용할 수 없는 환경에서는 현재 탭의 메모리 상태를 유지한다.
+    }
+  },
+  removeItem(name) {
+    try {
+      window.sessionStorage.removeItem(name);
+    } catch {
+      // 저장소가 차단된 상태에서는 삭제할 수 없다.
+    }
+  },
+}));
+
 // 이 브라우저의 임시 계획이며 로그인 계정에 저장된 계획과 분리한다.
 export const useFirstVisitStore = create<FirstVisitState>()(
   persist(
@@ -39,12 +63,12 @@ export const useFirstVisitStore = create<FirstVisitState>()(
     {
       name: "wedidFirstVisitDraft",
       version: 1,
-      storage: createJSONStorage(() => sessionStorage),
+      storage: draftStorage,
       skipHydration: true,
       partialize: ({ answers, tier }) => ({ answers, tier }),
       merge: (persisted, current) => {
-        const saved =
-          persisted && typeof persisted === "object" ? (persisted as Record<string, unknown>) : {};
+        if (!persisted || typeof persisted !== "object") return current;
+        const saved = persisted as Record<string, unknown>;
         return {
           ...current,
           answers: sanitizeAnswers(saved.answers),
