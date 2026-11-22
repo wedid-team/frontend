@@ -8,6 +8,9 @@ import {
   sanitizeAnswers,
   timingLabel,
   daysUntilWedding,
+  increaseBudgetInput,
+  isValidBudget,
+  parseBudgetInput,
 } from "./model.ts";
 
 test("지역은 필수이고 하객 수 미정은 유효하다", () => {
@@ -73,4 +76,38 @@ test("손상된 저장 정보와 공유 정보에서 허용하지 않은 값을 
   assert.equal(answers.budget, "3000");
   assert.deepEqual(answers.moods, ["화사한"]);
   assert.deepEqual(sanitizeAnswers(null), initialAnswers);
+});
+
+test("예산은 올바른 쉼표와 앞뒤 공백을 허용하고 100만 원부터 저장할 수 있다", () => {
+  assert.deepEqual(parseBudgetInput(" 3,000 "), { amount: "3000" });
+  assert.deepEqual(parseBudgetInput("100"), { amount: "100" });
+  assert.deepEqual(parseBudgetInput(""), { amount: null });
+  for (const low of ["0", "50", "99"]) {
+    assert.deepEqual(parseBudgetInput(low), {
+      amount: null,
+      error: "100만 원 이상으로 입력해 주세요",
+    });
+  }
+  assert.equal(isValidBudget(""), false);
+  assert.equal(hasTimingAnswers({ ...initialAnswers, budget: "99", budgetUnknown: false }), false);
+  assert.equal(hasTimingAnswers({ ...initialAnswers, budget: "100", budgetUnknown: false }), true);
+  assert.equal(hasTimingAnswers(initialAnswers), true);
+});
+
+test("잘못된 예산 문자를 지우거나 자릿수를 잘라 다른 값으로 만들지 않는다", () => {
+  for (const raw of ["100.5", "-500", "1e300", "1 000", "1,00", "3,000원", " ", "1000000000"]) {
+    const { amount, error } = parseBudgetInput(raw);
+    assert.equal(amount, null, raw);
+    assert.ok(error, raw);
+    assert.equal(sanitizeAnswers({ budget: raw }).budget, "", raw);
+  }
+  assert.deepEqual(parseBudgetInput("999,999,999"), { amount: "999999999" });
+});
+
+test("예산 빠른 입력은 올바른 숫자에만 더하고 잘못된 예산 원문을 그대로 둔다", () => {
+  assert.equal(increaseBudgetInput("50", 500), "550");
+  assert.equal(increaseBudgetInput("3,000", 500), "3,500");
+  assert.equal(increaseBudgetInput("100.5", 500), "100.5");
+  assert.equal(increaseBudgetInput("", 500), "500");
+  assert.equal(parseBudgetInput(increaseBudgetInput("999,999,999", 500)).amount, null);
 });
