@@ -148,7 +148,7 @@ export function CostFeaturePreview() {
 export function RoadmapFeaturePreview() {
   const steps = [
     ["예산 일정 합의, 상견례", "D-365~300 · 완료", "완료"],
-    ["예식장 계약", "D-300~240 · 1,550만 ~ 1,900만원", "진행 중"],
+    ["예식장 계약", "D-300~240 · 1,550만 ~ 1,900만원", "진행중"],
     ["스드메 계약", "D-240~180", "예정"],
   ] as const;
   return (

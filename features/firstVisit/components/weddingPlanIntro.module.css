@@ -493,7 +493,7 @@
   border: 1px solid var(--line);
   border-radius: 8px;
 }
-.roadmapCard li[data-status="진행 중"] {
+.roadmapCard li[data-status="진행중"] {
   background: var(--brand50);
 }
 .roadmapCard strong {
