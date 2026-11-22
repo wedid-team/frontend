@@ -8,10 +8,14 @@ import {
   sanitizeAnswers,
   timingLabel,
   daysUntilWedding,
+  assumedGuestRange,
+  conditionLabel,
   increaseBudgetInput,
   isValidBudget,
   parseBudgetInput,
+  unknownGuestCount,
 } from "./model.ts";
+import { getMockEstimate } from "./mockEstimate.ts";
 
 test("지역은 필수이고 하객 수 미정은 유효하다", () => {
   assert.equal(hasRegionAnswers({ ...initialAnswers, guests: "아직 모르겠어요" }), false);
@@ -110,4 +114,34 @@ test("예산 빠른 입력은 올바른 숫자에만 더하고 잘못된 예산 
   assert.equal(increaseBudgetInput("100.5", 500), "100.5");
   assert.equal(increaseBudgetInput("", 500), "500");
   assert.equal(parseBudgetInput(increaseBudgetInput("999,999,999", 500)).amount, null);
+});
+
+test("하객 미정은 가정값을 표시하고 선택한 하객 수와 구분한다", () => {
+  const unknown = { ...initialAnswers, region: "서울 강남권 외", guests: unknownGuestCount };
+  const selected = { ...unknown, guests: assumedGuestRange };
+  assert.match(conditionLabel(unknown), /하객 수 미정 \(150~200명 기준\)/);
+  assert.match(conditionLabel(selected), /하객 150~200명/);
+  assert.equal(getMockEstimate(unknown, "standard").conditions.guests, unknownGuestCount);
+  assert.equal(getMockEstimate(selected, "standard").conditions.guests, assumedGuestRange);
+  assert.equal(
+    getMockEstimate(unknown, "standard").totalRange,
+    getMockEstimate(selected, "standard").totalRange,
+  );
+});
+
+test("스탠다드 단품 합산은 각 항목 범위의 합이고 예산대 예시 범위와 구분된다", () => {
+  const standard = getMockEstimate(initialAnswers, "standard");
+  assert.equal(
+    standard.stylingBreakdown.total.min,
+    standard.stylingBreakdown.items.reduce((sum, item) => sum + item.min, 0),
+  );
+  assert.equal(
+    standard.stylingBreakdown.total.max,
+    standard.stylingBreakdown.items.reduce((sum, item) => sum + item.max, 0),
+  );
+  assert.deepEqual(standard.stylingBreakdown.total, { min: 255, max: 320 });
+  assert.equal(standard.stylingRange, "250만 ~ 350만원");
+  for (const tier of ["basic", "premium", "luxury"]) {
+    assert.equal(getMockEstimate(initialAnswers, tier).stylingBreakdown, null);
+  }
 });
