@@ -5,6 +5,7 @@ import {
   budgetLabel,
   isValidBudget,
   parseBudgetInput,
+  sharedEstimatePayload,
   type WeddingAnswers,
   type EstimateTier,
 } from "../model";
@@ -25,7 +26,6 @@ export function EstimateSummary({
   tier: EstimateTier;
   onBudgetChange: (budget: string) => void;
 }) {
-  const [copyStatus, setCopyStatus] = useState<"idle" | "copied" | "failed">("idle");
   const [budget, setBudget] = useState("");
   const amount = parseBudgetInput(budget).amount;
   const hasBudget = !answers.budgetUnknown && isValidBudget(answers.budget);
@@ -36,19 +36,6 @@ export function EstimateSummary({
     if (!amount) return;
     onBudgetChange(amount);
     setBudget("");
-  }
-
-  async function copyResult() {
-    const url = new URL(window.location.href);
-    url.search = "";
-    url.searchParams.set("screen", "result");
-    url.searchParams.set("plan", JSON.stringify({ answers, tier }));
-    try {
-      await navigator.clipboard.writeText(url.toString());
-      setCopyStatus("copied");
-    } catch {
-      setCopyStatus("failed");
-    }
   }
 
   return (
@@ -108,8 +95,39 @@ export function EstimateSummary({
       >
         준비 로드맵 보기 <FlowIcon icon={assets.icons.darkArrow} />
       </Button>
+      <EstimateShareActions
+        key={JSON.stringify([
+          sharedEstimatePayload(answers, tier),
+          hasBudget ? answers.budget : "",
+        ])}
+        answers={answers}
+        tier={tier}
+      />
+    </aside>
+  );
+}
+
+function EstimateShareActions({ answers, tier }: { answers: WeddingAnswers; tier: EstimateTier }) {
+  const [copyStatus, setCopyStatus] = useState<"idle" | "pending" | "copied" | "failed">("idle");
+
+  async function copyResult() {
+    setCopyStatus("pending");
+    try {
+      const url = new URL(window.location.href);
+      url.search = "";
+      url.searchParams.set("screen", "result");
+      url.searchParams.set("plan", JSON.stringify({ answers, tier }));
+      await navigator.clipboard.writeText(url.toString());
+      setCopyStatus("copied");
+    } catch {
+      setCopyStatus("failed");
+    }
+  }
+
+  return (
+    <>
       <div className={styles.shareActions}>
-        <Button variant="soft" onClick={copyResult}>
+        <Button variant="soft" onClick={copyResult} disabled={copyStatus === "pending"}>
           <FlowIcon icon={assets.icons.link} />
           {copyStatus === "copied" ? "복사했어요" : "결과 링크 복사"}
         </Button>
@@ -121,6 +139,6 @@ export function EstimateSummary({
       {copyStatus === "failed" && (
         <p role="status">링크를 복사하지 못했어요. 다시 시도해 주세요.</p>
       )}
-    </aside>
+    </>
   );
 }

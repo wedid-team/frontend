@@ -96,7 +96,6 @@ export function EstimateResult({
             <MockNotice />
           </div>
           <EstimateSummary
-            key={tier}
             result={result}
             answers={answers}
             tier={tier}
