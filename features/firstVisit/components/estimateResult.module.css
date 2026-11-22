@@ -26,6 +26,25 @@
   display: grid;
   gap: 8px;
 }
+.sharedBanner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 14px 18px;
+  margin-bottom: 20px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--brand50);
+  color: var(--brand800);
+  font-size: 14px;
+}
+.sharedBanner p {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
 .resultIntro > p:not(:first-child) {
   color: var(--text2);
   font-size: 16px;
@@ -87,6 +106,10 @@
 }
 .tiers label:has(input:checked) {
   border-color: var(--brand600);
+}
+.readOnlyTiers label:has(input:checked) {
+  background: var(--brand50);
+  color: var(--ink900);
 }
 .tiers input {
   position: absolute;

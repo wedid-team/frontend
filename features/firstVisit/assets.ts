@@ -137,6 +137,11 @@ export const assets = {
       width: 16,
       height: 16,
     },
+    sharedResultLink: {
+      src: "/firstVisit/shared-result-link.svg",
+      width: 16,
+      height: 16,
+    },
     chat: {
       src: "/firstVisit/chat-bubble.svg",
       width: 16,

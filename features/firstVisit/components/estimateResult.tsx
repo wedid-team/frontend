@@ -18,7 +18,10 @@ type EstimateResultProps = FlowActions & {
   tier: EstimateTier;
   setTier: (value: EstimateTier) => void;
   updateAnswers: (patch: Partial<WeddingAnswers>) => void;
+  sharedEstimate: { sharedAt: Date | null } | null;
 };
+
+const readOnlyTiers = tierOptions.map((option) => ({ ...option, disabled: true }));
 
 export function EstimateResult({
   answers,
@@ -26,22 +29,41 @@ export function EstimateResult({
   setTier,
   navigate,
   updateAnswers,
+  sharedEstimate,
 }: EstimateResultProps) {
   const result = getMockEstimate(answers, tier);
+  const sharedDate = sharedEstimate?.sharedAt?.toLocaleDateString("ko-KR", {
+    month: "long",
+    day: "numeric",
+    timeZone: "Asia/Seoul",
+  });
 
   return (
     <main className={styles.resultPage}>
       <div className={styles.resultContainer}>
+        {sharedEstimate && (
+          <div className={styles.sharedBanner}>
+            <p>
+              <FlowIcon icon={assets.icons.sharedResultLink} /> 공유받은 예상 비용이에요
+              {sharedDate && ` · ${sharedDate} 기준`}
+            </p>
+            <Button size="sm" onClick={() => navigate("region")}>
+              나도 계산해 보기
+            </Button>
+          </div>
+        )}
         <header className={styles.resultIntro}>
           <p className="tEyebrow">비용 계산 결과</p>
           <h1 className="tH1">우리 결혼 예상 비용</h1>
           <p>답해 주신 조건을 확인하고 예식장과 스드메 비용 범위를 미리보세요.</p>
           <div className={styles.conditions}>
             <span>{conditionLabel(answers)}</span>
-            <button className={styles.textButton} onClick={() => navigate("region")}>
-              <FlowIcon icon={assets.icons.settings} />
-              조건 수정
-            </button>
+            {!sharedEstimate && (
+              <button className={styles.textButton} onClick={() => navigate("region")}>
+                <FlowIcon icon={assets.icons.settings} />
+                조건 수정
+              </button>
+            )}
           </div>
         </header>
         <div className={styles.resultGrid}>
@@ -65,13 +87,13 @@ export function EstimateResult({
                 </div>
                 <strong>{result.stylingRange}</strong>
               </div>
-              <div className={styles.tiers}>
+              <div className={`${styles.tiers}${sharedEstimate ? ` ${styles.readOnlyTiers}` : ""}`}>
                 <TierCardGroup
                   name="estimateTier"
-                  options={tierOptions}
+                  options={sharedEstimate ? readOnlyTiers : tierOptions}
                   value={tier}
                   onChange={(next) => {
-                    if (isTier(next)) setTier(next);
+                    if (!sharedEstimate && isTier(next)) setTier(next);
                   }}
                 />
               </div>
@@ -83,9 +105,11 @@ export function EstimateResult({
                   </h3>
                   <small>스탠다드 예산대 · 서울 공개 가격 기준의 디자인 예시</small>
                 </div>
-                <button className={styles.textButton} disabled title="업체 정보는 준비 중이에요">
-                  스드메 후보 보기 <FlowIcon icon={assets.icons.candidateChevron} />
-                </button>
+                {!sharedEstimate && (
+                  <button className={styles.textButton} disabled title="업체 정보는 준비 중이에요">
+                    스드메 후보 보기 <FlowIcon icon={assets.icons.candidateChevron} />
+                  </button>
+                )}
               </div>
               <StylingCombinations />
             </section>
@@ -100,23 +124,26 @@ export function EstimateResult({
             answers={answers}
             tier={tier}
             navigate={navigate}
+            shared={!!sharedEstimate}
             onBudgetChange={(budget) => updateAnswers({ budget, budgetUnknown: false })}
           />
         </div>
-        <footer className={`${styles.panel} ${styles.nextStep}`}>
-          <div>
-            <strong>다음 단계</strong>
-            <p>이 비용을 기준으로 D-day별 준비 로드맵을 만들어 드려요.</p>
-          </div>
-          <div className={styles.inlineActions}>
-            <Button variant="outline" size="lg" onClick={() => navigate("mood")}>
-              이전
-            </Button>
-            <Button size="lg" onClick={() => navigate("roadmap")}>
-              준비 로드맵 보기 <FlowIcon icon={assets.icons.whiteArrow} />
-            </Button>
-          </div>
-        </footer>
+        {!sharedEstimate && (
+          <footer className={`${styles.panel} ${styles.nextStep}`}>
+            <div>
+              <strong>다음 단계</strong>
+              <p>이 비용을 기준으로 D-day별 준비 로드맵을 만들어 드려요.</p>
+            </div>
+            <div className={styles.inlineActions}>
+              <Button variant="outline" size="lg" onClick={() => navigate("mood")}>
+                이전
+              </Button>
+              <Button size="lg" onClick={() => navigate("roadmap")}>
+                준비 로드맵 보기 <FlowIcon icon={assets.icons.whiteArrow} />
+              </Button>
+            </div>
+          </footer>
+        )}
       </div>
     </main>
   );

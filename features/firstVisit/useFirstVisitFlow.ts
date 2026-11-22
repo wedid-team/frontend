@@ -1,13 +1,12 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
   firstVisitHref,
   hasRegionAnswers,
   hasTimingAnswers,
-  isTier,
-  sanitizeAnswers,
+  readSharedEstimate,
   type FlowScreen,
 } from "./model";
 import { loadMockEstimate } from "./mockEstimate";
@@ -23,7 +22,8 @@ export function useFirstVisitFlow() {
   const [ready, setReady] = useState(false);
   const [today] = useState(() => new Date());
   const [loginOpen, setLoginOpen] = useState(false);
-  const initialized = useRef(false);
+  const plan = screen === "result" ? search.get("plan") : null;
+  const sharedEstimate = useMemo(() => readSharedEstimate(plan), [plan]);
   const answers = useFirstVisitStore((state) => state.answers);
   const tier = useFirstVisitStore((state) => state.tier);
   const updateAnswers = useFirstVisitStore((state) => state.updateAnswers);
@@ -42,33 +42,24 @@ export function useFirstVisitFlow() {
   }, [screen]);
 
   useEffect(() => {
-    if (initialized.current) return;
-    initialized.current = true;
-    void Promise.resolve(useFirstVisitStore.persist.rehydrate()).finally(() => {
-      // 공유 URL의 조건도 저장소와 같은 검증을 거친다.
-      const plan = new URLSearchParams(window.location.search).get("plan");
-      if (plan && plan.length < 5000) {
-        try {
-          const saved: unknown = JSON.parse(plan);
-          if (saved && typeof saved === "object") {
-            const shared = saved as Record<string, unknown>;
-            updateAnswers(sanitizeAnswers(shared.answers));
-            if (isTier(shared.tier)) setTier(shared.tier);
-            // 공유 조건은 한 번만 적용해 이후 수정한 임시 계획의 복원을 방해하지 않는다.
-            const url = new URL(window.location.href);
-            url.searchParams.delete("plan");
-            router.replace(`${url.pathname}${url.search}`);
-          }
-        } catch {
-          /* 손상된 공유 정보는 기존 임시 계획을 유지한다. */
-        }
-      }
-      setReady(true);
-    });
-  }, [updateAnswers, setTier, router]);
+    let active = true;
+    const finish = () => {
+      if (active) setReady(true);
+    };
+    void Promise.resolve()
+      .then(() => useFirstVisitStore.persist.rehydrate())
+      .then(finish, finish);
+    return () => {
+      active = false;
+    };
+  }, []);
 
   useEffect(() => {
-    if (!ready) return;
+    if (!ready || sharedEstimate) return;
+    if (plan !== null) {
+      router.replace("/?screen=region");
+      return;
+    }
     const requiresRegion = ["timing", "mood", "loading", "result"].includes(screen);
     if (requiresRegion && !hasRegionAnswers(answers)) {
       router.replace("/?screen=region");
@@ -87,16 +78,17 @@ export function useFirstVisitFlow() {
           router.replace("/?screen=mood");
       });
     return () => controller.abort();
-  }, [screen, ready, answers, tier, router]);
+  }, [screen, ready, answers, tier, router, plan, sharedEstimate]);
 
   return {
     screen,
-    ready,
+    ready: sharedEstimate !== null || (ready && plan === null),
     today,
     loginOpen,
     closeLogin: () => setLoginOpen(false),
     answers,
     tier,
+    sharedEstimate,
     updateAnswers,
     setTier,
     navigate,

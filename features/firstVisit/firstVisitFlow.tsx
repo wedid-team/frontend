@@ -19,6 +19,7 @@ export function FirstVisitFlow() {
     closeLogin,
     answers,
     tier,
+    sharedEstimate,
     updateAnswers,
     setTier,
     navigate,
@@ -47,11 +48,13 @@ export function FirstVisitFlow() {
         <EstimateLoading />
       ) : screen === "result" ? (
         <EstimateResult
+          key={sharedEstimate ? "shared" : "personal"}
           {...actions}
-          answers={answers}
-          tier={tier}
+          answers={sharedEstimate?.answers ?? answers}
+          tier={sharedEstimate?.tier ?? tier}
           setTier={setTier}
           updateAnswers={updateAnswers}
+          sharedEstimate={sharedEstimate}
         />
       ) : (
         <RoadmapPreview {...actions} answers={answers} tier={tier} today={today} />

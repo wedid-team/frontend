@@ -3,6 +3,7 @@ import { Button } from "@/src/components/common";
 import { assets } from "../assets";
 import {
   budgetLabel,
+  createSharedEstimateUrl,
   isValidBudget,
   parseBudgetInput,
   sharedEstimatePayload,
@@ -19,11 +20,13 @@ export function EstimateSummary({
   answers,
   tier,
   navigate,
+  shared,
   onBudgetChange,
 }: Pick<FlowActions, "navigate"> & {
   result: ReturnType<typeof getMockEstimate>;
   answers: WeddingAnswers;
   tier: EstimateTier;
+  shared: boolean;
   onBudgetChange: (budget: string) => void;
 }) {
   const [budget, setBudget] = useState("");
@@ -60,49 +63,64 @@ export function EstimateSummary({
           스드메
         </span>
       </div>
-      {hasBudget ? (
-        <>
-          <div className={styles.totalBudget}>
-            <span>내 예산</span>
-            <strong>{budgetLabel(answers)}</strong>
-          </div>
-          <p className={styles.budgetStatus}>
-            {fitsBudget && <FlowIcon icon={assets.icons.budgetCheck} />}
-            {fitsBudget ? "예산 안에 들어와요" : "예산보다 높은 예시 금액이에요"}
-          </p>
-        </>
+      {shared ? (
+        <div className={styles.sharedAction}>
+          <Button
+            size="lg"
+            variant="outline"
+            className={styles.whiteButton}
+            onClick={() => navigate("region")}
+          >
+            나도 계산해 보기
+          </Button>
+        </div>
       ) : (
-        <form className={styles.budgetForm} onSubmit={addBudget}>
-          <p>예산을 넣으면 예산 안에 들어오는지 알려드려요.</p>
-          <div className={styles.budgetEntry}>
-            <BudgetAmountField value={budget} onChange={setBudget} placeholder="3,000" />
-            <Button
-              type="submit"
-              variant="outline"
-              className={styles.budgetSubmit}
-              disabled={!amount}
-            >
-              넣기
-            </Button>
-          </div>
-        </form>
+        <>
+          {hasBudget ? (
+            <>
+              <div className={styles.totalBudget}>
+                <span>내 예산</span>
+                <strong>{budgetLabel(answers)}</strong>
+              </div>
+              <p className={styles.budgetStatus}>
+                {fitsBudget && <FlowIcon icon={assets.icons.budgetCheck} />}
+                {fitsBudget ? "예산 안에 들어와요" : "예산보다 높은 예시 금액이에요"}
+              </p>
+            </>
+          ) : (
+            <form className={styles.budgetForm} onSubmit={addBudget}>
+              <p>예산을 넣으면 예산 안에 들어오는지 알려드려요.</p>
+              <div className={styles.budgetEntry}>
+                <BudgetAmountField value={budget} onChange={setBudget} placeholder="3,000" />
+                <Button
+                  type="submit"
+                  variant="outline"
+                  className={styles.budgetSubmit}
+                  disabled={!amount}
+                >
+                  넣기
+                </Button>
+              </div>
+            </form>
+          )}
+          <Button
+            size="lg"
+            variant="outline"
+            onClick={() => navigate("roadmap")}
+            className={styles.whiteButton}
+          >
+            준비 로드맵 보기 <FlowIcon icon={assets.icons.darkArrow} />
+          </Button>
+          <EstimateShareActions
+            key={JSON.stringify([
+              sharedEstimatePayload(answers, tier),
+              hasBudget ? answers.budget : "",
+            ])}
+            answers={answers}
+            tier={tier}
+          />
+        </>
       )}
-      <Button
-        size="lg"
-        variant="outline"
-        onClick={() => navigate("roadmap")}
-        className={styles.whiteButton}
-      >
-        준비 로드맵 보기 <FlowIcon icon={assets.icons.darkArrow} />
-      </Button>
-      <EstimateShareActions
-        key={JSON.stringify([
-          sharedEstimatePayload(answers, tier),
-          hasBudget ? answers.budget : "",
-        ])}
-        answers={answers}
-        tier={tier}
-      />
     </aside>
   );
 }
@@ -113,11 +131,9 @@ function EstimateShareActions({ answers, tier }: { answers: WeddingAnswers; tier
   async function copyResult() {
     setCopyStatus("pending");
     try {
-      const url = new URL(window.location.href);
-      url.search = "";
-      url.searchParams.set("screen", "result");
-      url.searchParams.set("plan", JSON.stringify({ answers, tier }));
-      await navigator.clipboard.writeText(url.toString());
+      await navigator.clipboard.writeText(
+        createSharedEstimateUrl(window.location.href, answers, tier, new Date()),
+      );
       setCopyStatus("copied");
     } catch {
       setCopyStatus("failed");

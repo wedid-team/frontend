@@ -67,7 +67,8 @@
 .totalBudget > span {
   color: var(--brand200);
 }
-.budgetForm {
+.budgetForm,
+.sharedAction {
   padding-top: 20px;
   margin-top: 32px;
   border-top: 1px solid rgb(255 255 255 / 14%);
