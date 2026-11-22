@@ -77,6 +77,45 @@ export function hasRegionAnswers(answers: WeddingAnswers) {
   );
 }
 
+const minimumBudget = 100;
+const maximumBudgetDigits = 9;
+
+export function isValidBudget(value: string) {
+  return (
+    /^\d+$/.test(value) && value.length <= maximumBudgetDigits && Number(value) >= minimumBudget
+  );
+}
+
+function budgetInputDigits(value: string) {
+  const trimmed = value.trim();
+  return /^(?:\d+|\d{1,3}(?:,\d{3})+)$/.test(trimmed) ? trimmed.replaceAll(",", "") : null;
+}
+
+export function parseBudgetInput(value: string): { amount: string | null; error?: string } {
+  if (value === "") return { amount: null };
+  const digits = budgetInputDigits(value);
+  if (digits === null) {
+    return { amount: null, error: "숫자 또는 올바른 천 단위 쉼표로 입력해 주세요" };
+  }
+  if (digits.length > maximumBudgetDigits) {
+    return { amount: null, error: `금액은 ${maximumBudgetDigits}자리까지 입력해 주세요` };
+  }
+  if (!isValidBudget(digits)) {
+    return { amount: null, error: `${minimumBudget}만 원 이상으로 입력해 주세요` };
+  }
+  return { amount: String(Number(digits)) };
+}
+
+export function formatBudgetAmount(amount: string) {
+  return isValidBudget(amount) ? Number(amount).toLocaleString("ko-KR") : amount;
+}
+
+export function increaseBudgetInput(value: string, increment: number) {
+  const digits = value === "" ? "0" : budgetInputDigits(value);
+  if (digits === null || digits.length > maximumBudgetDigits) return value;
+  return formatBudgetAmount(String(Number(digits) + increment));
+}
+
 export function hasTimingAnswers(answers: WeddingAnswers) {
   let validTiming = answers.timing === "unknown";
   if (answers.timing === "date") {
@@ -94,12 +133,7 @@ export function hasTimingAnswers(answers: WeddingAnswers) {
       Number(answers.year) >= 2026 &&
       Number(answers.year) <= 2100 &&
       /^(?:0?[1-9]|1[0-2])$/.test(answers.month);
-  const validBudget =
-    answers.budgetUnknown ||
-    (/^\d+$/.test(answers.budget) &&
-      Number(answers.budget) > 0 &&
-      Number.isSafeInteger(Number(answers.budget)));
-  return validTiming && validBudget;
+  return validTiming && (answers.budgetUnknown || isValidBudget(answers.budget));
 }
 
 export function timingLabel(answers: WeddingAnswers) {
@@ -116,7 +150,7 @@ export function timingLabel(answers: WeddingAnswers) {
 export function budgetLabel(answers: WeddingAnswers) {
   return answers.budgetUnknown || !answers.budget
     ? "예산 미정"
-    : `${Number(answers.budget).toLocaleString("ko-KR")}만 원`;
+    : `${formatBudgetAmount(answers.budget)}만 원`;
 }
 
 export function conditionLabel(answers: WeddingAnswers) {
@@ -151,7 +185,7 @@ export function sanitizeAnswers(value: unknown): WeddingAnswers {
     date: string("date"),
     year: string("year"),
     month: string("month"),
-    budget: string("budget").replace(/\D/g, "").slice(0, 9),
+    budget: typeof raw.budget === "string" ? (parseBudgetInput(raw.budget).amount ?? "") : "",
     budgetUnknown: raw.budgetUnknown !== false,
     moods: moods.includes("상관없어요") ? ["상관없어요"] : moods,
   };

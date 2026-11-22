@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import {
   initialAnswers,
+  isValidBudget,
   isTier,
   sanitizeAnswers,
   type EstimateTier,
@@ -21,7 +22,18 @@ export const useFirstVisitStore = create<FirstVisitState>()(
     (set) => ({
       answers: initialAnswers,
       tier: "standard",
-      updateAnswers: (patch) => set((state) => ({ answers: { ...state.answers, ...patch } })),
+      updateAnswers: (patch) =>
+        set((state) => {
+          const answers = { ...state.answers, ...patch };
+          if (
+            (patch.budget !== undefined || patch.budgetUnknown !== undefined) &&
+            (answers.budget !== "" || !answers.budgetUnknown) &&
+            !isValidBudget(answers.budget)
+          ) {
+            return state;
+          }
+          return { answers };
+        }),
       setTier: (tier) => set({ tier }),
     }),
     {

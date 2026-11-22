@@ -211,6 +211,14 @@
   min-height: 62px;
   padding-inline: 22px;
 }
+.budgetInput > div > div:has(input[aria-invalid="true"]) {
+  border-color: var(--palette-status-destructive);
+  background: var(--surface);
+}
+.budgetInput [role="alert"] {
+  padding-left: 22px;
+  background: url("/firstVisit/budget-validation-error.svg") left center / 16px no-repeat;
+}
 .question .budgetHint {
   margin-top: 6px;
   color: var(--brand700);

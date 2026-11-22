@@ -1,16 +1,32 @@
-import { Select, RadioCardGroup, AmountField, TextField } from "@/src/components/common";
-import { budgetLabel, type WeddingAnswers } from "../model";
+import { RadioCardGroup } from "@/src/components/common";
+import {
+  formatBudgetAmount,
+  increaseBudgetInput,
+  parseBudgetInput,
+  type WeddingAnswers,
+} from "../model";
+import {
+  BudgetAmountField,
+  WeddingTimingFields,
+  type ConditionFieldProps,
+} from "./conditionFields";
 import { QuestionField } from "./questionLayout";
 import styles from "./question.module.css";
+
+type BudgetDraft = Pick<WeddingAnswers, "budget" | "budgetUnknown">;
 
 export function WeddingDateBudgetStep({
   answers,
   updateAnswers,
-}: {
-  answers: WeddingAnswers;
-  updateAnswers: (patch: Partial<WeddingAnswers>) => void;
+  budgetDraft,
+  setBudgetDraft,
+}: ConditionFieldProps & {
+  budgetDraft: BudgetDraft;
+  setBudgetDraft: (draft: BudgetDraft) => void;
 }) {
-  const currentYear = new Date().getFullYear();
+  const { budget, budgetUnknown } = budgetDraft;
+  const amount = parseBudgetInput(budget).amount;
+  const editBudget = (budget: string) => setBudgetDraft({ budget, budgetUnknown: false });
   const setTiming = (timing: WeddingAnswers["timing"]) => updateAnswers({ timing });
   return (
     <>
@@ -27,14 +43,7 @@ export function WeddingDateBudgetStep({
             onChange={() => setTiming("date")}
           />
           {answers.timing === "date" && (
-            <TextField
-              aria-label="결혼 예정일"
-              type="date"
-              value={answers.date}
-              onInput={(event) => updateAnswers({ date: event.currentTarget.value })}
-              onChange={(event) => updateAnswers({ date: event.target.value })}
-              required
-            />
+            <WeddingTimingFields answers={answers} updateAnswers={updateAnswers} />
           )}
           <RadioCardGroup
             name="timing"
@@ -43,30 +52,7 @@ export function WeddingDateBudgetStep({
             onChange={() => setTiming("month")}
           />
           {answers.timing === "month" && (
-            <div className={styles.monthFields}>
-              <Select
-                aria-label="결혼 예정 연도"
-                placeholder="연도"
-                value={answers.year}
-                options={Array.from({ length: 7 }, (_, index) => ({
-                  label: `${currentYear + index}년`,
-                  value: String(currentYear + index),
-                }))}
-                onChange={(event) => updateAnswers({ year: event.target.value })}
-                required
-              />
-              <Select
-                aria-label="결혼 예정 월"
-                placeholder="월"
-                value={answers.month}
-                options={Array.from({ length: 12 }, (_, index) => ({
-                  label: `${index + 1}월`,
-                  value: String(index + 1),
-                }))}
-                onChange={(event) => updateAnswers({ month: event.target.value })}
-                required
-              />
-            </div>
+            <WeddingTimingFields answers={answers} updateAnswers={updateAnswers} />
           )}
           <RadioCardGroup
             name="timing"
@@ -82,49 +68,28 @@ export function WeddingDateBudgetStep({
         description="예식장과 스드메에 쓸 예산이에요. 대략적인 금액도 괜찮아요."
       >
         <div className={styles.budgetInput}>
-          <AmountField
-            aria-label="결혼 예산"
-            value={
-              !answers.budgetUnknown && answers.budget
-                ? Number(answers.budget).toLocaleString("ko-KR")
-                : ""
-            }
-            placeholder="금액을 입력해 주세요"
-            onChange={(event) =>
-              updateAnswers({
-                budget: event.target.value.replace(/\D/g, "").slice(0, 9),
-                budgetUnknown: false,
-              })
-            }
-          />
+          <BudgetAmountField value={budget} onChange={editBudget} />
         </div>
-        {answers.budget && !answers.budgetUnknown && (
-          <p className={styles.budgetHint}>{budgetLabel(answers)}</p>
-        )}
+        {amount && <p className={styles.budgetHint}>{formatBudgetAmount(amount)}만 원</p>}
         <div className={styles.budgetShortcuts}>
-          {[500, 1000, 3000].map((amount) => (
+          {[500, 1000, 3000].map((increment) => (
             <button
               type="button"
-              key={amount}
-              onClick={() =>
-                updateAnswers({
-                  budget: String(Number(answers.budgetUnknown ? 0 : answers.budget || 0) + amount),
-                  budgetUnknown: false,
-                })
-              }
+              key={increment}
+              onClick={() => editBudget(increaseBudgetInput(budget, increment))}
             >
-              +{amount.toLocaleString("ko-KR")}만
+              +{increment.toLocaleString("ko-KR")}만
             </button>
           ))}
-          <button type="button" onClick={() => updateAnswers({ budget: "", budgetUnknown: false })}>
+          <button type="button" onClick={() => editBudget("")}>
             지우기
           </button>
         </div>
         <RadioCardGroup
           name="budgetUnknown"
           options={[{ label: "아직 없어요", value: "unknown" }]}
-          value={answers.budgetUnknown ? "unknown" : ""}
-          onChange={() => updateAnswers({ budgetUnknown: true })}
+          value={budgetUnknown ? "unknown" : ""}
+          onChange={() => setBudgetDraft({ budget: "", budgetUnknown: true })}
         />
       </QuestionField>
     </>

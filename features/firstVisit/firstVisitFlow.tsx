@@ -37,6 +37,7 @@ export function FirstVisitFlow() {
         <EstimateLoading restoring />
       ) : question ? (
         <QuestionScreen
+          key={screen}
           {...actions}
           step={screen}
           answers={answers}
