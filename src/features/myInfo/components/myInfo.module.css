@@ -1,0 +1,100 @@
+/* 피그마 677:16550 내정보 3 */
+
+.header {
+  display: grid;
+  gap: 8px;
+}
+
+.cards {
+  display: grid;
+  max-width: 584px;
+  gap: 16px;
+  margin-top: 32px;
+}
+
+.list {
+  margin-top: 16px;
+}
+
+.provider {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.provider__mark {
+  display: grid;
+  width: 18px;
+  height: 18px;
+  place-items: center;
+  border-radius: 5px;
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.provider__mark--kakao {
+  background: var(--kakao);
+  color: var(--kakaoText);
+}
+
+.provider__mark--google {
+  border: 1px solid var(--line2);
+  background: white;
+  color: var(--ink700);
+}
+
+.partner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.partner__copy {
+  display: grid;
+  flex: 1;
+}
+
+.partner__copy strong {
+  color: var(--text);
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.partner__copy span {
+  color: var(--text2);
+  font-size: 13px;
+}
+
+.partner__empty {
+  display: grid;
+  width: 36px;
+  height: 36px;
+  box-sizing: border-box;
+  place-items: center;
+  border: 1px dashed var(--ink300);
+  border-radius: 50%;
+  color: var(--ink400);
+}
+
+.plan {
+  margin: 12px 0 0;
+  color: var(--text2);
+  font-size: 16px;
+  line-height: 25.6px;
+}
+
+.plan__button {
+  margin-top: 16px;
+}
+
+.footer {
+  display: flex;
+  max-width: 584px;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 20px;
+  color: var(--text2);
+  font-size: 12px;
+  padding: 0 4px;
+}

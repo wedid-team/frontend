@@ -1,0 +1,32 @@
+/* 바깥: 화면 전체 배경 */
+.page {
+  display: flex;
+  flex: 1;
+  justify-content: center;
+  background: var(--surfaceSunken);
+}
+
+/* 안쪽: 피그마 1440 폭(사이드바 240 + 본문 1200)을 한 덩어리로 가운데 정렬 */
+.shell {
+  display: grid;
+  width: 100%;
+  max-width: 1440px;
+  grid-template-columns: 240px minmax(0, 1fr);
+  min-height: 100%;
+  background: linear-gradient(
+    to right,
+    var(--surface) 0 239px,
+    var(--line) 239px 240px,
+    var(--surfaceSunken) 240px
+  );
+  box-shadow: -1px 0 0 var(--line);
+}
+
+.main {
+  min-width: 0;
+  padding: 40px 46px 96px;
+}
+
+.main__inner {
+  max-width: 1108px;
+}
