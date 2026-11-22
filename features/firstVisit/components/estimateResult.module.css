@@ -253,6 +253,11 @@
   color: var(--text2);
   font-size: 14px;
 }
+.costSource {
+  color: var(--text2);
+  font-size: 12px;
+  line-height: 20px;
+}
 .nextStep {
   display: flex;
   align-items: center;

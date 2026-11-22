@@ -35,8 +35,7 @@ export function Brand({ onClick, large = false }: { onClick: () => void; large?:
 export function MockNotice() {
   return (
     <p className={styles.mockNotice}>
-      현재 금액·업체·일정은 Figma 기반 Mock 예시입니다. 입력 조건별 실제 견적을 계산하거나 조회한
-      결과가 아닙니다.
+      화면에 표시된 비용·업체·일정은 미리보기용 예시예요.
     </p>
   );
 }

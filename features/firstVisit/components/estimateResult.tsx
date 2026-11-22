@@ -58,9 +58,9 @@ export function EstimateResult({
         <header className={styles.resultIntro}>
           <p className="tEyebrow">비용 계산 결과</p>
           <h1 className="tH1">우리 결혼 예상 비용</h1>
-          <p>답해 주신 조건을 확인하고 예식장과 스드메 비용 범위를 미리보세요.</p>
+          <p>답해 주신 조건으로 예식장과 스드메 비용을 범위로 계산했어요.</p>
           <div className={styles.conditions}>
-            <span>{conditionLabel(answers)}</span>
+            <span>{conditionLabel(answers)} · 토요일 낮 예식 기준</span>
             {!sharedEstimate && (
               <button className={styles.textButton} onClick={() => setEditing(true)}>
                 <FlowIcon icon={assets.icons.settings} />
@@ -75,7 +75,7 @@ export function EstimateResult({
               <div>
                 <h2 className="tH3">예식장</h2>
                 <p>
-                  Figma 예시: 서울(강남 외) 예식장 57곳의 공개 가격 기준 (가운데 50%)
+                  서울(강남 외) 예식장 57곳의 공개 가격 기준 (가운데 50%)
                   {answers.guests === unknownGuestCount &&
                     ` · 하객 수 미정 · ${assumedGuestRange} 기준`}
                 </p>
@@ -86,7 +86,7 @@ export function EstimateResult({
               <div className={styles.sectionHeading}>
                 <div>
                   <h2 className="tH3">스드메</h2>
-                  <p>예산대를 바꾸면 예상 비용 예시가 바로 바뀌어요 · 기본값: 스탠다드</p>
+                  <p>예산대를 바꾸면 예상 비용이 바로 바뀌어요 · 기본값: 이 지역 중간 수준 구간</p>
                 </div>
                 <strong>{result.stylingRange}</strong>
               </div>
@@ -106,7 +106,7 @@ export function EstimateResult({
                   <h3>
                     {tier === "standard" ? "이 예산대의 스드메 조합" : "스탠다드 스드메 조합 예시"}
                   </h3>
-                  <small>스탠다드 예산대 · 서울 공개 가격 기준의 디자인 예시</small>
+                  <small>스탠다드 예산대 · 서울 공개 가격 기준</small>
                 </div>
                 {!sharedEstimate && (
                   <button className={styles.textButton} disabled title="업체 정보는 준비 중이에요">
@@ -120,6 +120,10 @@ export function EstimateResult({
               <h2 className="tH4">별도로 생길 수 있는 비용</h2>
               <p>원본 사진, 드레스 업그레이드, 헬퍼비 등 (합계 미포함)</p>
             </section>
+            <p className={styles.costSource}>
+              출처: 업체 공개 가격 (참가격 · 업체 홈페이지, 2026.11 기준) · 실제 견적은 날짜, 옵션,
+              업체에 따라 달라질 수 있어요.
+            </p>
             <MockNotice />
           </div>
           <EstimateSummary
@@ -171,9 +175,13 @@ function EstimateBreakdown({ result }: { result: ReturnType<typeof getMockEstima
         산출 근거 보기 <FlowIcon icon={assets.icons.expand} />
       </summary>
       <div className={styles.breakdownPanel}>
-        <strong>“{result.label}” 예산대 가격 참고 자료</strong>
+        <strong>
+          {breakdown
+            ? `"${result.label}" 예산대 금액은 이렇게 계산했어요`
+            : `"${result.label}" 예산대 가격 범위`}
+        </strong>
         <dl>
-          {breakdown && (
+          {breakdown ? (
             <>
               {breakdown.items.map((item) => (
                 <div key={item.label}>
@@ -182,25 +190,26 @@ function EstimateBreakdown({ result }: { result: ReturnType<typeof getMockEstima
                 </div>
               ))}
               <div className={styles.breakdownTotal}>
-                <dt>항목별 단품가 합산</dt>
+                <dt>스드메 총액 (합산)</dt>
                 <dd>{formatMockRange(breakdown.total)}</dd>
               </div>
             </>
+          ) : (
+            <div className={styles.breakdownTotal}>
+              <dt>선택한 예산대의 스드메 예시 범위</dt>
+              <dd>{result.stylingRange}</dd>
+            </div>
           )}
-          <div className={styles.breakdownTotal}>
-            <dt>선택한 예산대의 스드메 예시 범위</dt>
-            <dd>{result.stylingRange}</dd>
-          </div>
         </dl>
         {breakdown ? (
           <p>
-            Figma 예시 출처: 참가격 공개 단품가 (결혼준비대행업체) · 서울 공개 업체 27곳 · 2026.11
-            기준. 같은 업체도 대행사에 따라 공개 가격과 포함 구성이 다를 수 있어요.
+            출처: 참가격 공개 단품가 (결혼준비대행업체) · 서울 공개 업체 27곳 · 기준일 2026.11
+            <br />
+            같은 업체도 대행사에 따라 공개 가격과 포함 구성이 다를 수 있어요.
           </p>
         ) : (
           <p>
-            이 예산대는 Figma의 총액 예시만 제공돼요. 항목별 단품가는 스탠다드 예산대에서 볼 수
-            있어요.
+            이 예산대는 총액 예시를 보여드려요. 항목별 단품가는 스탠다드 예산대에서 볼 수 있어요.
           </p>
         )}
       </div>
