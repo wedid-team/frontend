@@ -186,6 +186,54 @@
   border-color: var(--brand600);
   color: var(--brand800);
 }
+.timingChoices {
+  display: grid;
+  gap: 10px;
+}
+.timingChoices fieldset > div {
+  gap: 10px;
+}
+.monthFields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.budgetInput > div > div {
+  border-color: transparent;
+  border-radius: 16px;
+  min-height: 64px;
+  background: var(--ink50);
+}
+.budgetInput input {
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  min-height: 62px;
+  padding-inline: 22px;
+}
+.question .budgetHint {
+  margin-top: 6px;
+  color: var(--brand700);
+  font-size: 14px;
+  font-weight: 600;
+}
+.budgetShortcuts {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 12px 0 24px;
+}
+.budgetShortcuts button {
+  padding: 3px 10px;
+  border: 1px solid var(--line2);
+  border-radius: 999px;
+  background: var(--surface);
+  font-size: 13px;
+}
+.budgetShortcuts button:last-child {
+  margin-left: 4px;
+  border: 0;
+}
 .questionFooter {
   position: sticky;
   bottom: 0;
@@ -282,6 +330,9 @@
   }
   .questionFooter {
     padding-inline: 20px;
+  }
+  .budgetShortcuts {
+    flex-wrap: wrap;
   }
 }
 
