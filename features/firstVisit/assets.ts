@@ -1,6 +1,10 @@
 /** public의 기존 파일을 의미 있는 이름으로 참조한다. 원본 파일은 변경하지 않는다. */
 export type IconAsset = { src: string; width: number; height: number };
 
+function introIcon(name: string, size: number): IconAsset {
+  return { src: `/firstVisit/intro-${name}.svg`, width: size, height: size };
+}
+
 export const assets = {
   images: {
     hero: "/firstVisit/wedding-couple-hero.jpg",
@@ -12,6 +16,20 @@ export const assets = {
     checkmark: "/firstVisit/checkbox-checkmark.png",
     couple: "/firstVisit/wedding-couple-illustration.png",
     avatar: "/firstVisit/member-avatar.png",
+  },
+  introIcons: {
+    badgeChevron: introIcon("badge-chevron", 16),
+    home: introIcon("dashboard-home", 16),
+    cost: introIcon("dashboard-cost", 16),
+    roadmap: introIcon("dashboard-roadmap", 16),
+    venue: introIcon("dashboard-venue", 16),
+    members: introIcon("dashboard-members", 16),
+    data: introIcon("data-source", 18),
+    summary: introIcon("summary-preview", 18),
+    partner: introIcon("partner-preview", 18),
+    featureCheck: introIcon("feature-check", 18),
+    calendar: introIcon("calendar-check", 16),
+    chevron: introIcon("roadmap-chevron", 14),
   },
   icons: {
     whiteArrow: {

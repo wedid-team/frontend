@@ -1,4 +1,10 @@
 export type FlowScreen = "home" | "region" | "timing" | "mood" | "loading" | "result" | "roadmap";
+export const weddingPlanPath = "/wedding-plan";
+
+export function firstVisitHref(screen: FlowScreen) {
+  return screen === "home" ? "/" : `/?screen=${screen}`;
+}
+
 export type EstimateTier = "basic" | "standard" | "premium" | "luxury";
 export type WeddingAnswers = {
   region: string;

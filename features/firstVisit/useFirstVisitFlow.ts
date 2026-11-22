@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
+  firstVisitHref,
   hasRegionAnswers,
   hasTimingAnswers,
   isTier,
@@ -30,7 +31,7 @@ export function useFirstVisitFlow() {
   const navigate = useCallback(
     (next: FlowScreen) => {
       setLoginOpen(false);
-      router.push(next === "home" ? "/" : `/?screen=${next}`);
+      router.push(firstVisitHref(next));
     },
     [router],
   );
