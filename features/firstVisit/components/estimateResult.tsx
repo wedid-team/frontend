@@ -1,4 +1,6 @@
+import { useState } from "react";
 import { EstimateSummary } from "./estimateSummary";
+import { EditConditionsDrawer } from "./editConditionsDrawer";
 import { Button, TierCardGroup } from "@/src/components/common";
 import { assets } from "../assets";
 import {
@@ -31,6 +33,7 @@ export function EstimateResult({
   updateAnswers,
   sharedEstimate,
 }: EstimateResultProps) {
+  const [editing, setEditing] = useState(false);
   const result = getMockEstimate(answers, tier);
   const sharedDate = sharedEstimate?.sharedAt?.toLocaleDateString("ko-KR", {
     month: "long",
@@ -59,7 +62,7 @@ export function EstimateResult({
           <div className={styles.conditions}>
             <span>{conditionLabel(answers)}</span>
             {!sharedEstimate && (
-              <button className={styles.textButton} onClick={() => navigate("region")}>
+              <button className={styles.textButton} onClick={() => setEditing(true)}>
                 <FlowIcon icon={assets.icons.settings} />
                 조건 수정
               </button>
@@ -145,6 +148,17 @@ export function EstimateResult({
           </footer>
         )}
       </div>
+      {editing && !sharedEstimate && (
+        <EditConditionsDrawer
+          answers={answers}
+          tier={tier}
+          onApply={(nextAnswers) => {
+            updateAnswers(nextAnswers);
+            setEditing(false);
+          }}
+          onClose={() => setEditing(false)}
+        />
+      )}
     </main>
   );
 }
