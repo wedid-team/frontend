@@ -156,17 +156,18 @@ export function budgetLabel(answers: WeddingAnswers) {
     : `${formatBudgetAmount(answers.budget)}만 원`;
 }
 
-export function conditionLabel(answers: WeddingAnswers) {
-  return [
-    answers.region || "지역 미정",
+export function conditionLabel(answers: WeddingAnswers, { timingFirst = false } = {}) {
+  const region = answers.region || "지역 미정";
+  const guests =
     answers.guests === unknownGuestCount
       ? `하객 수 미정 (${assumedGuestRange} 기준)`
       : answers.guests
         ? `하객 ${answers.guests}`
-        : "하객 미정",
-    timingLabel(answers),
-    answers.moods.length ? answers.moods.join(" · ") : "분위기 상관없음",
-  ].join(" · ");
+        : "하객 미정";
+  const timing = timingLabel(answers);
+  const moods = answers.moods.length ? answers.moods.join(" · ") : "분위기 상관없음";
+  const conditions = timingFirst ? [timing, region, guests, moods] : [region, guests, timing, moods];
+  return conditions.join(" · ");
 }
 
 /** 저장소/공유 URL은 신뢰하지 않고 허용된 값만 복원한다. */

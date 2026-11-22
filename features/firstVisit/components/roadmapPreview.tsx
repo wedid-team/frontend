@@ -51,7 +51,9 @@ export function RoadmapPreview({
           </h1>
           <p>결혼식을 위한 일정을 확인하고, 차근차근 준비해보세요.</p>
           <div className={styles.conditions}>
-            <span>예식 예정: {conditionLabel(answers)}</span>
+            <span>
+              예식 예정: {conditionLabel(answers, { timingFirst: true })} · 토요일 낮 예식 기준
+            </span>
             <button className={styles.textButton} onClick={() => setEditing(true)}>
               <FlowIcon icon={assets.icons.settings} />
               조건 수정
@@ -145,7 +147,7 @@ export function RoadmapPreview({
                   <Image src={assets.images.avatar} alt="" width={36} height={36} unoptimized />
                   <div>
                     <strong>{name}</strong>
-                    <small>{index === 0 ? "로그인하면 저장돼요" : "구글로 합류 · 예시"}</small>
+                    <small>{index === 0 ? "로그인하면 저장돼요" : "구글로 합류"}</small>
                   </div>
                   <span>{index === 0 ? "나" : "짝꿍"}</span>
                 </div>

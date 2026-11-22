@@ -35,7 +35,7 @@ export function RoadmapSidebar({
         <div>
           <strong>우리의 웨딩</strong>
           <small>
-            {timingLabel(answers)} · {answers.region || "지역 미정"}
+            {timingLabel(answers)} · {answers.region.replace(/^서울 /, "") || "지역 미정"}
           </small>
         </div>
       </div>
@@ -85,14 +85,14 @@ export function RoadmapSidebar({
         <strong>{dDay}</strong>
         <div
           role="progressbar"
-          aria-label="Mock 준비 진행률"
+          aria-label="준비 진행률 예시"
           aria-valuemin={0}
           aria-valuemax={100}
           aria-valuenow={progress}
         >
           <i style={{ width: `${progress}%` }} />
         </div>
-        <small>전체 진행률 {progress}% · 예시</small>
+        <small>전체 진행률 {progress}%</small>
       </div>
     </aside>
   );
