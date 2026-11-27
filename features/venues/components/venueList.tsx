@@ -1,6 +1,7 @@
 "use client";
 
-import { useReturnPlan, regions } from "../../returning/returnPlan";
+import { guestRanges, regionsForSavedPlan, venueSearchRegion } from "../../mocks/weddingOptions";
+import { estimateVenue, useReturnPlan } from "../../returning/returnPlan";
 import Link from "next/link";
 import { useState } from "react";
 import { Select } from "../../../src/components/common";
@@ -21,15 +22,14 @@ import {
   estimateForGuests,
   moods,
   money,
-  plan,
   priceDate,
   range,
+  searchVenues,
   venues,
   type Venue,
 } from "../venueData";
 import { useDiscovery } from "../useDiscovery";
 
-const guestRanges = ["50~100", "100~150", "150~200", "200~250", "250~300", "300~400"];
 const types = ["전체", "채플", "컨벤션", "호텔", "하우스", "야외"];
 const options = (values: string[], label: (value: string) => string = (value) => value) =>
   values.map((value) => ({ value, label: label(value) }));
@@ -39,15 +39,17 @@ function VenueCard({
   grid,
   guests,
   guestRange,
+  budget,
 }: {
   venue: Venue;
   grid: boolean;
   guests: string;
   guestRange: [number, number];
+  budget: [number, number];
 }) {
   const price = venue.price;
   const estimate = price && estimateForGuests(price, guestRange);
-  const fits = estimate && estimate[1] <= plan.venueBudget[1];
+  const fits = estimate && estimate[1] <= budget[1];
   return (
     <article className={s.vendorCard + (grid ? " " + s.gridCard : "")}>
       <Link
@@ -115,9 +117,9 @@ function VenueCard({
           <>
             <strong className={s.small}>ⓘ 업체가 가격을 공개하지 않았어요</strong>
             <hr />
-            <span>이 지역 시세</span>
-            <strong>{range(1550, 1900)}</strong>
-            <p>같은 지역 · {guests}명 기준 예식장 예상 비용의 가운데 50%</p>
+            <span>예식장 예상 비용 예시</span>
+            <strong>{range(...budget)}</strong>
+            <p>하객 {guests}명 기준 예시 금액</p>
           </>
         )}
       </div>
@@ -144,14 +146,17 @@ function VenueResults() {
   const favorites = useDiscovery((state) => state.favorites);
   const comparedCount = useDiscovery((state) => state.compared.length);
   const guestRange = guests.split("~").map(Number) as [number, number];
-  const regionVenues = venues.filter((venue) => venue.region === region);
+  const budget = estimateVenue({ ...conditions, guests });
+  const catalog = favoriteOnly ? venues : searchVenues;
+  const regionVenues = catalog.filter((venue) =>
+    favoriteOnly ? favorites.includes(venue.id) : venue.region === region,
+  );
   const matches = regionVenues.filter(
     (venue) =>
       (!venue.capacity ||
         (venue.capacity[0] <= guestRange[1] && venue.capacity[1] >= guestRange[0])) &&
       (type === "전체" || venue.type === type) &&
-      (!publicOnly || venue.price) &&
-      (!favoriteOnly || favorites.includes(venue.id)),
+      (!publicOnly || venue.price),
   );
   const complete = matches
     .filter((venue) => venue.price && venue.capacity)
@@ -169,13 +174,14 @@ function VenueResults() {
         step="2단계 · 예식장 계약"
         title="예식장 후보"
         description="조건에 맞는 예식장을 공개 가격으로 비교하고, 최대 3곳까지 담아 비교할 수 있어요."
-        budget={range(1550, 1900)}
+        budget={range(...estimateVenue(conditions))}
       />
       <section className={s.filters} aria-label="예식장 검색 조건">
         <div className={s.filterRow}>
           <Select
             aria-label="지역"
-            options={options(regions)}
+            options={options(regionsForSavedPlan(conditions.region))}
+            disabled={favoriteOnly}
             value={region}
             onChange={(event) => setRegion(event.target.value)}
           />
@@ -264,15 +270,20 @@ function VenueResults() {
       {!regionVenues.length ? (
         <StateCard
           icon="pin"
-          title="이 지역 예식장 정보는 아직 모으는 중이에요"
-          text={region + " 예식장 시세는 공공 통계 기준으로 " + range(1550, 1900) + "이에요."}
+          title={
+            favoriteOnly ? "저장한 예식장이 없어요" : "이 지역 예식장 정보는 아직 모으는 중이에요"
+          }
+          text={
+            favoriteOnly
+              ? "관심 있는 예식장을 저장해 보세요."
+              : "현재 서울 강남권의 예식장 후보를 확인할 수 있어요."
+          }
         >
           <button
             className={s.button}
-            onClick={() => setRegion(conditions.region)}
-            disabled={region === conditions.region}
+            onClick={() => (favoriteOnly ? setFavoriteOnly(false) : setRegion(venueSearchRegion))}
           >
-            내 계획 지역으로
+            {favoriteOnly ? "후보 목록 보기" : "서울 강남권 후보 보기"}
           </button>
         </StateCard>
       ) : !matches.length ? (
@@ -291,6 +302,7 @@ function VenueResults() {
                 grid={grid}
                 guests={guests}
                 guestRange={guestRange}
+                budget={budget}
               />
             ))}
           </div>
@@ -308,6 +320,7 @@ function VenueResults() {
                     grid={grid}
                     guests={guests}
                     guestRange={guestRange}
+                    budget={budget}
                   />
                 ))}
               </div>

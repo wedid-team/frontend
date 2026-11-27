@@ -12,7 +12,8 @@ import {
   VenuePhoto,
   discoveryStyles as s,
 } from "../shared";
-import { plan, range, venues, type Venue } from "../venueData";
+import { useReturnPlan, venueBudgetFor } from "../../returning/returnPlan";
+import { venues, type Venue } from "../venueData";
 import { compareLimit, useDiscovery } from "../useDiscovery";
 
 const rows: { label: string; value: (venue: Venue) => string; highlight?: boolean }[] = [
@@ -26,6 +27,7 @@ const rows: { label: string; value: (venue: Venue) => string; highlight?: boolea
 ];
 
 function Comparison() {
+  const conditions = useReturnPlan((state) => state.conditions);
   const compared = useDiscovery((state) => state.compared);
   const toggle = useDiscovery((state) => state.toggleCompare);
   const clear = useDiscovery((state) => state.clearCompare);
@@ -59,7 +61,7 @@ function Comparison() {
         step="2단계 · 예식장 계약"
         title="업체 비교"
         description="최대 3개 업체까지 비교할 수 있어요. 값이 다른 주요 항목은 노란색으로 표시돼요."
-        budget={range(plan.venueBudget[0], plan.venueBudget[1])}
+        budget={venueBudgetFor(conditions)}
       />
       <div className={s.spread + " " + s.compareTitle}>
         <h2>비교표</h2>
