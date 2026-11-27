@@ -3,8 +3,17 @@
 import type { ButtonHTMLAttributes } from "react";
 import styles from "./common.module.css";
 
-export type ButtonVariant = "primary" | "secondary" | "ghost";
-export type ButtonSize = "sm" | "md" | "lg";
+export type ButtonVariant =
+  | "primary"
+  | "outline"
+  | "ghost"
+  | "dark"
+  | "soft"
+  | "kakao"
+  /** @deprecated Use `outline` instead. */
+  | "secondary";
+
+export type ButtonSize = "xl" | "lg" | "md" | "sm" | "xs";
 
 type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   variant?: ButtonVariant;
@@ -19,9 +28,10 @@ export function Button({
   variant = "primary",
   ...props
 }: ButtonProps) {
+  const visualVariant = variant === "secondary" ? "outline" : variant;
   const classes = [
     styles.button,
-    styles[`button--${variant}`],
+    styles[`button--${visualVariant}`],
     styles[`button--${size}`],
     className,
   ]

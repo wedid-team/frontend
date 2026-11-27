@@ -1,0 +1,178 @@
+/* 피그마 677:15976 짝꿍 초대 */
+
+/* ── 초대 팝업 (초대 01) ── */
+.modalTitle {
+  margin-top: 16px;
+}
+
+.linkBox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 24px;
+  border-radius: 14px;
+  background: var(--ink50);
+  padding: 6px 6px 6px 14px;
+}
+
+.linkBox__icon {
+  color: var(--ink400);
+}
+
+.linkBox__url {
+  flex: 1;
+  overflow: hidden;
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 500;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.kakaoButton {
+  margin-top: 24px;
+}
+
+.modalFootnote {
+  margin: 14px 0 0;
+  color: var(--text2);
+  font-size: 12px;
+  text-align: center;
+}
+
+.modalFootnote__link {
+  color: var(--ink700);
+  font-weight: 650;
+}
+
+/* ── 초대 받은 화면 ── */
+.page {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  background: var(--canvas);
+}
+
+.main {
+  flex: 1;
+  padding: 72px 24px 96px;
+}
+
+.join {
+  max-width: 560px;
+  margin: 0 auto;
+}
+
+.join__title {
+  margin: 24px 0 0;
+  color: var(--text);
+  font-size: 40px;
+  font-weight: 700;
+  line-height: 52px;
+  letter-spacing: -1.2px;
+}
+
+.join__lead {
+  margin: 14px 0 0;
+  color: var(--text2);
+  font-size: 17px;
+  line-height: 27px;
+}
+
+.join__warning {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 24px 0 0;
+  border-radius: 12px;
+  background: var(--dangerBg);
+  color: var(--dangerText);
+  font-size: 13px;
+  line-height: 20px;
+  padding: 12px 14px;
+}
+
+.summary {
+  margin-top: 16px;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background: var(--surface);
+  box-shadow: 0 12px 32px rgba(17, 26, 23, 0.06);
+  padding: 24px;
+}
+
+.summary__eyebrow {
+  margin: 0;
+  color: var(--text2);
+  font-size: 12px;
+}
+
+.summary__title {
+  margin: 4px 0 0;
+  color: var(--text);
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 28px;
+}
+
+.join__actions {
+  display: grid;
+  gap: 8px;
+  margin-top: 28px;
+}
+
+.legal {
+  margin: 14px 0 0;
+  color: var(--text2);
+  font-size: 12px;
+  line-height: 18px;
+  text-align: center;
+}
+
+.loginButtons {
+  display: grid;
+  gap: 8px;
+  margin-top: 24px;
+}
+
+/* ── 만료 · 이미 연결 (U-04) ── */
+.state {
+  display: grid;
+  max-width: 560px;
+  box-sizing: border-box;
+  justify-items: center;
+  margin: 40px auto 0;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background: var(--surface);
+  padding: 40px 24px;
+  text-align: center;
+}
+
+.state__title {
+  margin: 20px 0 0;
+  color: var(--text);
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 28px;
+}
+
+.state__desc {
+  margin: 8px 0 24px;
+  color: var(--text2);
+  font-size: 14px;
+  line-height: 22px;
+}
+
+.footer {
+  border-top: 1px solid var(--line);
+  color: var(--text2);
+  font-size: 12px;
+  line-height: 20px;
+  padding: 28px 24px;
+  text-align: center;
+}
+
+.footer p {
+  margin: 0;
+}

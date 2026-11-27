@@ -1,0 +1,579 @@
+/* B파트 공용 UI. 값은 피그마 "02 로드맵 / 단계 진행" · "05 짝꿍 초대 / 내 정보" 기준. */
+
+/* ── 카드 ── */
+.card {
+  box-sizing: border-box;
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background: var(--surface);
+  padding: 32px;
+}
+
+.card--compact {
+  padding: 24px;
+}
+
+.card--side {
+  border-radius: 18px;
+  padding: 20px;
+}
+
+.cardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.cardTitle {
+  margin: 0;
+  color: var(--text);
+  font-size: 20px;
+  font-weight: 650;
+  line-height: 28px;
+  letter-spacing: -0.4px;
+}
+
+.cardTitle--small {
+  font-size: 17px;
+  line-height: 24.65px;
+  letter-spacing: -0.255px;
+}
+
+.cardMeta {
+  color: var(--text2);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 18.85px;
+}
+
+.divider {
+  height: 1px;
+  margin: 28px 0 0;
+  border: 0;
+  background: var(--line);
+}
+
+/* ── 페이지 머리 ── */
+.eyebrow {
+  margin: 0;
+  color: var(--brand600);
+  font-size: 13px;
+  font-weight: 650;
+  line-height: 18.2px;
+  letter-spacing: 0.26px;
+}
+
+.pageTitleRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.pageTitle {
+  margin: 0;
+  color: var(--text);
+  font-size: 36px;
+  font-weight: 700;
+  line-height: 45px;
+  letter-spacing: -1.08px;
+}
+
+.pageLead {
+  margin: 0;
+  color: var(--text2);
+  font-size: 16px;
+  line-height: 25.6px;
+  letter-spacing: -0.16px;
+}
+
+/* ── 상태 배지 (● 진행중 / ● 완료) ── */
+.statusPill {
+  display: inline-flex;
+  height: 24px;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 6px;
+  border-radius: 999px;
+  padding: 0 10px;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 19.2px;
+  letter-spacing: -0.15px;
+  white-space: nowrap;
+}
+
+.statusPill::before {
+  width: 6px;
+  height: 6px;
+  border-radius: 3px;
+  background: currentColor;
+  content: "";
+}
+
+.statusPill--progress {
+  background: var(--brand50);
+  color: var(--brand600);
+}
+
+.statusPill--complete {
+  background: var(--ink50);
+  color: var(--ink700);
+}
+
+.statusPill--complete::before {
+  background: var(--positive);
+}
+
+.statusPill--overdue {
+  background: var(--warningBg);
+  color: var(--warningText);
+}
+
+.statusPill--onDark {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+/* ── 담당 칩 (나 / 짝꿍 / 함께) ── */
+.assignee {
+  display: inline-flex;
+  min-width: 44px;
+  height: 24px;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  border-radius: 999px;
+  padding: 0 8px;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 19.2px;
+}
+
+.assignee--me {
+  background: var(--brand600);
+  color: white;
+}
+
+.assignee--partner {
+  background: var(--brand100);
+  color: var(--brand700);
+}
+
+.assignee--together {
+  background: var(--ink100);
+  color: var(--ink700);
+}
+
+/* ── 버튼 ──
+ * <button>은 공통 Button(@/src/components/common)을 쓴다.
+ * 아래 .button 계열은 공통 Button이 <Link>를 지원하지 않아 링크 모양 버튼에만 남겨둔 것.
+ */
+.fullWidth {
+  width: 100%;
+}
+
+.dangerButton {
+  background: var(--danger);
+}
+
+.dangerButton:not(:disabled):hover {
+  background: var(--dangerText);
+}
+
+.button {
+  display: inline-flex;
+  box-sizing: border-box;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 650;
+  text-decoration: none;
+  white-space: nowrap;
+  transition:
+    background-color 150ms ease,
+    border-color 150ms ease,
+    opacity 150ms ease;
+}
+
+.button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.button--lg {
+  height: 56px;
+  border-radius: 12px;
+  padding: 0 22px;
+  font-size: 16px;
+  line-height: 25.6px;
+}
+
+.button--md {
+  height: 48px;
+  border-radius: 12px;
+  padding: 0 22px;
+  font-size: 16px;
+  line-height: 25.6px;
+}
+
+.button--sm {
+  height: 40px;
+  border-radius: 12px;
+  padding: 0 16px;
+  font-size: 15px;
+  line-height: 24px;
+}
+
+.button--xs {
+  height: 34px;
+  border-radius: 10px;
+  padding: 0 12px;
+  font-size: 14px;
+  line-height: 22.4px;
+}
+
+.button--primary {
+  background: var(--brand600);
+  box-shadow:
+    0 1px 1px rgba(20, 43, 36, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  color: white;
+}
+
+.button--primary:not(:disabled):hover {
+  background: var(--brand700);
+}
+
+.button--outline {
+  border-color: var(--line2);
+  background: var(--surface);
+  box-shadow: 0 1px 1px rgba(17, 26, 23, 0.04);
+  color: var(--text);
+}
+
+.button--outline:not(:disabled):hover {
+  background: var(--ink50);
+}
+
+.button--onDark {
+  background: white;
+  color: var(--brand900);
+}
+
+.button--plain {
+  background: transparent;
+  color: var(--ink700);
+}
+
+.button--plain:hover {
+  background: var(--ink50);
+}
+
+.button--dark {
+  background: var(--ink900);
+  color: white;
+}
+
+.button--danger {
+  background: var(--danger);
+  color: white;
+}
+
+.button--kakao {
+  background: var(--kakao);
+  color: var(--kakaoText);
+}
+
+.button--full {
+  width: 100%;
+}
+
+.textLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  border: 0;
+  background: none;
+  padding: 0;
+  color: var(--text2);
+  cursor: pointer;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 650;
+  line-height: 22.4px;
+  text-decoration: none;
+}
+
+.textLink--brand {
+  color: var(--brand600);
+  font-size: 15px;
+}
+
+/* ── 정의 목록 (설정한 예산 / 지금까지 쓴 금액 …) ── */
+.definitionList {
+  margin: 8px 0 0;
+}
+
+.definitionList__row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 0;
+}
+
+.definitionList__row + .definitionList__row {
+  border-top: 1px solid var(--line);
+}
+
+.definitionList__term {
+  color: var(--text2);
+  font-size: 14px;
+  line-height: 22.4px;
+}
+
+.definitionList__value {
+  margin: 0;
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 650;
+  line-height: 22.4px;
+  text-align: right;
+}
+
+.definitionList__value--emphasis {
+  color: var(--brand600);
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 27.2px;
+}
+
+/* ── 아이콘 상자 ── */
+.iconTile {
+  display: grid;
+  width: 32px;
+  height: 32px;
+  flex: 0 0 auto;
+  box-sizing: border-box;
+  place-items: center;
+  border: 1px solid var(--brand100);
+  border-radius: 10px;
+  background: var(--brand50);
+  color: var(--brand600);
+}
+
+.iconTile--large {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+}
+
+.iconTile--hero {
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+}
+
+.iconTile--danger {
+  border-color: #f8dede;
+  background: var(--dangerBg);
+  color: var(--danger);
+}
+
+.iconTile--champagne {
+  border-color: transparent;
+  background: var(--champagne);
+  color: var(--ink800);
+}
+
+.iconTile--neutral {
+  border-color: var(--line);
+  background: var(--ink50);
+  color: var(--ink500);
+}
+
+/* ── 아바타 (이미지 에셋 대신 이니셜) ── */
+.avatar {
+  display: grid;
+  width: 36px;
+  height: 36px;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: 50%;
+  background: linear-gradient(160deg, #cfe3dd 0%, #a7c8bc 100%);
+  color: var(--brand800);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.avatar--partner {
+  background: linear-gradient(160deg, #f3ecdd 0%, #edd9b8 100%);
+  color: var(--warningText);
+}
+
+/* ── 다이얼로그 ── */
+.overlay {
+  position: fixed;
+  z-index: 100;
+  display: grid;
+  inset: 0;
+  place-items: center;
+  background: rgba(17, 26, 23, 0.42);
+  padding: 24px;
+}
+
+.dialog {
+  position: relative;
+  box-sizing: border-box;
+  width: 440px;
+  max-width: 100%;
+  max-height: calc(100vh - 48px);
+  overflow-y: auto;
+  border-radius: 24px;
+  background: var(--surface);
+  box-shadow: 0 24px 60px rgba(17, 26, 23, 0.18);
+  padding: 32px;
+}
+
+.dialog:focus {
+  outline: none;
+}
+
+.dialog--narrow {
+  width: 400px;
+  text-align: center;
+}
+
+.dialog--wide {
+  width: 560px;
+}
+
+.dialog__close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  display: grid;
+  width: 36px;
+  height: 36px;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: var(--ink50);
+  color: var(--ink700);
+  cursor: pointer;
+}
+
+.dialog__eyebrow {
+  margin: 0 0 6px;
+  color: var(--text2);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 19px;
+}
+
+.dialog__title {
+  margin: 0;
+  color: var(--text);
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 37px;
+  letter-spacing: -0.7px;
+}
+
+.dialog--narrow .dialog__title {
+  margin-top: 16px;
+  font-size: 20px;
+  line-height: 28px;
+  letter-spacing: -0.4px;
+}
+
+.dialog__description {
+  margin: 8px 0 0;
+  color: var(--text2);
+  font-size: 15px;
+  line-height: 25px;
+}
+
+.dialog--narrow .dialog__description {
+  font-size: 14px;
+  line-height: 22px;
+}
+
+.dialog__actions {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 8px;
+  margin-top: 28px;
+}
+
+.dialog--narrow .dialog__iconTile {
+  margin: 0 auto;
+}
+
+/* ── 토스트 ── */
+.toast {
+  position: fixed;
+  z-index: 200;
+  bottom: 32px;
+  left: 50%;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  border-radius: 999px;
+  background: var(--ink900);
+  box-shadow: 0 12px 32px rgba(17, 26, 23, 0.24);
+  color: white;
+  font-size: 15px;
+  font-weight: 650;
+  line-height: 23px;
+  padding: 12px 24px 12px 20px;
+  transform: translateX(-50%);
+  white-space: nowrap;
+}
+
+.fieldLabel {
+  display: block;
+  margin: 0 0 8px;
+  color: var(--ink700);
+  font-size: 14px;
+  font-weight: 650;
+  line-height: 22.4px;
+}
+
+.segmented {
+  display: flex;
+  gap: 6px;
+}
+
+.segmented__option {
+  height: 32px;
+  border: 1px solid var(--line2);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 650;
+  padding: 0 12px;
+}
+
+.segmented__option--selected {
+  border-color: var(--ink900);
+  background: var(--ink900);
+  color: white;
+}
+
+.visuallyHidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}

@@ -1,0 +1,143 @@
+.drawer {
+  position: fixed;
+  inset: 0 0 0 auto;
+  width: min(440px, 100%);
+  max-width: none;
+  height: 100%;
+  max-height: none;
+  margin: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  color: var(--text);
+  background: var(--surface);
+  box-shadow: 0 24px 80px -12px rgb(17 26 23 / 28%);
+}
+.drawer[open] {
+  animation: slideIn 180ms ease-out;
+}
+.drawer::backdrop {
+  background: rgb(17 26 23 / 40%);
+}
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+.content {
+  min-height: 100%;
+  padding: 24px 28px;
+}
+.heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.close {
+  display: grid;
+  width: 36px;
+  height: 36px;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--ink50);
+}
+.description,
+.moods p {
+  color: var(--text2);
+  line-height: 1.55;
+}
+.description {
+  margin-top: 8px;
+  font-size: 14px;
+}
+.form {
+  margin-top: 24px;
+}
+.fields,
+.timing,
+.actions {
+  display: grid;
+  min-width: 0;
+}
+.fields {
+  gap: 20px;
+}
+.timing,
+.actions {
+  gap: 8px;
+}
+.timingFields {
+  width: min(253px, 100%);
+}
+.fields select,
+.fields input:not([type="checkbox"]) {
+  min-height: 52px;
+}
+.fields select,
+.budgetField div:has(> input) {
+  border-radius: 14px;
+}
+.fields select:not(:focus-visible) {
+  border-color: transparent;
+  background: var(--ink50);
+  color: var(--ink900);
+  font-weight: 600;
+}
+.budgetField div:has(> input:not([aria-invalid="true"])):not(:focus-within) {
+  border-color: transparent;
+  background: var(--ink50);
+}
+.moods fieldset > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.moods legend {
+  margin-bottom: 8px;
+}
+.moods label {
+  position: relative;
+  min-height: 36px;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 13px;
+}
+.moods label span {
+  font-size: inherit;
+}
+.moods label:has(input:checked) {
+  border-color: var(--ink900);
+  background: var(--ink900);
+  color: var(--surface);
+}
+.moods input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+.moods p {
+  margin-top: 8px;
+  font-size: 13px;
+}
+.actions {
+  margin-top: 44px;
+}
+.actions button {
+  border-radius: 12px;
+}
+.actions p {
+  color: var(--dangerText);
+}
+@media (max-width: 480px) {
+  .content {
+    padding-inline: 20px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .drawer[open] {
+    animation: none;
+  }
+}
