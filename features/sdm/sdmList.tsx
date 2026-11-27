@@ -1,6 +1,7 @@
 "use client";
 
-import { useReturnPlan } from "../returning/returnPlan";
+import { SDM_TIER_OPTIONS } from "@/src/features/planner/mocks/plannerMock";
+import { usePlannerStore } from "@/src/features/planner/stores/plannerStore";
 import { useState } from "react";
 import { Select } from "../../src/components/common";
 import { PLANNER_ROUTES } from "@/src/features/planner/routes";
@@ -83,7 +84,8 @@ function VendorCard({
 }
 
 function SdmResults() {
-  const planTier = useReturnPlan((state) => state.tier);
+  const selectedTier = usePlannerStore((state) => state.sdmTier);
+  const planTier = SDM_TIER_OPTIONS.findIndex(({ id }) => id === selectedTier);
   const [tier, setTier] = useState(() => {
     const query = new URLSearchParams(
       typeof window === "undefined" ? "" : window.location.search,
