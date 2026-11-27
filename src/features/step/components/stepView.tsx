@@ -20,6 +20,7 @@ import {
   RefreshIcon,
 } from "../../planner/components/icons";
 import { AmountField, Button, Checkbox } from "@/src/components/common";
+import { venues } from "@/features/venues/venueData";
 import { AssigneeChip, StatusPill, cx } from "../../planner/components/ui";
 import ui from "../../planner/components/ui.module.css";
 import {
@@ -72,6 +73,8 @@ export function StepView({ stepId }: { stepId: StepId }) {
   const nextStep = STEP_DEFINITIONS[index + 1];
   const tierLabel = SDM_TIER_OPTIONS.find((tier) => tier.id === state.sdmTier)?.label;
   const cta = SEARCH_CTA[stepId];
+  const selectedVenue =
+    stepId === "venue" ? venues.find(({ id }) => id === state.selectedVenueId) : undefined;
 
   return (
     <>
@@ -94,6 +97,11 @@ export function StepView({ stepId }: { stepId: StepId }) {
               ? "이번 단계에 할 일을 마치고 실제 계약 금액을 넣으면 단계를 완료할 수 있어요."
               : "이번 단계에 할 일을 마치면 단계를 완료할 수 있어요."}
           </p>
+          {selectedVenue && (
+            <p className={ui.pageLead}>
+              선택한 예식장 <strong>{selectedVenue.name}</strong>
+            </p>
+          )}
         </div>
         <div className={styles.header__side}>
           {!isComplete && cta && (
@@ -130,7 +138,7 @@ export function StepView({ stepId }: { stepId: StepId }) {
 
       <div className={styles.layout}>
         <div className={styles.layout__main}>
-          {stepId === "venue" && !isComplete && (
+          {stepId === "venue" && !isComplete && !selectedVenue && (
             <div className={styles.notice}>
               <span className={styles.notice__icon}>
                 <PinIcon size={16} />
@@ -292,14 +300,11 @@ function CompletionForm({
   /** SCR-06-B: 완료 · 금액 수정 직후 토스트 (3초) */
   const completedToast = `${step.title} 완료! 남은 예산을 다시 계산했어요`;
   const isComplete = progress.status === "complete";
-  const [amount, setAmount] = useState<number | null>(progress.actualAmount);
+  const [amountInput, setAmountInput] = useState(() => formatAmountInput(progress.actualAmount));
   const [error, setError] = useState<string | null>(null);
-
-  const validate = () => {
-    if (amount === null || amount <= 0) return "실제 계약 금액을 넣어야 단계를 완료할 수 있어요.";
-    if (amount > BUDGET_MAX) return "금액은 99,999만 원까지 입력할 수 있어요.";
-    return null;
-  };
+  const trimmedAmount = amountInput.trim();
+  const validFormat = /^(?:\d+|\d{1,3}(?:,\d{3})+)$/.test(trimmedAmount);
+  const amount = validFormat ? parseAmountInput(trimmedAmount) : null;
 
   const submit = () => {
     if (!step.hasAmount) {
@@ -307,13 +312,20 @@ function CompletionForm({
       showToast(completedToast);
       return;
     }
-    const message = validate();
-    if (message) {
-      setError(message);
+    if (trimmedAmount && !validFormat) {
+      setError("계약 금액은 숫자 또는 올바른 천 단위 쉼표로 입력해 주세요.");
       return;
     }
-    if (isComplete) updateAmount(step.id, amount!);
-    else completeStep(step.id, amount!);
+    if (amount === null || amount <= 0) {
+      setError("실제 계약 금액을 넣어야 단계를 완료할 수 있어요.");
+      return;
+    }
+    if (amount > BUDGET_MAX) {
+      setError("금액은 99,999만 원까지 입력할 수 있어요.");
+      return;
+    }
+    if (isComplete) updateAmount(step.id, amount);
+    else completeStep(step.id, amount);
     showToast(completedToast);
   };
 
@@ -356,12 +368,15 @@ function CompletionForm({
               : `${estimate ? `예상 범위 ${formatRange(estimate)} · ` : ""}실제 금액을 넣으면 남은 예산을 다시 계산해요.`
           }
           id={`amount-${step.id}`}
+          onBlur={() => {
+            if (validFormat) setAmountInput(formatAmountInput(amount));
+          }}
           onChange={(event) => {
-            setAmount(parseAmountInput(event.target.value));
+            setAmountInput(event.target.value);
             setError(null);
           }}
           placeholder={estimate ? formatAmountInput(estimate.min) : "금액 입력"}
-          value={formatAmountInput(amount)}
+          value={amountInput}
         />
         <Button size="lg" type="submit" variant={isComplete ? "outline" : "primary"}>
           {isComplete ? "금액 수정" : "단계 완료하기"}
