@@ -1,14 +1,15 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { PLANNER_ROUTES } from "@/src/features/planner/routes";
 import {
   BackLink,
   CompareButton,
   DiscoveryIcon,
   FavoriteButton,
   LoginGate,
+  VenueContractButton,
   VenuePhoto,
   discoveryStyles as s,
   type DiscoveryIconName,
@@ -17,8 +18,6 @@ import { moods, venues, type Venue } from "../venueData";
 import { useDiscovery } from "../useDiscovery";
 
 function VenueInformation({ venue }: { venue: Venue }) {
-  const router = useRouter();
-  const chooseVenue = useDiscovery((state) => state.chooseVenue);
   const count = useDiscovery((state) => state.compared.length);
   const [feedback, setFeedback] = useState("");
   const related = venues.filter(
@@ -45,7 +44,7 @@ function VenueInformation({ venue }: { venue: Venue }) {
 
   return (
     <>
-      <BackLink href="/venues">예식장 후보로</BackLink>
+      <BackLink href={PLANNER_ROUTES.step("venue")}>예식장 계약 단계로</BackLink>
       <div className={s.heroWrap}>
         <VenuePhoto
           className={s.hero}
@@ -133,16 +132,7 @@ function VenueInformation({ venue }: { venue: Venue }) {
               </button>
             </div>
             <hr />
-            <button
-              className={s.softButton}
-              disabled={venue.paused}
-              onClick={() => {
-                chooseVenue(venue.id);
-                router.push("/roadmap?stage=venue");
-              }}
-            >
-              {venue.paused ? "휴업 중이라 선택할 수 없어요" : "이 업체로 계약 진행하기"}
-            </button>
+            <VenueContractButton venue={venue} className={s.softButton} />
             {feedback && (
               <p className={s.muted} role="status">
                 {feedback}

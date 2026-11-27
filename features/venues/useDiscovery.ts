@@ -9,11 +9,9 @@ export const compareLimit = 3;
 type DiscoveryState = {
   compared: string[];
   favorites: string[];
-  contracted: string | null;
   toggleCompare: (id: string) => void;
   clearCompare: () => void;
   toggleFavorite: (id: string) => void;
-  chooseVenue: (id: string) => void;
 };
 
 // Preview state until the account, plan and vendor APIs are connected.
@@ -22,7 +20,6 @@ export const useDiscovery = create<DiscoveryState>()(
     (set) => ({
       compared: [],
       favorites: [],
-      contracted: null,
       toggleCompare: (id) =>
         set((state) => {
           if (!useUtAuthStore.getState().provider) return state;
@@ -45,18 +42,19 @@ export const useDiscovery = create<DiscoveryState>()(
               }
             : state,
         ),
-      chooseVenue: (id) =>
-        set((state) => {
-          const venue = venues.find((entry) => entry.id === id);
-          return useUtAuthStore.getState().provider && venue && !venue.paused
-            ? { contracted: id }
-            : state;
-        }),
     }),
     {
       name: "wedid-discovery-preview",
       skipHydration: true,
-      partialize: ({ compared, favorites, contracted }) => ({ compared, favorites, contracted }),
+      partialize: ({ compared, favorites }) => ({ compared, favorites }),
+      merge: (stored, current) => {
+        const saved = stored as Partial<Pick<DiscoveryState, "compared" | "favorites">> | undefined;
+        return {
+          ...current,
+          compared: Array.isArray(saved?.compared) ? saved.compared : current.compared,
+          favorites: Array.isArray(saved?.favorites) ? saved.favorites : current.favorites,
+        };
+      },
     },
   ),
 );

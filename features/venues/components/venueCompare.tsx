@@ -1,14 +1,15 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useId, useRef, useState } from "react";
+import { PLANNER_ROUTES } from "@/src/features/planner/routes";
 import {
   BackLink,
   DiscoveryIcon,
   LoginGate,
   PageHeading,
   StateCard,
+  VenueContractButton,
   VenuePhoto,
   discoveryStyles as s,
 } from "../shared";
@@ -29,11 +30,9 @@ function Comparison() {
   const compared = useDiscovery((state) => state.compared);
   const toggle = useDiscovery((state) => state.toggleCompare);
   const clear = useDiscovery((state) => state.clearCompare);
-  const choose = useDiscovery((state) => state.chooseVenue);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const dialog = useRef<HTMLDialogElement>(null);
   const titleId = useId();
-  const router = useRouter();
   const entries = compared.flatMap((id) => venues.find((entry) => entry.id === id) ?? []);
   const selected = entries.find((venue) => venue.id === selectedId && !venue.paused);
   const available = compareLimit - entries.length;
@@ -54,7 +53,6 @@ function Comparison() {
 
   return (
     <>
-      <BackLink href="/venues">예식장 후보로</BackLink>
       <PageHeading
         step="2단계 · 예식장 계약"
         title="업체 비교"
@@ -157,18 +155,7 @@ function Comparison() {
         <Link href="/venues" className={s.button}>
           <DiscoveryIcon name="back" /> 업체 더 보기
         </Link>
-        <button
-          className={s.primary}
-          disabled={!selected}
-          onClick={() => {
-            if (selected) {
-              choose(selected.id);
-              router.push("/roadmap?stage=venue");
-            }
-          }}
-        >
-          {selected ? "이 업체로 계약 진행하기" : "진행할 업체를 골라 주세요"}
-        </button>
+        <VenueContractButton venue={selected} className={s.primary} />
       </div>
       <dialog ref={dialog} className={s.dialog} aria-labelledby={titleId}>
         <button className={s.dialogClose} aria-label="닫기" onClick={() => dialog.current?.close()}>
@@ -202,6 +189,7 @@ function Comparison() {
 export function VenueCompare() {
   return (
     <LoginGate kind="venue">
+      <BackLink href={PLANNER_ROUTES.step("venue")}>예식장 계약 단계로</BackLink>
       <Comparison />
     </LoginGate>
   );

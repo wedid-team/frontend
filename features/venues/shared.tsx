@@ -3,10 +3,12 @@
 import { useUtAuthStore } from "@/src/stores/utAuthStore";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useId, type ReactNode } from "react";
 import { PLANNER_ROUTES } from "@/src/features/planner/routes";
+import { usePlannerStore } from "@/src/features/planner/stores/plannerStore";
 import { compareLimit, useDiscovery } from "./useDiscovery";
-import { venueImage } from "./venueData";
+import { venueImage, type Venue } from "./venueData";
 import styles from "./discovery.module.css";
 
 export const discoveryStyles = styles;
@@ -89,6 +91,38 @@ export function BackLink({ href, children }: { href: string; children: ReactNode
       <DiscoveryIcon name="back" />
       {children}
     </Link>
+  );
+}
+
+export function VenueContractButton({ venue, className }: { venue?: Venue; className: string }) {
+  const router = useRouter();
+  const hasSavedPlan = usePlannerStore((state) => state.hasSavedPlan);
+  const selectVenue = usePlannerStore((state) => state.selectVenue);
+  const contractStep = PLANNER_ROUTES.step("venue");
+
+  if (venue && !venue.paused && !hasSavedPlan) {
+    return (
+      <Link href={contractStep} className={className}>
+        먼저 결혼 계획 저장하기
+      </Link>
+    );
+  }
+
+  return (
+    <button
+      type="button"
+      className={className}
+      disabled={!venue || venue.paused}
+      onClick={() => {
+        if (venue && !venue.paused && selectVenue(venue.id)) router.push(contractStep);
+      }}
+    >
+      {venue
+        ? venue.paused
+          ? "휴업 중이라 선택할 수 없어요"
+          : "이 업체로 계약 진행하기"
+        : "진행할 업체를 골라 주세요"}
+    </button>
   );
 }
 
