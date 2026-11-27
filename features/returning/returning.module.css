@@ -128,7 +128,6 @@
 .statGrid small,
 .profileIdentity small,
 .workspaceColumns small,
-.roadmapList small,
 .venueBody small,
 .events small {
   display: block;
@@ -791,46 +790,6 @@
 .member {
   margin: 10px 0;
 }
-.illustration {
-  display: grid;
-  place-items: center;
-  min-height: 118px;
-  margin-bottom: 12px;
-  border-radius: 18px;
-  background: linear-gradient(160deg, var(--brand50), var(--champagne));
-}
-.illustration + h2 + p {
-  margin: 5px 0 12px;
-}
-.roadmapBars {
-  display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
-  gap: 6px;
-  margin-block: 20px;
-}
-.roadmapBars a {
-  border-top: 4px solid var(--ink100);
-  padding-top: 7px;
-  font-size: 12px;
-}
-.roadmapBars a[data-done="true"] {
-  border-color: var(--brand600);
-}
-.roadmapList li {
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  gap: 10px;
-  align-items: center;
-  border-top: 1px solid var(--line);
-  padding: 12px 0;
-}
-.stageActions {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 14px;
-}
 .priceCard {
   display: flex;
   justify-content: space-between;
@@ -1120,16 +1079,6 @@
 .workspaceTop + div aside > nav:first-of-type a {
   padding-block: 7px;
 }
-.inviteButton {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 5px 9px;
-  border: 1px solid var(--line2);
-  border-radius: 10px;
-  white-space: nowrap;
-  font-weight: 700;
-}
 .tasks input {
   appearance: none;
   border: 1px solid var(--ink300);
@@ -1141,9 +1090,6 @@
   background: var(--brand600) url("/images/icons/h2d-svg-use-0-79.svg") center / 13px no-repeat;
 }
 @media (max-width: 540px) {
-  .inviteButton {
-    display: none;
-  }
   .workspaceTop > header > div > nav {
     padding-left: 6px;
   }

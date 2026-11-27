@@ -1,0 +1,339 @@
+.panel {
+  composes: panel from "../layout/flowUi.module.css";
+}
+.sectionHeading {
+  composes: sectionHeading from "../layout/flowUi.module.css";
+}
+.textButton {
+  composes: textButton from "../layout/flowUi.module.css";
+}
+.conditions {
+  composes: conditions from "../layout/flowUi.module.css";
+}
+.inlineActions {
+  composes: inlineActions from "../layout/flowUi.module.css";
+}
+.resultPage {
+  min-height: calc(100vh - 64px);
+  background: var(--surfaceSunken);
+  padding: 40px 32px 96px;
+}
+.resultContainer {
+  max-width: 1200px;
+  margin-inline: auto;
+}
+.resultIntro {
+  display: grid;
+  gap: 8px;
+}
+.sharedBanner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 14px 18px;
+  margin-bottom: 20px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--brand50);
+  color: var(--brand800);
+  font-size: 14px;
+}
+.sharedBanner p {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+.resultIntro > p:not(:first-child) {
+  color: var(--text2);
+  font-size: 16px;
+}
+.resultGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 820px) 360px;
+  gap: 20px;
+  margin-top: 32px;
+  align-items: start;
+}
+.costBreakdown {
+  min-width: 0;
+}
+.venueEstimate {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+.venueEstimate p {
+  color: var(--text2);
+  font-size: 13px;
+  margin-top: 8px;
+}
+.venueEstimate > strong,
+.stylingEstimate .sectionHeading > strong {
+  flex: none;
+  font-size: 32px;
+  line-height: 38px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+}
+.stylingEstimate {
+  margin-top: 16px;
+}
+.stylingEstimate .sectionHeading {
+  align-items: flex-start;
+}
+.stylingEstimate .sectionHeading p {
+  margin-top: 6px;
+  font-size: 14px;
+  line-height: 22px;
+}
+.tiers {
+  margin-top: 24px;
+}
+.tiers fieldset > div {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+.tiers label {
+  display: block;
+  min-height: 86px;
+  padding: 18px 16px;
+  border-radius: 16px;
+  border-color: var(--line2);
+}
+.tiers label:has(input:checked) {
+  border-color: var(--brand600);
+}
+.readOnlyTiers label:has(input:checked) {
+  background: var(--brand50);
+  color: var(--ink900);
+}
+.tiers input {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+}
+.tiers label > span:last-child {
+  gap: 8px;
+}
+.calculationDetails {
+  margin-top: 16px;
+}
+.calculationDetails summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--ink50);
+  font-size: 12px;
+  cursor: pointer;
+}
+.calculationDetails summary::-webkit-details-marker {
+  display: none;
+}
+.calculationDetails[open] summary img {
+  transform: rotate(180deg);
+}
+.breakdownPanel {
+  padding: 18px 20px;
+  margin-top: 14px;
+  border-radius: 16px;
+  background: var(--ink50);
+  font-size: 14px;
+}
+.breakdownPanel dl {
+  margin-top: 8px;
+}
+.breakdownPanel dl > div {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 4px 12px;
+  padding-block: 7px;
+  color: var(--ink700);
+}
+.breakdownPanel .breakdownTotal {
+  border-top: 1px solid var(--line2);
+  color: var(--text);
+  font-weight: 700;
+}
+.breakdownPanel p {
+  margin-top: 10px;
+  color: var(--text2);
+  font-size: 12px;
+}
+.combinationHeading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 28px;
+}
+.combinationHeading > div {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.combinationHeading h3 {
+  font-size: 17px;
+  font-weight: 650;
+}
+.combinationHeading small {
+  color: var(--text2);
+  font-size: 12px;
+}
+.combinationHeading .textButton {
+  font-size: 12px;
+}
+.combinationGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 16px;
+}
+.combinationCard {
+  padding: 18px;
+  border: 1px solid var(--line2);
+  border-radius: 16px;
+}
+.combinationCard > p {
+  color: var(--brand700);
+  font-size: 13px;
+  font-weight: 650;
+}
+.combinationCard h4 {
+  margin-top: 6px;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 28px;
+  letter-spacing: -0.02em;
+}
+.combinationCard dl {
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+}
+.combinationCard dl > div + div {
+  margin-top: 10px;
+}
+.combinationCard dt {
+  color: var(--text2);
+  font-size: 11px;
+}
+.combinationCard dd {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+}
+.combinationCard dd strong {
+  flex: 1;
+  font-weight: 600;
+}
+.combinationCard dd b {
+  font-weight: 600;
+}
+.combinationCard > small {
+  display: block;
+  margin-top: 20px;
+  color: var(--text2);
+  font-size: 11px;
+}
+.extraCosts {
+  padding: 40px 24px 20px;
+}
+.extraCosts p {
+  margin-top: 6px;
+  color: var(--text2);
+  font-size: 14px;
+}
+.costSource {
+  color: var(--text2);
+  font-size: 12px;
+  line-height: 20px;
+}
+.nextStep {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  margin-top: 24px;
+  padding: 24px;
+}
+.nextStep p {
+  color: var(--text2);
+  font-size: 14px;
+}
+@media (max-width: 1250px) {
+  .resultGrid {
+    grid-template-columns: minmax(0, 1fr) 320px;
+  }
+  .venueEstimate,
+  .stylingEstimate .sectionHeading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+  .venueEstimate > strong,
+  .stylingEstimate .sectionHeading > strong {
+    font-size: 28px;
+  }
+  .combinationGrid {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 900px) {
+  .resultGrid {
+    grid-template-columns: 1fr;
+  }
+  .combinationGrid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+@media (max-width: 600px) {
+  .resultPage {
+    padding: 32px 20px 48px;
+  }
+  .resultIntro h1 {
+    font-size: 30px;
+  }
+  .resultIntro .conditions {
+    font-size: 13px;
+  }
+  .venueEstimate > strong,
+  .stylingEstimate .sectionHeading > strong {
+    font-size: 26px;
+  }
+  .tiers fieldset > div {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px 10px;
+  }
+  .combinationGrid {
+    grid-template-columns: 1fr;
+  }
+  .combinationHeading {
+    align-items: flex-start;
+  }
+  .combinationHeading .textButton {
+    max-width: 80px;
+    text-align: right;
+  }
+  .extraCosts {
+    padding-inline: 0;
+  }
+  .nextStep {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+  .nextStep .inlineActions {
+    width: 100%;
+  }
+  .nextStep .inlineActions button:last-child {
+    flex: 1;
+  }
+}

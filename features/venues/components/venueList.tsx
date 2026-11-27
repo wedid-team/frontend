@@ -4,6 +4,7 @@ import { useReturnPlan, regions } from "../../returning/returnPlan";
 import Link from "next/link";
 import { useState } from "react";
 import { Select } from "../../../src/components/common";
+import { PLANNER_ROUTES } from "@/src/features/planner/routes";
 import {
   BackLink,
   CompareButton,
@@ -164,7 +165,7 @@ function VenueResults() {
 
   return (
     <>
-      <BackLink href="/roadmap?stage=venue">예식장 계약 단계로</BackLink>
+      <BackLink href={PLANNER_ROUTES.step("venue")}>예식장 계약 단계로</BackLink>
       <PageHeading
         step="2단계 · 예식장 계약"
         title="예식장 후보"

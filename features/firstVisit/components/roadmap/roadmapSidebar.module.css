@@ -1,0 +1,137 @@
+.roadmapSidebar {
+  display: flex;
+  flex-direction: column;
+  align-self: stretch;
+  padding: 16px 12px;
+  border-right: 1px solid var(--line);
+  background: var(--surface);
+}
+.weddingIdentity {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+}
+.weddingIdentity b {
+  display: grid;
+  width: 32px;
+  height: 32px;
+  place-items: center;
+  border-radius: 10px;
+  background: var(--brand600);
+  color: white;
+}
+.weddingIdentity strong {
+  font-size: 15px;
+}
+.weddingIdentity small {
+  display: block;
+  color: var(--text2);
+  font-size: 12px;
+}
+.roadmapSidebar nav {
+  margin-top: 20px;
+  display: grid;
+  gap: 4px;
+}
+.roadmapSidebar nav button {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  border: 0;
+  border-radius: 10px;
+  background: none;
+  font-size: 14px;
+  text-align: left;
+}
+.roadmapSidebar nav button.activeNav {
+  background: var(--ink50);
+  font-weight: 650;
+}
+.sidebarCaption {
+  color: var(--text2);
+  font-size: 12px;
+  margin: 24px 10px 12px;
+}
+.sideSteps {
+  list-style: none;
+  padding: 0 10px;
+  margin: 0;
+}
+.sideSteps li {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 8px 0;
+  align-items: center;
+  font-size: 13px;
+  color: var(--text2);
+}
+.sideSteps li > span {
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 6px;
+  background: var(--ink50);
+  font-size: 11px;
+}
+.sideSteps button {
+  border: 0;
+  background: none;
+  padding: 0;
+  text-align: left;
+  color: inherit;
+}
+.sideSteps li > div {
+  display: grid;
+  gap: 10px;
+  padding: 10px 0 4px 30px;
+  width: 100%;
+}
+.sideSteps li[data-status="current"] {
+  color: var(--text);
+  font-weight: 650;
+}
+.sideSteps li[data-status="current"] > span {
+  background: var(--brand600);
+  color: white;
+}
+.sideCountdown {
+  margin-top: auto;
+  padding: 16px;
+  border-radius: 18px;
+  background:
+    radial-gradient(ellipse at top right, var(--brand500), transparent 65%), var(--brand800);
+  color: white;
+}
+.sideCountdown > small {
+  display: block;
+  font-size: 12px;
+  color: var(--brand200);
+}
+.sideCountdown > strong {
+  font-size: 32px;
+  font-weight: 700;
+}
+.sideCountdown > div {
+  margin: 8px 0;
+  height: 6px;
+  background: rgb(255 255 255 / 20%);
+  border-radius: 999px;
+}
+.sideCountdown i {
+  display: block;
+  height: 6px;
+  border-radius: inherit;
+  background: white;
+}
+@media (max-width: 900px) {
+  .roadmapSidebar {
+    display: none;
+  }
+}

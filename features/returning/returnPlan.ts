@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { PLANNER_ROUTES } from "@/src/features/planner/routes";
+import type { StepId } from "@/src/features/planner/types";
 import { plan, range } from "../venues/venueData";
 import { useDiscovery } from "../venues/useDiscovery";
 
@@ -33,7 +35,15 @@ export const steps = [
   { id: "final", title: "최종 점검", short: "최종 점검", timing: "D-30~0", icon: "mood" },
 ] as const;
 export type Step = (typeof steps)[number];
-export const stepHref = (step: Step) => "/roadmap?stage=" + step.id;
+const plannerStepIds: Record<Step["id"], StepId> = {
+  budget: "agreement",
+  venue: "venue",
+  sdm: "sdm",
+  shoot: "photoTrip",
+  invite: "invitation",
+  final: "finalCheck",
+};
+export const stepHref = (step: Step) => PLANNER_ROUTES.step(plannerStepIds[step.id]);
 export const tasks = [
   { id: "agree", label: "예산 상한 합의하기", owner: "함께" },
   { id: "tour", label: "후보 예식장 3곳 투어 예약", owner: "나" },

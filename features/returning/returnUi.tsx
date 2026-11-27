@@ -25,11 +25,11 @@ export function Progress({ value, label = "전체 진행률" }: { value: number;
   return <progress className={s.progress} max={100} value={value} aria-label={label} />;
 }
 
-export function Checklist({ showEmpty = true }: { showEmpty?: boolean }) {
+function Checklist() {
   const { current } = useProgress();
   const checked = useReturnPlan((state) => state.checked);
   const toggleTask = useReturnPlan((state) => state.toggleTask);
-  if (current?.id !== "venue") return showEmpty ? <p className={s.empty}>할 일이 없어요</p> : null;
+  if (current?.id !== "venue") return <p className={s.empty}>할 일이 없어요</p>;
   return (
     <ul className={s.tasks}>
       {tasks.map((task) => (
@@ -224,7 +224,7 @@ export function ProfileMenu({ iconOnly = false }: { iconOnly?: boolean }) {
   );
 }
 
-export function CurrentStage({ roadmap = false }: { roadmap?: boolean }) {
+export function CurrentStage() {
   const { current, count } = useProgress();
   const checked = useReturnPlan((state) => state.checked.length);
   const tier = useReturnPlan((state) => state.tier);
@@ -241,7 +241,7 @@ export function CurrentStage({ roadmap = false }: { roadmap?: boolean }) {
         <span className={s.darkPill}>
           ●{" "}
           {current
-            ? (roadmap ? "다음 할 일" : "지금 할 일") + " · " + (count + 1) + "단계"
+            ? "지금 할 일 · " + (count + 1) + "단계"
             : "모든 단계 완료"}
         </span>
         {current && <span>예식 {weddingDday}</span>}
@@ -250,9 +250,7 @@ export function CurrentStage({ roadmap = false }: { roadmap?: boolean }) {
       {current && (
         <>
           <p>
-            {roadmap ? (
-              "예식 " + weddingDday + " · 권장 시기 " + current.timing
-            ) : budget ? (
+            {budget ? (
               <>
                 이번 단계 예산은 <strong>{budget}</strong>이에요.
               </>
@@ -261,12 +259,7 @@ export function CurrentStage({ roadmap = false }: { roadmap?: boolean }) {
             )}
           </p>
           <div className={s.darkBottom}>
-            {roadmap && budget && (
-              <div>
-                이번 단계 예산 <strong>{budget}</strong>
-              </div>
-            )}
-            {!roadmap && current.id === "venue" && (
+            {current.id === "venue" && (
               <div className={s.stageProgress}>
                 <div className={s.spread}>
                   <span>체크리스트</span>
@@ -276,13 +269,13 @@ export function CurrentStage({ roadmap = false }: { roadmap?: boolean }) {
               </div>
             )}
             <div className={s.actions}>
-              {!roadmap && current.id === "venue" && (
+              {current.id === "venue" && (
                 <Link className={s.ghost} href="/venues">
                   예식장 후보
                 </Link>
               )}
               <Link className={s.button} href={stepHref(current)}>
-                {roadmap ? "단계 보기 →" : "이어서 하기 →"}
+                이어서 하기 →
               </Link>
             </div>
           </div>

@@ -12,7 +12,7 @@ export function WorkspaceRouter({ children }: { children: ReactNode }) {
     pathname === "/venues" ||
     pathname.startsWith("/venues/") ||
     pathname === "/sdm" ||
-    ["/home", "/roadmap", "/budget"].includes(pathname)
+    ["/home", "/budget"].includes(pathname)
   ) {
     return <DiscoveryShell>{children}</DiscoveryShell>;
   }

@@ -1,0 +1,171 @@
+.totalPanel {
+  padding: 32px;
+  border-radius: 24px;
+  background:
+    radial-gradient(ellipse at top right, rgb(167 200 188 / 28%), transparent 60%), var(--brand800);
+  color: white;
+}
+.totalPanel > p {
+  color: var(--brand200);
+  font-size: 13px;
+}
+.totalPanel > h2 {
+  margin-top: 8px;
+  white-space: nowrap;
+  font-size: 32px;
+  line-height: 38px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+}
+.costBar {
+  display: flex;
+  height: 10px;
+  margin-top: 24px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: rgb(255 255 255 / 18%);
+}
+.venueCostSegment {
+  background: white;
+}
+.stylingCostSegment {
+  flex: 1;
+  background: var(--brand300);
+}
+.costLegend {
+  display: flex;
+  gap: 14px;
+  margin-top: 12px;
+  color: var(--brand200);
+  font-size: 11px;
+}
+.costLegend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+.costLegend i {
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  background: white;
+}
+.costLegend span:last-child i {
+  background: var(--brand300);
+}
+.totalBudget {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding-top: 20px;
+  margin-top: 32px;
+  border-top: 1px solid rgb(255 255 255 / 14%);
+  font-size: 14px;
+}
+.totalBudget > span {
+  color: var(--brand200);
+}
+.budgetForm,
+.sharedAction {
+  padding-top: 20px;
+  margin-top: 32px;
+  border-top: 1px solid rgb(255 255 255 / 14%);
+}
+.budgetForm {
+  margin-bottom: 12px;
+}
+.budgetForm > p {
+  margin-bottom: 12px;
+  color: var(--brand200);
+  font-size: 14px;
+}
+.budgetEntry {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 8px;
+}
+.budgetEntry input,
+.budgetEntry .budgetSubmit {
+  min-height: 40px;
+  height: 40px;
+}
+.budgetEntry .budgetSubmit {
+  padding-inline: 12px;
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--brand800);
+}
+.budgetEntry .budgetSubmit:disabled {
+  color: var(--ink500);
+}
+.budgetEntry [role="alert"] {
+  color: #ffb9b9;
+}
+.totalPanel .budgetStatus {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  margin-top: 12px;
+  margin-bottom: 12px;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 10%);
+  color: white;
+  font-size: 12px;
+}
+.totalPanel .whiteButton {
+  width: 100%;
+  background: white;
+  color: var(--brand800);
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+}
+.shareActions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 12px;
+}
+.shareActions button {
+  min-width: 0;
+  height: 40px;
+  padding-inline: 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  gap: 6px;
+  white-space: nowrap;
+}
+.shareActions button:first-child {
+  color: white;
+  border: 1px solid rgb(255 255 255 / 14%);
+  background: rgb(255 255 255 / 10%);
+}
+.shareActions button:last-child:disabled {
+  background: var(--kakao);
+  color: var(--kakaoText);
+}
+@media (max-width: 1250px) {
+  .totalPanel {
+    padding: 24px;
+  }
+  .totalPanel > h2 {
+    font-size: 28px;
+  }
+}
+@media (max-width: 900px) {
+  .totalPanel {
+    max-width: none;
+  }
+  .totalPanel > h2 {
+    font-size: 32px;
+  }
+}
+@media (max-width: 600px) {
+  .totalPanel > h2 {
+    font-size: 28px;
+  }
+}

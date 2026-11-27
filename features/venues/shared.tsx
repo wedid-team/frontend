@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useId, type ReactNode } from "react";
+import { PLANNER_ROUTES } from "@/src/features/planner/routes";
 import { compareLimit, useDiscovery } from "./useDiscovery";
 import { venueImage } from "./venueData";
 import styles from "./discovery.module.css";
@@ -148,7 +149,7 @@ export function LoginGate({ kind, children }: { kind: "venue" | "sdm"; children:
   const isVenue = kind === "venue";
   return (
     <>
-      <BackLink href={isVenue ? "/roadmap?stage=venue" : "/roadmap?stage=sdm"}>
+      <BackLink href={PLANNER_ROUTES.step(kind)}>
         {isVenue ? "예식장" : "스드메"} 계약 단계로
       </BackLink>
       <StateCard

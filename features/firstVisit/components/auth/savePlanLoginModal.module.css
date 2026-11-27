@@ -1,0 +1,107 @@
+.loginDialog {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  padding: 20px;
+  border: 0;
+  background: none;
+  overflow-y: auto;
+  color: var(--text);
+}
+.loginDialog[open] {
+  display: grid;
+  place-items: center;
+}
+.loginDialog::backdrop {
+  background: rgb(17 26 23 / 36%);
+  backdrop-filter: blur(6px);
+}
+.loginContent {
+  position: relative;
+  width: min(100%, 440px);
+  padding: 32px;
+  border-radius: 28px;
+  background: white;
+  box-shadow: 0 24px 80px -12px rgb(17 26 23 / 28%);
+}
+.loginEyebrow {
+  color: var(--text2);
+  font-size: 13px;
+  font-weight: 500;
+}
+.loginIcon {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  margin-top: 12px;
+  border: 1px solid var(--brand100);
+  border-radius: 14px;
+  background: var(--brand50);
+}
+.loginContent h2 {
+  margin-top: 20px;
+  font-size: 28px;
+  line-height: 36.4px;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+}
+.loginContent h2 + p {
+  margin-top: 12px;
+  color: var(--text2);
+  font-size: 15px;
+  line-height: 24px;
+}
+.loginProviders {
+  display: grid;
+  gap: 8px;
+  margin-top: 28px;
+}
+.loginProviders button {
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+}
+.loginProviders button:disabled:first-child {
+  background: var(--kakao);
+  color: var(--kakaoText);
+}
+.loginProviders button:disabled:last-child {
+  background: white;
+  border-color: var(--line2);
+  color: var(--text);
+}
+.loginContent .loginPolicy {
+  margin-top: 16px;
+  color: var(--text3);
+  font-size: 12px;
+  line-height: 18px;
+  text-align: center;
+}
+.closeLogin {
+  position: absolute;
+  right: 16px;
+  top: 16px;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--ink50);
+}
+@media (max-width: 600px) {
+  .loginContent {
+    padding: 28px 24px;
+  }
+  .loginContent h2 {
+    font-size: 26px;
+  }
+  .loginContent h2 + p {
+    font-size: 14px;
+  }
+}

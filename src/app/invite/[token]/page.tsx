@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
+import { SiteHeader } from "@/src/components/layout/siteHeader";
 import { InviteView } from "@/src/features/invite/components/inviteView";
 import { getInviteStatusMock } from "@/src/features/invite/utils/inviteStatus";
 
@@ -15,8 +16,11 @@ async function InviteContent({ params }: { params: PageProps<"/invite/[token]">[
 
 export default function InvitePage({ params }: PageProps<"/invite/[token]">) {
   return (
-    <Suspense fallback={null}>
-      <InviteContent params={params} />
-    </Suspense>
+    <>
+      <SiteHeader variant="public" />
+      <Suspense fallback={null}>
+        <InviteContent params={params} />
+      </Suspense>
+    </>
   );
 }

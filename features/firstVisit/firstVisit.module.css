@@ -1,0 +1,11 @@
+.flow {
+  min-height: 100vh;
+  background: var(--canvas);
+  color: var(--text);
+}
+.flow button {
+  cursor: pointer;
+}
+.flow button:disabled {
+  cursor: default;
+}

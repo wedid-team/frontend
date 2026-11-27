@@ -7,6 +7,7 @@ import { type ReactNode } from "react";
 import { SiteHeader } from "../../src/components/layout/siteHeader";
 import { SideNavigation } from "../../src/components/layout/sideNavigation";
 import { workspaceNavigationItems } from "../../src/components/layout/workspaceNavigation";
+import { PLANNER_ROUTES } from "@/src/features/planner/routes";
 import { useDiscovery } from "./useDiscovery";
 import { venues } from "./venueData";
 import { DiscoveryIcon, discoveryStyles as s, type DiscoveryIconName } from "./shared";
@@ -28,8 +29,8 @@ const discoveryNavigation = workspaceNavigationItems.map((item, index) => ({
   icon: <DiscoveryIcon name={menuIcons[index]} />,
 }));
 
-const venueStep = { href: "/roadmap?stage=venue", label: "예식장 계약" };
-const sdmStep = { href: "/roadmap?stage=sdm", label: "스드메 계약" };
+const venueStep = { href: PLANNER_ROUTES.step("venue"), label: "예식장 계약" };
+const sdmStep = { href: PLANNER_ROUTES.step("sdm"), label: "스드메 계약" };
 const venueList = { href: "/venues", label: "예식장 후보" };
 const sdmList = { href: "/sdm", label: "스드메 후보" };
 const roadmap = { href: "/roadmap", label: "준비 로드맵" };
@@ -43,9 +44,7 @@ export function DiscoveryShell({ children }: { children: ReactNode }) {
   const { count: completed, percent } = useProgress();
   const conditions = useReturnPlan((state) => state.conditions);
   const isHome = pathname === "/home";
-  const isRoadmap = pathname === "/roadmap";
   const isBudget = pathname === "/budget";
-  const isReturning = isHome || isRoadmap || isBudget;
   const isSdm = pathname === "/sdm";
   const isCompare = pathname === "/venues/compare";
   const detail = venues.find((venue) => pathname === "/venues/" + venue.id);
@@ -53,11 +52,9 @@ export function DiscoveryShell({ children }: { children: ReactNode }) {
   const home = { href: "/home", label: "홈" };
   const breadcrumbs = isHome
     ? [home]
-    : isRoadmap
-      ? [home, roadmap]
-      : isBudget
-        ? [roadmap, { href: "/budget", label: "예상 비용" }]
-        : [roadmap, isSdm ? sdmStep : venueStep, list];
+    : isBudget
+      ? [roadmap, { href: "/budget", label: "예상 비용" }]
+      : [roadmap, isSdm ? sdmStep : venueStep, list];
   if (isCompare) breadcrumbs.push({ label: "비교하기", href: pathname });
   if (detail) breadcrumbs.push({ label: detail.name, href: pathname });
 
@@ -73,11 +70,6 @@ export function DiscoveryShell({ children }: { children: ReactNode }) {
         {ready &&
           (signedIn ? (
             <div className={returnStyles.workspaceAccount}>
-              {isRoadmap && (
-                <Link className={returnStyles.inviteButton} href="/home?panel=members">
-                  <DiscoveryIcon name="share" /> 짝꿍 초대
-                </Link>
-              )}
               <div className={s.couple} aria-label="준근과 민지">
                 <Image src="/images/avatars/avatar-minji.png" alt="" width={24} height={24} />
                 <Image src="/images/avatars/avatar-joongeun.png" alt="" width={24} height={24} />
@@ -159,7 +151,7 @@ export function DiscoveryShell({ children }: { children: ReactNode }) {
         <main className={s.main} aria-busy={!ready}>
           {!ready ? (
             <p role="status">계획을 불러오는 중이에요.</p>
-          ) : isReturning && !isBudget && !signedIn ? (
+          ) : isHome && !signedIn ? (
             <section className={s.empty}>
               <h1>로그인하면 내 계획을 볼 수 있어요</h1>
               <button className={s.primary} onClick={() => setSignedIn(true)}>

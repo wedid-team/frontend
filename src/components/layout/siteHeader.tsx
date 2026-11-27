@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import type { ReactNode } from "react";
 import { Logo } from "../common";
 import { Breadcrumbs, type BreadcrumbItem } from "./breadcrumbs";
 import styles from "./siteHeader.module.css";
@@ -17,6 +18,8 @@ type SiteHeaderProps = {
   loginHref?: string;
   breadcrumbs?: BreadcrumbItem[];
   className?: string;
+  /** 공통 헤더의 기본 UI를 유지하며 기능별 헤더 콘텐츠를 조합한다. */
+  slots?: { start: ReactNode; actions: ReactNode };
 };
 
 export function SiteHeader({
@@ -24,9 +27,18 @@ export function SiteHeader({
   className,
   loginHref = "/login",
   profileTone = "soft",
+  slots,
   user,
   variant = "public",
 }: SiteHeaderProps) {
+  if (slots) {
+    return (
+      <header className={className}>
+        {slots.start}
+        {slots.actions}
+      </header>
+    );
+  }
   const isWorkspace = variant === "workspace";
   const toneClass =
     profileTone === "primary"

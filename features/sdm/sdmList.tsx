@@ -3,6 +3,7 @@
 import { useReturnPlan } from "../returning/returnPlan";
 import { useState } from "react";
 import { Select } from "../../src/components/common";
+import { PLANNER_ROUTES } from "@/src/features/planner/routes";
 import {
   BackLink,
   DiscoveryIcon,
@@ -113,7 +114,7 @@ function SdmResults() {
 
   return (
     <>
-      <BackLink href="/roadmap?stage=sdm">스드메 계약 단계로</BackLink>
+      <BackLink href={PLANNER_ROUTES.step("sdm")}>스드메 계약 단계로</BackLink>
       <PageHeading
         step="3단계 · 스드메 계약"
         title="스드메 후보"
