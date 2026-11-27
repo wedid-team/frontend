@@ -1,5 +1,6 @@
 "use client";
 
+import { useUtAuthStore } from "@/src/stores/utAuthStore";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -37,8 +38,8 @@ const roadmap = { href: "/roadmap", label: "준비 로드맵" };
 
 export function DiscoveryShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
-  const signedIn = useDiscovery((state) => state.signedIn);
-  const setSignedIn = useDiscovery((state) => state.setSignedIn);
+  const signedIn = useUtAuthStore((state) => state.provider !== null);
+  const signIn = useUtAuthStore((state) => state.signIn);
   const count = useDiscovery((state) => state.compared.length);
   const ready = useReturnReady();
   const { count: completed, percent } = useProgress();
@@ -78,10 +79,10 @@ export function DiscoveryShell({ children }: { children: ReactNode }) {
             </div>
           ) : (
             <div className={s.previewControls}>
-              <button className={s.textAction} onClick={() => setSignedIn(true)}>
+              <button className={s.textAction} onClick={() => signIn()}>
                 로그인
               </button>
-              <button className={s.primary} onClick={() => setSignedIn(true)}>
+              <button className={s.primary} onClick={() => signIn()}>
                 계획 저장하기
               </button>
             </div>
@@ -154,7 +155,7 @@ export function DiscoveryShell({ children }: { children: ReactNode }) {
           ) : isHome && !signedIn ? (
             <section className={s.empty}>
               <h1>로그인하면 내 계획을 볼 수 있어요</h1>
-              <button className={s.primary} onClick={() => setSignedIn(true)}>
+              <button className={s.primary} onClick={() => signIn()}>
                 미리보기 로그인
               </button>
             </section>

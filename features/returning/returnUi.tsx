@@ -1,11 +1,11 @@
 "use client";
 
+import { useUtAuthStore } from "@/src/stores/utAuthStore";
 import Image from "next/image";
 import Link from "next/link";
 import { useId, useRef, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { DiscoveryIcon } from "../venues/shared";
-import { useDiscovery } from "../venues/useDiscovery";
 import {
   tasks,
   useProgress,
@@ -163,7 +163,7 @@ export function ConfirmNewPlan({
 }
 
 export function ProfileMenu({ iconOnly = false }: { iconOnly?: boolean }) {
-  const signOut = useDiscovery((state) => state.setSignedIn);
+  const signOut = useUtAuthStore((state) => state.signOut);
   const router = useRouter();
   const menu = useRef<HTMLDetailsElement>(null);
   const close = () => {
@@ -213,7 +213,7 @@ export function ProfileMenu({ iconOnly = false }: { iconOnly?: boolean }) {
         <button
           onClick={() => {
             close();
-            signOut(false);
+            signOut();
             router.push("/");
           }}
         >

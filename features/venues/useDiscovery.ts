@@ -2,15 +2,14 @@
 
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { useUtAuthStore } from "@/src/stores/utAuthStore";
 import { venues } from "./venueData";
 
 export const compareLimit = 3;
 type DiscoveryState = {
-  signedIn: boolean;
   compared: string[];
   favorites: string[];
   contracted: string | null;
-  setSignedIn: (signedIn: boolean) => void;
   toggleCompare: (id: string) => void;
   clearCompare: () => void;
   toggleFavorite: (id: string) => void;
@@ -21,24 +20,24 @@ type DiscoveryState = {
 export const useDiscovery = create<DiscoveryState>()(
   persist(
     (set) => ({
-      signedIn: true,
       compared: [],
       favorites: [],
       contracted: null,
-      setSignedIn: (signedIn) => set({ signedIn }),
       toggleCompare: (id) =>
         set((state) => {
-          if (!state.signedIn) return state;
+          if (!useUtAuthStore.getState().provider) return state;
           if (state.compared.includes(id))
             return { compared: state.compared.filter((entry) => entry !== id) };
           if (state.compared.length >= compareLimit || !venues.some((venue) => venue.id === id))
             return state;
           return { compared: [...state.compared, id] };
         }),
-      clearCompare: () => set((state) => (state.signedIn ? { compared: [] } : state)),
+      clearCompare: () => {
+        if (useUtAuthStore.getState().provider) set({ compared: [] });
+      },
       toggleFavorite: (id) =>
         set((state) =>
-          state.signedIn
+          useUtAuthStore.getState().provider
             ? {
                 favorites: state.favorites.includes(id)
                   ? state.favorites.filter((entry) => entry !== id)
@@ -49,9 +48,15 @@ export const useDiscovery = create<DiscoveryState>()(
       chooseVenue: (id) =>
         set((state) => {
           const venue = venues.find((entry) => entry.id === id);
-          return state.signedIn && venue && !venue.paused ? { contracted: id } : state;
+          return useUtAuthStore.getState().provider && venue && !venue.paused
+            ? { contracted: id }
+            : state;
         }),
     }),
-    { name: "wedid-discovery-preview", skipHydration: true },
+    {
+      name: "wedid-discovery-preview",
+      skipHydration: true,
+      partialize: ({ compared, favorites, contracted }) => ({ compared, favorites, contracted }),
+    },
   ),
 );

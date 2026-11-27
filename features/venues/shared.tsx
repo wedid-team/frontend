@@ -1,5 +1,6 @@
 "use client";
 
+import { useUtAuthStore } from "@/src/stores/utAuthStore";
 import Image from "next/image";
 import Link from "next/link";
 import { useId, type ReactNode } from "react";
@@ -143,8 +144,8 @@ export function StateCard({
 }
 
 export function LoginGate({ kind, children }: { kind: "venue" | "sdm"; children: ReactNode }) {
-  const signedIn = useDiscovery((state) => state.signedIn);
-  const setSignedIn = useDiscovery((state) => state.setSignedIn);
+  const signedIn = useUtAuthStore((state) => state.provider !== null);
+  const signIn = useUtAuthStore((state) => state.signIn);
   if (signedIn) return children;
   const isVenue = kind === "venue";
   return (
@@ -167,7 +168,7 @@ export function LoginGate({ kind, children }: { kind: "venue" | "sdm"; children:
       >
         <button
           className={styles.primary}
-          onClick={() => setSignedIn(true)}
+          onClick={() => signIn()}
           title="로컬 미리보기 로그인"
         >
           로그인하고 보기

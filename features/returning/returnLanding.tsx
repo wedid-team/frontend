@@ -1,5 +1,6 @@
 "use client";
 
+import { useUtAuthStore } from "@/src/stores/utAuthStore";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
@@ -229,8 +230,8 @@ function Allocation() {
 
 export function ReturningLanding() {
   const ready = useReturnReady();
-  const signedIn = useDiscovery((state) => state.signedIn);
-  const signIn = useDiscovery((state) => state.setSignedIn);
+  const signedIn = useUtAuthStore((state) => state.provider !== null);
+  const signIn = useUtAuthStore((state) => state.signIn);
   const { count, current, percent, spent } = useProgress();
   const weddingBudget = useReturnPlan((state) => Number(state.conditions.budget));
   return (
@@ -261,7 +262,7 @@ export function ReturningLanding() {
                   <ProfileMenu iconOnly />
                 </>
               ) : (
-                <button onClick={() => signIn(true)} className={s.button}>
+                <button onClick={() => signIn()} className={s.button}>
                   미리보기 로그인
                 </button>
               ))}

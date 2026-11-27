@@ -1,9 +1,9 @@
 "use client";
 
+import { useUtAuthStore } from "@/src/stores/utAuthStore";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
-import { useDiscovery } from "../venues/useDiscovery";
 import { combinations, tiers } from "../sdm/sdmData";
 import { money, range } from "../venues/venueData";
 import { s } from "./returnUi";
@@ -48,8 +48,8 @@ export function ReturnBudget() {
   const sharedTier = params.get("tier");
   const tier = useReturnPlan((state) => state.tier);
   const setTier = useReturnPlan((state) => state.setTier);
-  const signedIn = useDiscovery((state) => state.signedIn);
-  const signIn = useDiscovery((state) => state.setSignedIn);
+  const signedIn = useUtAuthStore((state) => state.provider !== null);
+  const signIn = useUtAuthStore((state) => state.signIn);
   const planConditions = useReturnPlan((state) => state.conditions);
   const shared = sharedConditions(params);
   const conditions = shared ?? planConditions;
@@ -93,7 +93,7 @@ export function ReturnBudget() {
     return (
       <section className={s.card}>
         <h1>로그인하면 내 계획을 볼 수 있어요</h1>
-        <button className={s.primary} onClick={() => signIn(true)}>
+        <button className={s.primary} onClick={() => signIn()}>
           미리보기 로그인
         </button>
       </section>
