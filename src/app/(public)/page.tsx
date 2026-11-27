@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { FirstVisitFlow } from "@/features/firstVisit/firstVisitFlow";
+import { PublicEntry } from "./publicEntry";
 
 export const metadata = {
   title: "WeDid | 우리 결혼, 얼마나 들까?",
@@ -9,7 +9,7 @@ export const metadata = {
 export default function Home() {
   return (
     <Suspense>
-      <FirstVisitFlow />
+      <PublicEntry />
     </Suspense>
   );
 }
