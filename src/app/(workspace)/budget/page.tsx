@@ -1,10 +1,10 @@
-import { RoutePlaceholder } from "../../../components/layout";
+import { Suspense } from "react";
+import { ReturnBudget } from "../../../../features/returning/returnBudget";
 
-export default function BudgetRoute() {
+export default function Route() {
   return (
-    <RoutePlaceholder
-      title="예산 비용"
-      description="결혼 예산과 비용 관리 화면이 연결될 경로입니다."
-    />
+    <Suspense fallback={<p role="status">계획을 불러오는 중이에요.</p>}>
+      <ReturnBudget />
+    </Suspense>
   );
 }

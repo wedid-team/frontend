@@ -1,10 +1,10 @@
-import { RoutePlaceholder } from "../../../components/layout";
+import { Suspense } from "react";
+import { ReturnEstimate } from "../../../../features/returning/returnEstimate";
 
-export default function EstimateRoute() {
+export default function Route() {
   return (
-    <RoutePlaceholder
-      title="결혼 비용 계산"
-      description="비용 계산 화면이 이 레이아웃 안에 연결될 경로입니다."
-    />
+    <Suspense fallback={<p role="status">계획을 불러오는 중이에요.</p>}>
+      <ReturnEstimate />
+    </Suspense>
   );
 }

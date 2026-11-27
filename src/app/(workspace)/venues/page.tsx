@@ -1,10 +1,5 @@
-import { RoutePlaceholder } from "../../../components/layout";
+import { VenueList } from "../../../../features/venues/components/venueList";
 
 export default function VenuesRoute() {
-  return (
-    <RoutePlaceholder
-      title="예식장 찾기"
-      description="업체 탐색 화면이 연결될 경로입니다."
-    />
-  );
+  return <VenueList />;
 }
