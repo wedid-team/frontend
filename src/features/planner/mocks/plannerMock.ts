@@ -179,7 +179,7 @@ export const SDM_BASIS_MOCK = {
   note: "대행사(플래너)마다 같은 상품도 가격이 다를 수 있어요.",
 };
 
-const VENUE_ESTIMATE = { min: 1550, max: 1900 };
+export const VENUE_ESTIMATE = { min: 1550, max: 1900 };
 
 function progress(
   status: StepProgress["status"],

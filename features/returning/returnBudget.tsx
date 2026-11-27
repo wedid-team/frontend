@@ -1,21 +1,34 @@
 "use client";
 
 import { useUtAuthStore } from "@/src/stores/utAuthStore";
+import { SDM_TIER_OPTIONS, VENUE_ESTIMATE } from "@/src/features/planner/mocks/plannerMock";
+import { PLANNER_ROUTES } from "@/src/features/planner/routes";
+import { usePlannerStore } from "@/src/features/planner/stores/plannerStore";
+import type { PlannerState } from "@/src/features/planner/types";
+import { formatRange, formatWon } from "@/src/features/planner/utils/money";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
-import { combinations, tiers } from "../sdm/sdmData";
-import { money, range } from "../venues/venueData";
+import {
+  createSharedEstimateUrl,
+  firstVisitHref,
+  initialAnswers,
+  readSharedEstimate,
+  timingLabel,
+  unknownGuestCount,
+} from "../firstVisit/model";
+import { combinations } from "../sdm/sdmData";
+import { range } from "../venues/venueData";
 import { s } from "./returnUi";
 import {
   tierRanges,
-  useReturnPlan,
   estimateVenue,
   formatMonth,
   regions,
   guestRanges,
   type Conditions,
 } from "./returnPlan";
+import { formatPlanBudget, getSavedPlanSummary, getWeddingDateDisplay } from "./savedPlanSummary";
 
 function sharedConditions(params: URLSearchParams): Conditions | null {
   const region = params.get("region") ?? "";
@@ -37,46 +50,101 @@ function sharedConditions(params: URLSearchParams): Conditions | null {
   return { region, guests, month, budget, mood };
 }
 
-function compactRange(min: number, max: number) {
-  return min.toLocaleString("ko-KR") + "만 ~ " + max.toLocaleString("ko-KR") + "만원";
+function shareSavedEstimate(plan: PlannerState) {
+  const { weddingDate, conditions, sdmTier } = plan;
+  const timing =
+    weddingDate.kind === "exact"
+      ? { timing: "date" as const, date: weddingDate.date }
+      : weddingDate.kind === "month"
+        ? {
+            timing: "month" as const,
+            year: String(weddingDate.year),
+            month: String(weddingDate.month),
+          }
+        : { timing: "unknown" as const };
+  const url = new URL(
+    createSharedEstimateUrl(
+      window.location.href,
+      {
+        ...initialAnswers,
+        region: conditions.regionLabel,
+        guests: conditions.guestLabel?.replace(/^하객 /, "") ?? unknownGuestCount,
+        moods: conditions.moods,
+        ...timing,
+      },
+      sdmTier,
+      new Date(),
+    ),
+  );
+  url.pathname = PLANNER_ROUTES.estimate;
+  url.searchParams.delete("screen");
+  return url.href;
 }
 
 const comboNames = ["실속형", "균형형", "프리미엄형"];
 
 export function ReturnBudget() {
   const params = useSearchParams();
-  const sharedTier = params.get("tier");
-  const tier = useReturnPlan((state) => state.tier);
-  const setTier = useReturnPlan((state) => state.setTier);
   const signedIn = useUtAuthStore((state) => state.provider !== null);
   const signIn = useUtAuthStore((state) => state.signIn);
-  const planConditions = useReturnPlan((state) => state.conditions);
-  const shared = sharedConditions(params);
-  const conditions = shared ?? planConditions;
-  const [override, setOverride] = useState<number | null>(null);
+  const plan = usePlannerStore();
+  const shared = readSharedEstimate(params.get("plan"));
+  const legacy = sharedConditions(params);
+  const sharedMode = shared !== null || legacy !== null;
+  const summary = sharedMode ? null : getSavedPlanSummary(plan);
   const [feedback, setFeedback] = useState("");
+  const legacyTier = params.get("tier") ?? "";
   const selected =
-    override ?? (sharedTier && /^[0-3]$/.test(sharedTier) ? Number(sharedTier) : tier);
-  const [venueMin, venueMax] = estimateVenue(conditions);
-  const [sdmMin, sdmMax] = tierRanges[selected];
-  const totalMin = venueMin + sdmMin;
-  const totalMax = venueMax + sdmMax;
-  const budget = Number(conditions.budget);
+    legacy && !shared
+      ? /^[0-3]$/.test(legacyTier)
+        ? Number(legacyTier)
+        : 1
+      : SDM_TIER_OPTIONS.findIndex(({ id }) => id === (shared?.tier ?? plan.sdmTier));
+  const option = SDM_TIER_OPTIONS[selected];
+  const [legacyVenueMin, legacyVenueMax] = legacy ? estimateVenue(legacy) : [];
+  const [legacySdmMin, legacySdmMax] = tierRanges[selected];
+  const venue = shared
+    ? VENUE_ESTIMATE
+    : legacyVenueMin !== undefined && legacyVenueMax !== undefined
+      ? { min: legacyVenueMin, max: legacyVenueMax }
+      : (plan.stepEstimates.venue ?? VENUE_ESTIMATE);
+  const sdm =
+    legacy && !shared
+      ? { min: legacySdmMin, max: legacySdmMax }
+      : shared
+        ? option.range
+        : (plan.stepEstimates.sdm ?? option.range);
+  const total = { min: venue.min + sdm.min, max: venue.max + sdm.max };
+  const budget = shared ? null : legacy ? Number(legacy.budget) : plan.budget;
+  const region = shared?.answers.region ?? legacy?.region ?? plan.conditions.regionLabel;
+  let conditions = [
+    plan.conditions.guestLabel ?? "하객 수 미정",
+    plan.conditions.moods.join(" · ") || "분위기 상관없음",
+    getWeddingDateDisplay(plan.weddingDate).label,
+  ];
+  if (shared) {
+    const { answers } = shared;
+    conditions = [
+      answers.guests === unknownGuestCount ? "하객 수 미정" : `하객 ${answers.guests}`,
+      answers.moods.join(" · ") || "분위기 상관없음",
+      timingLabel(answers),
+    ];
+  } else if (legacy) {
+    conditions = [`하객 ${legacy.guests}명`, legacy.mood, formatMonth(legacy.month)];
+  }
 
   async function share(preferNative: boolean) {
-    const url = new URL("/budget", window.location.origin);
-    url.searchParams.set("tier", String(selected));
-    for (const [key, value] of Object.entries(conditions)) url.searchParams.set(key, value);
     try {
+      const url = shareSavedEstimate(plan);
       if (preferNative && navigator.share) {
         await navigator.share({
           title: "우리 결혼 예상 비용",
-          text: range(totalMin, totalMax),
-          url: url.href,
+          text: formatRange(total),
+          url,
         });
         setFeedback("공유를 완료했어요.");
       } else {
-        await navigator.clipboard.writeText(url.href);
+        await navigator.clipboard.writeText(url);
         setFeedback(
           preferNative
             ? "링크를 복사했어요. 카카오톡에 붙여넣어 공유할 수 있어요."
@@ -89,28 +157,37 @@ export function ReturnBudget() {
     }
   }
 
-  if (!signedIn && !shared)
+  if (!sharedMode && (!signedIn || !plan.hasSavedPlan))
     return (
       <section className={s.card}>
-        <h1>로그인하면 내 계획을 볼 수 있어요</h1>
-        <button className={s.primary} onClick={() => signIn()}>
-          미리보기 로그인
-        </button>
+        <h1>
+          {plan.hasSavedPlan ? "로그인하면 내 계획을 볼 수 있어요" : "아직 저장된 계획이 없어요"}
+        </h1>
+        {plan.hasSavedPlan ? (
+          <button className={s.primary} onClick={() => signIn()}>
+            미리보기 로그인
+          </button>
+        ) : (
+          <Link className={s.primary} href={firstVisitHref("region")}>
+            결혼 비용 계산하기
+          </Link>
+        )}
       </section>
     );
 
   return (
     <>
       <header className={s.pageHead}>
-        <p className={s.eyebrow}>비용 계산 결과</p>
+        <p className={s.eyebrow}>{sharedMode ? "공유받은 예상 비용이에요" : "비용 계산 결과"}</p>
         <h1>우리 결혼 예상 비용</h1>
         <p>답해 주신 조건으로 예식장과 스드메 비용을 범위로 계산했어요.</p>
         <p>
-          {conditions.region} · 하객 {conditions.guests}명 · {conditions.mood} ·{" "}
-          {formatMonth(conditions.month)} · 토요일 낮 예식 기준{" "}
-          <Link href="/estimate?mode=edit" className={s.textLink}>
-            조건 수정
-          </Link>
+          {[region, ...conditions, "토요일 낮 예식 기준"].join(" · ")}{" "}
+          {!sharedMode && (
+            <Link href={PLANNER_ROUTES.roadmap} className={s.textLink}>
+              예산·예식일 수정
+            </Link>
+          )}
         </p>
       </header>
       <div className={s.workspaceColumns}>
@@ -118,9 +195,9 @@ export function ReturnBudget() {
           <section className={s.card + " " + s.priceCard}>
             <div>
               <h2>예식장</h2>
-              <p>{conditions.region} · 예식장 시안 예시 가격 기준</p>
+              <p>{region} · 예식장 시안 예시 가격 기준</p>
             </div>
-            <strong>{compactRange(venueMin, venueMax)}</strong>
+            <strong>{formatRange(venue)}</strong>
           </section>
           <section className={s.card}>
             <div className={s.priceCard}>
@@ -128,22 +205,22 @@ export function ReturnBudget() {
                 <h2>스드메</h2>
                 <p>예산대를 바꾸면 예상 비용이 바로 바뀌어요 · 기본값: 이 지역 중간 수준 구간</p>
               </div>
-              <strong>{compactRange(sdmMin, sdmMax)}</strong>
+              <strong>{formatRange(sdm)}</strong>
             </div>
             <div className={s.tiers} role="group" aria-label="스드메 예산대">
-              {tiers.map((item, index) => (
+              {SDM_TIER_OPTIONS.map((item, index) => (
                 <button
-                  key={item.name}
+                  key={item.id}
                   aria-pressed={selected === index}
+                  disabled={sharedMode}
                   onClick={() => {
-                    setOverride(index);
-                    if (!shared) setTier(index);
+                    plan.setSdmTier(item.id);
                     setFeedback("");
                   }}
                 >
                   {index === 1 && <span>추천</span>}
-                  <strong>{item.name}</strong>
-                  <small>{item.label}</small>
+                  <strong>{item.label}</strong>
+                  <small>{item.rangeLabel}</small>
                 </button>
               ))}
             </div>
@@ -157,9 +234,7 @@ export function ReturnBudget() {
             <div className={s.spread + " " + s.comboTitle}>
               <div>
                 <h3>이 예산대의 스드메 조합</h3>
-                <small className={s.muted}>
-                  {tiers[selected].name} 예산대 · 서울 시안 예시 가격 기준
-                </small>
+                <small className={s.muted}>{option.label} 예산대 · 서울 시안 예시 가격 기준</small>
               </div>
               <Link className={s.textLink} href={"/sdm?tier=" + selected}>
                 스드메 후보 보기 ›
@@ -204,41 +279,71 @@ export function ReturnBudget() {
         <aside>
           <section className={s.darkCard + " " + s.total}>
             <p>예상 총비용</p>
-            <h2>{compactRange(totalMin, totalMax)}</h2>
+            <h2>{formatRange(total)}</h2>
             <div
               className={s.splitBar}
               role="img"
               aria-label="예상 비용에서 예식장과 스드메의 비율"
             >
               <span
-                style={{ width: ((venueMin + venueMax) / (totalMin + totalMax)) * 100 + "%" }}
+                style={{ width: ((venue.min + venue.max) / (total.min + total.max)) * 100 + "%" }}
               />
             </div>
             <small>
               ■ 예식장　<span>■ 스드메</span>
             </small>
-            <div className={s.totalBudget}>
-              <div className={s.spread}>
-                <span>내 예산</span>
-                <strong>{money(budget)}</strong>
+            {(!sharedMode || budget !== null) && (
+              <div className={s.totalBudget}>
+                <div className={s.spread}>
+                  <span>{sharedMode ? "설정한 예산" : "내 예산"}</span>
+                  <strong>{formatPlanBudget(budget)}</strong>
+                </div>
+                {summary && (
+                  <>
+                    <div className={s.spread}>
+                      <span>지금까지 쓴 금액</span>
+                      <strong>{formatWon(summary.spent)}</strong>
+                    </div>
+                    <div className={s.spread}>
+                      <span>남은 예산</span>
+                      <strong>{formatPlanBudget(summary.remaining)}</strong>
+                    </div>
+                    <div className={s.spread}>
+                      <span>전체 진행률</span>
+                      <strong>{summary.percent}%</strong>
+                    </div>
+                  </>
+                )}
+                {budget !== null && (
+                  <span className={s.darkPill}>
+                    {total.max <= budget
+                      ? "✓ 예산 안에 들어와요"
+                      : "ⓘ 조건에 따라 예산을 넘을 수 있어요"}
+                  </span>
+                )}
               </div>
-              <span className={s.darkPill}>
-                {totalMax <= budget
-                  ? "✓ 예산 안에 들어와요"
-                  : "ⓘ 조건에 따라 예산을 넘을 수 있어요"}
-              </span>
-            </div>
-            <Link href="/roadmap" className={s.fullButton}>
-              준비 로드맵 보기 →
+            )}
+            <Link
+              href={sharedMode ? firstVisitHref("region") : PLANNER_ROUTES.roadmap}
+              className={s.fullButton}
+            >
+              {sharedMode ? "나도 계산해 보기 →" : "준비 로드맵 보기 →"}
             </Link>
-            <div className={s.actions}>
-              <button className={s.ghost} onClick={() => void share(false)}>
-                결과 링크 복사
-              </button>
-              <button className={s.kakao} onClick={() => void share(true)}>
-                카카오톡 공유
-              </button>
-            </div>
+            {summary?.nextStep && (
+              <Link href={summary.nextHref} className={s.fullButton}>
+                다음 할 일 · {summary.nextStep.title} →
+              </Link>
+            )}
+            {!sharedMode && (
+              <div className={s.actions}>
+                <button className={s.ghost} onClick={() => void share(false)}>
+                  결과 링크 복사
+                </button>
+                <button className={s.kakao} onClick={() => void share(true)}>
+                  카카오톡 공유
+                </button>
+              </div>
+            )}
             {feedback && <p role="status">{feedback}</p>}
           </section>
         </aside>
