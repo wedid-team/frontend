@@ -94,6 +94,7 @@ export type PlannerState = {
   weddingDate: WeddingDate;
   /** 설정한 예산 (만 원). 미입력이면 null (E-05) */
   budget: number | null;
+  selectedVenueId: string | null;
   steps: Record<StepId, StepProgress>;
   stepEstimates: Partial<Record<StepId, ManwonRange>>;
   sdmTier: SdmTier;

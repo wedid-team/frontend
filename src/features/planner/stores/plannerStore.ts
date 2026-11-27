@@ -28,6 +28,7 @@ import type {
 type PlannerActions = {
   savePlanIfMissing: (draft: PlannerDraft, provider: Member["loginProvider"]) => Promise<void>;
   loadScenario: (scenario: DemoScenario, today: Date) => void;
+  selectVenue: (venueId: string) => boolean;
   /** 금액 단계는 amount 필수 (R-09) */
   completeStep: (stepId: StepId, amount?: number) => void;
   /** 단계 05: 진행중으로 되돌림. 실제 금액은 지우지 않고 계산에서만 빠진다. */
@@ -56,9 +57,30 @@ const savedPlanStorage: PersistStorage<PlannerState | null> = {
 };
 
 function planSnapshot(state: PlannerState): PlannerState {
-  const { conditions, weddingDate, budget, steps, stepEstimates, sdmTier, todos, me, partner } =
-    state;
-  return { conditions, weddingDate, budget, steps, stepEstimates, sdmTier, todos, me, partner };
+  const {
+    conditions,
+    weddingDate,
+    budget,
+    selectedVenueId,
+    steps,
+    stepEstimates,
+    sdmTier,
+    todos,
+    me,
+    partner,
+  } = state;
+  return {
+    conditions,
+    weddingDate,
+    budget,
+    selectedVenueId: typeof selectedVenueId === "string" ? selectedVenueId : null,
+    steps,
+    stepEstimates,
+    sdmTier,
+    todos,
+    me,
+    partner,
+  };
 }
 
 export const usePlannerStore = create<PlannerStore>()(
@@ -76,6 +98,12 @@ export const usePlannerStore = create<PlannerStore>()(
 
       loadScenario: (scenario, today) => {
         if (!get().hasSavedPlan) set(createDemoPlannerState(scenario, today));
+      },
+
+      selectVenue: (venueId) => {
+        if (!get().hasSavedPlan) return false;
+        set({ selectedVenueId: venueId });
+        return true;
       },
 
       completeStep: (stepId, amount) =>

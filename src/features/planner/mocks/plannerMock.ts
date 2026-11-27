@@ -215,6 +215,7 @@ export function createBasePlannerState(): PlannerState {
     },
     weddingDate: { kind: "month", year: 2027, month: 10 },
     budget: 3000,
+    selectedVenueId: null,
     steps: {
       agreement: progress("complete"),
       venue: progress("inProgress"),
