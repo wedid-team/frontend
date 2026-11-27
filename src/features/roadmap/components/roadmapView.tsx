@@ -82,7 +82,7 @@ export function RoadmapView() {
           <p className={ui.pageLead}>결혼식을 위한 일정을 확인하고, 차근차근 준비해보세요.</p>
           <p className={styles.conditions}>
             예식 예정: {weddingLabel(wedding)} · {state.conditions.regionLabel} ·{" "}
-            {state.conditions.guestLabel}
+            {state.conditions.guestLabel ?? "하객 수 미정"}
             {state.conditions.moods.length > 0 && ` · ${state.conditions.moods.join(" · ")}`} ·
             토요일 낮 예식 기준
             {/* TODO: 조건 수정은 A파트 결과 화면 오른쪽 패널(E-11)로 연결 — 경로 합의 필요 */}
@@ -212,7 +212,7 @@ export function RoadmapView() {
 
 function weddingLabel(wedding: ResolvedWeddingDate) {
   if (wedding.isUndecided) return `미정 (${wedding.monthLabel} 기준)`;
-  return wedding.monthLabel;
+  return wedding.isEstimated ? wedding.monthLabel : `${wedding.monthLabel} ${wedding.date.getDate()}일`;
 }
 
 function NextStepCard({

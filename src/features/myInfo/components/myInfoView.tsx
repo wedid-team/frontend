@@ -25,7 +25,7 @@ export function MyInfoView() {
 
   const planSummary = [
     state.conditions.regionLabel,
-    state.conditions.guestLabel,
+    state.conditions.guestLabel ?? "하객 수 미정",
     wedding.isUndecided ? "예식일 미정" : wedding.monthLabel,
     state.budget === null ? "예산 미입력" : `예산 ${formatWon(state.budget)}`,
   ].join(" · ");

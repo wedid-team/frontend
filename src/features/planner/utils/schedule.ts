@@ -28,7 +28,7 @@ function monthLabel(date: Date) {
  */
 export function resolveWeddingDate(weddingDate: WeddingDate, today: Date): ResolvedWeddingDate {
   if (weddingDate.kind === "exact") {
-    const date = startOfDay(new Date(weddingDate.date));
+    const date = startOfDay(new Date(`${weddingDate.date}T12:00:00`));
     return { date, isEstimated: false, isUndecided: false, monthLabel: monthLabel(date) };
   }
   if (weddingDate.kind === "month") {

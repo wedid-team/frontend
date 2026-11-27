@@ -1,19 +1,32 @@
 "use client";
 
 import { create } from "zustand";
+import { createJSONStorage, persist, type PersistStorage } from "zustand/middleware";
+import { safeLocalStorage } from "../../../stores/localStorage";
 import {
   createBasePlannerState,
   createDemoPlannerState,
+  createNewPlannerState,
   SDM_TIER_OPTIONS,
+  STEP_DEFINITIONS,
   type DemoScenario,
 } from "../mocks/plannerMock";
-import type { Assignee, PlannerState, SdmTier, StepId, WeddingDate } from "../types";
+import type {
+  Assignee,
+  Member,
+  PlannerDraft,
+  PlannerState,
+  SdmTier,
+  StepId,
+  WeddingDate,
+} from "../types";
 
 /**
- * B파트 화면 상태. 지금은 MOCK 데이터로 화면 안에서만 바뀐다.
+ * UT 계획은 이 브라우저에 저장한다. 시안 확인용 시나리오는 저장하지 않는다.
  * 백엔드 연동 시 각 액션을 API 호출(TanStack Query mutation 등)로 교체한다.
  */
 type PlannerActions = {
+  savePlanIfMissing: (draft: PlannerDraft, provider: Member["loginProvider"]) => Promise<void>;
   loadScenario: (scenario: DemoScenario, today: Date) => void;
   /** 금액 단계는 amount 필수 (R-09) */
   completeStep: (stepId: StepId, amount?: number) => void;
@@ -31,69 +44,121 @@ type PlannerActions = {
   disconnectPartner: () => void;
 };
 
-export const usePlannerStore = create<PlannerState & PlannerActions>()((set) => ({
-  ...createBasePlannerState(),
+type PlannerStore = PlannerState & PlannerActions & { hasSavedPlan: boolean };
 
-  loadScenario: (scenario, today) => set(createDemoPlannerState(scenario, today)),
+const jsonStorage = createJSONStorage<PlannerState | null>(() => safeLocalStorage);
+const savedPlanStorage: PersistStorage<PlannerState | null> = {
+  getItem: (name) => jsonStorage?.getItem(name) ?? null,
+  setItem: (name, value) => {
+    if (value.state !== null) return jsonStorage?.setItem(name, value);
+  },
+  removeItem: (name) => jsonStorage?.removeItem(name),
+};
 
-  completeStep: (stepId, amount) =>
-    set((state) => ({
-      steps: {
-        ...state.steps,
-        [stepId]: {
-          ...state.steps[stepId],
-          status: "complete",
-          actualAmount: amount ?? state.steps[stepId].actualAmount,
-          isMarkedOverdue: false,
-        },
+function planSnapshot(state: PlannerState): PlannerState {
+  const { conditions, weddingDate, budget, steps, stepEstimates, sdmTier, todos, me, partner } =
+    state;
+  return { conditions, weddingDate, budget, steps, stepEstimates, sdmTier, todos, me, partner };
+}
+
+export const usePlannerStore = create<PlannerStore>()(
+  persist(
+    (set, get) => ({
+      ...createBasePlannerState(),
+      hasSavedPlan: false,
+
+      savePlanIfMissing: async (draft, provider) => {
+        // 열린 탭이 여럿이면 다른 탭에서 먼저 만든 계획도 확인한다.
+        await usePlannerStore.persist.rehydrate();
+        if (!get().hasSavedPlan)
+          set({ ...createNewPlannerState(draft, provider), hasSavedPlan: true });
       },
-    })),
 
-  cancelComplete: (stepId) =>
-    set((state) => ({
-      steps: { ...state.steps, [stepId]: { ...state.steps[stepId], status: "inProgress" } },
-    })),
-
-  updateAmount: (stepId, amount) =>
-    set((state) => ({
-      steps: { ...state.steps, [stepId]: { ...state.steps[stepId], actualAmount: amount } },
-    })),
-
-  markNotDoneYet: (stepId) =>
-    set((state) => ({
-      steps: { ...state.steps, [stepId]: { ...state.steps[stepId], isMarkedOverdue: true } },
-    })),
-
-  setBudget: (budget) => set({ budget }),
-
-  setWeddingDate: (weddingDate) => set({ weddingDate }),
-
-  setSdmTier: (tier) =>
-    set((state) => ({
-      sdmTier: tier,
-      stepEstimates: {
-        ...state.stepEstimates,
-        sdm: SDM_TIER_OPTIONS.find((option) => option.id === tier)!.range,
+      loadScenario: (scenario, today) => {
+        if (!get().hasSavedPlan) set(createDemoPlannerState(scenario, today));
       },
-    })),
 
-  addTodo: ({ assignee, stepId, title }) =>
-    set((state) => ({
-      todos: [
-        ...state.todos,
-        { id: `todo-${Date.now()}`, stepId, title: title.trim(), assignee, isDone: false },
-      ],
-    })),
+      completeStep: (stepId, amount) =>
+        set((state) => ({
+          steps: {
+            ...state.steps,
+            [stepId]: {
+              ...state.steps[stepId],
+              status: "complete",
+              actualAmount: amount ?? state.steps[stepId].actualAmount,
+              isMarkedOverdue: false,
+            },
+          },
+        })),
 
-  toggleTodo: (todoId) =>
-    set((state) => ({
-      todos: state.todos.map((todo) =>
-        todo.id === todoId ? { ...todo, isDone: !todo.isDone } : todo,
-      ),
-    })),
+      cancelComplete: (stepId) =>
+        set((state) => ({
+          steps: { ...state.steps, [stepId]: { ...state.steps[stepId], status: "inProgress" } },
+        })),
 
-  disconnectPartner: () => set({ partner: null }),
-}));
+      updateAmount: (stepId, amount) =>
+        set((state) => ({
+          steps: { ...state.steps, [stepId]: { ...state.steps[stepId], actualAmount: amount } },
+        })),
+
+      markNotDoneYet: (stepId) =>
+        set((state) => ({
+          steps: { ...state.steps, [stepId]: { ...state.steps[stepId], isMarkedOverdue: true } },
+        })),
+
+      setBudget: (budget) => set({ budget }),
+
+      setWeddingDate: (weddingDate) => set({ weddingDate }),
+
+      setSdmTier: (tier) =>
+        set((state) => ({
+          sdmTier: tier,
+          stepEstimates: {
+            ...state.stepEstimates,
+            sdm: SDM_TIER_OPTIONS.find((option) => option.id === tier)!.range,
+          },
+        })),
+
+      addTodo: ({ assignee, stepId, title }) =>
+        set((state) => ({
+          todos: [
+            ...state.todos,
+            { id: `todo-${Date.now()}`, stepId, title: title.trim(), assignee, isDone: false },
+          ],
+        })),
+
+      toggleTodo: (todoId) =>
+        set((state) => ({
+          todos: state.todos.map((todo) =>
+            todo.id === todoId ? { ...todo, isDone: !todo.isDone } : todo,
+          ),
+        })),
+
+      disconnectPartner: () => set({ partner: null }),
+    }),
+    {
+      name: "wedidUtPlannerPlan",
+      storage: savedPlanStorage,
+      partialize: (state) => (state.hasSavedPlan ? planSnapshot(state) : null),
+      merge: (stored, current) => {
+        const plan = stored as Partial<PlannerState> | null | undefined;
+        if (
+          !plan?.conditions ||
+          !plan.weddingDate ||
+          !(plan.budget === null || typeof plan.budget === "number") ||
+          !STEP_DEFINITIONS.every(({ id }) => plan.steps?.[id]) ||
+          !plan.stepEstimates ||
+          !SDM_TIER_OPTIONS.some(({ id }) => id === plan.sdmTier) ||
+          !Array.isArray(plan.todos) ||
+          !plan.me
+        ) {
+          return current;
+        }
+        return { ...current, ...planSnapshot(plan as PlannerState), hasSavedPlan: true };
+      },
+    },
+  ),
+);
 
 /** U-06 토스트: 하단 가운데 · 3초 · 한 번에 1개 */
 type ToastState = {

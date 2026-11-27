@@ -85,7 +85,7 @@ export type Member = {
 
 export type PlanConditions = {
   regionLabel: string;
-  guestLabel: string;
+  guestLabel: string | null;
   moods: string[];
 };
 
@@ -101,3 +101,5 @@ export type PlannerState = {
   me: Member;
   partner: Member | null;
 };
+
+export type PlannerDraft = Pick<PlannerState, "conditions" | "weddingDate" | "budget" | "sdmTier">;

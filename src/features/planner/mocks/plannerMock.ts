@@ -4,6 +4,8 @@
  * 실제 API 규격은 추측하지 않고, 연동할 때 이 파일을 API 호출로 교체한다.
  */
 import type {
+  Member,
+  PlannerDraft,
   PlannerState,
   SdmCombo,
   SdmTier,
@@ -241,6 +243,30 @@ export function createBasePlannerState(): PlannerState {
       role: "partner",
       loginProvider: "google",
     },
+  };
+}
+
+/** 첫 방문에서 저장할 때는 기존 로드맵 템플릿의 단계와 할 일만 사용한다. */
+export function createNewPlannerState(
+  draft: PlannerDraft,
+  provider: Member["loginProvider"],
+): PlannerState {
+  const base = createBasePlannerState();
+  return {
+    ...base,
+    ...draft,
+    steps: {
+      ...base.steps,
+      agreement: progress("inProgress"),
+      venue: progress("upcoming"),
+    },
+    stepEstimates: {
+      ...base.stepEstimates,
+      sdm: SDM_TIER_OPTIONS.find((option) => option.id === draft.sdmTier)!.range,
+    },
+    todos: base.todos.map((todo) => ({ ...todo, isDone: false })),
+    me: { ...base.me, loginProvider: provider },
+    partner: null,
   };
 }
 
