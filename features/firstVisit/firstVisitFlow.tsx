@@ -65,7 +65,7 @@ export function FirstVisitFlow() {
           updateAnswers={updateAnswers}
         />
       )}
-      {loginOpen && <SavePlanLoginModal onClose={closeLogin} />}
+      {loginOpen && <SavePlanLoginModal onClose={closeLogin} restoreOnly={sharedEstimate !== null} />}
     </div>
   );
 }
