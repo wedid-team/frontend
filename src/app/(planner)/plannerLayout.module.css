@@ -30,3 +30,12 @@
 .main__inner {
   max-width: 1108px;
 }
+
+.emptyState {
+  width: min(calc(100% - 32px), 620px);
+  margin: clamp(32px, 9vw, 96px) auto;
+}
+
+.emptyActions {
+  margin-top: 24px;
+}

@@ -5,6 +5,8 @@
  * 관련 정책: C-07 프로필 드롭다운 / C-08 위험 동작 확인 / P-10 연결 해제 / U-08 로그아웃은 확인 없이
  */
 import { Button } from "@/src/components/common";
+import { useUtAuthStore } from "@/src/stores/utAuthStore";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { LogoutIcon, RefreshIcon, UnlinkIcon, UsersIcon } from "../../planner/components/icons";
 import { Avatar, Dialog, cx } from "../../planner/components/ui";
@@ -17,7 +19,10 @@ import styles from "./myInfo.module.css";
 const PROVIDER_LABEL = { kakao: "카카오", google: "구글" } as const;
 
 export function MyInfoView() {
+  const router = useRouter();
   const state = usePlannerStore();
+  const provider = useUtAuthStore((store) => store.provider) ?? state.me.loginProvider;
+  const signOut = useUtAuthStore((store) => store.signOut);
   const disconnectPartner = usePlannerStore((store) => store.disconnectPartner);
   const showToast = useToastStore((store) => store.showToast);
   const [isDisconnectOpen, setDisconnectOpen] = useState(false);
@@ -53,12 +58,12 @@ export function MyInfoView() {
                 <span
                   className={cx(
                     styles.provider__mark,
-                    styles[`provider__mark--${state.me.loginProvider}`],
+                    styles[`provider__mark--${provider}`],
                   )}
                 >
-                  {state.me.loginProvider === "kakao" ? "K" : "G"}
+                  {provider === "kakao" ? "K" : "G"}
                 </span>
-                {PROVIDER_LABEL[state.me.loginProvider]}
+                {PROVIDER_LABEL[provider]}
               </dd>
             </div>
           </dl>
@@ -104,8 +109,14 @@ export function MyInfoView() {
 
       <div className={styles.footer}>
         <span>데이터 출처: 한국소비자원 참가격 결혼서비스 통계</span>
-        {/* TODO: 로그아웃 API 연결 (U-08 확인 없이 로그아웃) */}
-        <button className={ui.textLink} type="button">
+        <button
+          className={ui.textLink}
+          type="button"
+          onClick={() => {
+            signOut();
+            router.push("/");
+          }}
+        >
           <LogoutIcon size={14} />
           로그아웃
         </button>

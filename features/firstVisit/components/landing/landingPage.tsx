@@ -1,5 +1,7 @@
 import Image from "next/image";
+import Link from "next/link";
 import { Button } from "@/src/components/common";
+import { PLANNER_ROUTES } from "@/src/features/planner/routes";
 import { assets } from "../../assets";
 import { FlowIcon, type FlowActions } from "../layout/flowUi";
 import { FirstVisitFooter } from "../layout/firstVisitFooter";
@@ -69,9 +71,9 @@ export function LandingPage({ navigate, openLogin }: FlowActions) {
             <Button size="xl" onClick={() => navigate("region")} className={styles.heroButton}>
               우리 결혼 비용 계산하기 <FlowIcon icon={assets.icons.whiteArrow} />
             </Button>
-            <button className={styles.textButton} onClick={() => navigate("roadmap")}>
+            <Link className={styles.textButton} href={PLANNER_ROUTES.roadmap}>
               이미 계획이 있다면 내 로드맵 보기 <FlowIcon icon={assets.icons.chevron} />
-            </button>
+            </Link>
           </div>
         </div>
       </section>
