@@ -3,8 +3,6 @@
 import { useEffect, useState } from "react";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { PLANNER_ROUTES } from "@/src/features/planner/routes";
-import type { StepId } from "@/src/features/planner/types";
 import { plan, range } from "../venues/venueData";
 import { useDiscovery } from "../venues/useDiscovery";
 
@@ -34,23 +32,6 @@ export const steps = [
   },
   { id: "final", title: "최종 점검", short: "최종 점검", timing: "D-30~0", icon: "mood" },
 ] as const;
-export type Step = (typeof steps)[number];
-const plannerStepIds: Record<Step["id"], StepId> = {
-  budget: "agreement",
-  venue: "venue",
-  sdm: "sdm",
-  shoot: "photoTrip",
-  invite: "invitation",
-  final: "finalCheck",
-};
-export const stepHref = (step: Step) => PLANNER_ROUTES.step(plannerStepIds[step.id]);
-export const tasks = [
-  { id: "agree", label: "예산 상한 합의하기", owner: "함께" },
-  { id: "tour", label: "후보 예식장 3곳 투어 예약", owner: "나" },
-  { id: "share", label: "부모님께 후보 공유", owner: "짝꿍" },
-];
-export const weddingBudget = 3000;
-export const weddingDday = "D-334";
 export const tierRanges: [number, number][] = [
   [185, 250],
   [250, 350],
@@ -70,7 +51,7 @@ export const conditionsDefault: Conditions = {
   month: "2027-10",
   region: plan.region,
   guests: plan.guests,
-  budget: String(weddingBudget),
+  budget: "3000",
   mood: "화사한 · 클래식",
 };
 export const regions = [plan.region, "서울 강남권", "경기·인천", "제주", "그 외 지역"];
@@ -88,33 +69,18 @@ export function estimateVenue(conditions: Conditions): [number, number] {
 }
 export const venueBudgetFor = (conditions: Conditions) => range(...estimateVenue(conditions));
 
-type PlanProgress = {
+type PreviewPlan = {
   conditions: Conditions;
   setConditions: (conditions: Conditions) => void;
-  completed: number;
-  checked: string[];
   tier: number;
-  toggleTask: (id: string) => void;
-  finish: (index: number) => void;
-  setTier: (tier: number) => void;
 };
 
-export const useReturnPlan = create<PlanProgress>()(
+export const useReturnPlan = create<PreviewPlan>()(
   persist(
     (set) => ({
       conditions: conditionsDefault,
       setConditions: (conditions) => set({ conditions }),
-      completed: 1,
-      checked: ["tour"],
       tier: 1,
-      toggleTask: (id) =>
-        set((state) => ({
-          checked: state.checked.includes(id)
-            ? state.checked.filter((item) => item !== id)
-            : [...state.checked, id],
-        })),
-      finish: (index) => set((state) => ({ completed: Math.max(state.completed, index + 1) })),
-      setTier: (tier) => set({ tier }),
     }),
     { name: "wedid-return-plan-preview", skipHydration: true },
   ),
@@ -138,14 +104,4 @@ export function useReturnReady() {
     };
   }, []);
   return ready;
-}
-
-export function useProgress() {
-  const count = useReturnPlan((state) => state.completed);
-  return {
-    count,
-    percent: Math.round((count / steps.length) * 100),
-    current: steps[count],
-    spent: count === steps.length ? 2290 : 0,
-  };
 }

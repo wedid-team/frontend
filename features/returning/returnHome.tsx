@@ -4,11 +4,14 @@ import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import { usePlannerStore } from "@/src/features/planner/stores/plannerStore";
 import { DiscoveryIcon } from "../venues/shared";
 import { ChecklistCard, CostSummary, CurrentStage, s } from "./returnUi";
-import { formatMonth, useReturnPlan, weddingDday } from "./returnPlan";
+import { getSavedPlanSummary, getWeddingDateDisplay } from "./savedPlanSummary";
 
 export function MemberPanel({ profile = false }: { profile?: boolean }) {
+  const me = usePlannerStore((state) => state.me);
+  const partner = usePlannerStore((state) => state.partner);
   const [feedback, setFeedback] = useState("");
   async function copyInvite() {
     try {
@@ -25,19 +28,22 @@ export function MemberPanel({ profile = false }: { profile?: boolean }) {
       <h2>{profile ? "내 정보" : "함께하는 멤버"}</h2>
       <div className={s.member}>
         <Image src="/images/avatars/avatar-joongeun.png" width={32} height={32} alt="" />
-        <strong>최준근</strong>
+        <strong>{me.fullName}</strong>
         <small>나</small>
       </div>
       {!profile && (
         <>
-          <div className={s.member}>
-            <Image src="/images/avatars/avatar-minji.png" width={32} height={32} alt="" />
-            <strong>민지 님</strong>
-            <small>연결됨</small>
-          </div>
-          <button type="button" className={s.button} onClick={() => void copyInvite()}>
-            초대 링크 만들기
-          </button>
+          {partner ? (
+            <div className={s.member}>
+              <Image src="/images/avatars/avatar-minji.png" width={32} height={32} alt="" />
+              <strong>{partner.fullName}</strong>
+              <small>연결됨</small>
+            </div>
+          ) : (
+            <button type="button" className={s.button} onClick={() => void copyInvite()}>
+              초대 링크 만들기
+            </button>
+          )}
           {feedback && (
             <p className={s.muted} role="status">
               {feedback}
@@ -60,13 +66,21 @@ const quickLinks = [
   {
     href: "/home?panel=members",
     title: "함께하는 멤버",
-    subtitle: "민지 님과 연결됨",
     icon: "members",
   },
 ] as const;
 
 export function ReturnHome() {
-  const conditions = useReturnPlan((state) => state.conditions);
+  const plan = usePlannerStore();
+  const summary = getSavedPlanSummary(plan);
+  const tasks = plan.todos.filter((task) => task.stepId === summary.nextStep?.id);
+  const date = getWeddingDateDisplay(plan.weddingDate);
+  const conditions = [
+    date.label,
+    plan.conditions.regionLabel,
+    plan.conditions.guestLabel ?? "하객 수 미정",
+    plan.conditions.moods.join(" · ") || "분위기 상관없음",
+  ];
   const panel = useSearchParams().get("panel");
   const panelRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -75,20 +89,17 @@ export function ReturnHome() {
   return (
     <>
       <header className={s.pageHead}>
-        <p className={s.eyebrow}>홈 · 예식 {weddingDday}</p>
-        <h1>준근님, 다시 오셨네요</h1>
-        <p>
-          {formatMonth(conditions.month)} 예식 · {conditions.region} · 지금 할 일과 이번 주 할 일을
-          확인해요.
-        </p>
+        <p className={s.eyebrow}>홈 · {date.countdown}</p>
+        <h1>{plan.me.name}님, 다시 오셨네요</h1>
+        <p>{conditions.join(" · ")}</p>
       </header>
       <div className={s.workspaceColumns}>
         <div className={s.stack}>
-          <CurrentStage />
-          <ChecklistCard />
+          <CurrentStage plan={plan} tasks={tasks} summary={summary} />
+          <ChecklistCard tasks={tasks} nextStep={summary.nextStep} />
         </div>
         <aside className={s.stack}>
-          <CostSummary />
+          <CostSummary plan={plan} summary={summary} />
           <section className={s.card + " " + s.summary}>
             <h2>바로가기</h2>
             <div className={s.quickLinks}>
@@ -99,7 +110,13 @@ export function ReturnHome() {
                   </span>
                   <span>
                     <strong>{item.title}</strong>
-                    <small>{item.subtitle}</small>
+                    <small>
+                      {"subtitle" in item
+                        ? item.subtitle
+                        : plan.partner
+                          ? `${plan.partner.name} 님과 연결됨`
+                          : "짝꿍 연결 전"}
+                    </small>
                   </span>
                   <span aria-hidden="true">›</span>
                 </Link>

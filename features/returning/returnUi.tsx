@@ -1,22 +1,17 @@
 "use client";
 
 import { useUtAuthStore } from "@/src/stores/utAuthStore";
+import { ASSIGNEE_LABEL } from "@/src/features/planner/components/ui";
+import { PLANNER_ROUTES } from "@/src/features/planner/routes";
+import { usePlannerStore } from "@/src/features/planner/stores/plannerStore";
+import type { PlannerState, StepDefinition } from "@/src/features/planner/types";
+import { formatRange, formatWon } from "@/src/features/planner/utils/money";
 import Image from "next/image";
 import Link from "next/link";
 import { useId, useRef, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { DiscoveryIcon } from "../venues/shared";
-import {
-  tasks,
-  useProgress,
-  useReturnPlan,
-  weddingDday,
-  stepHref,
-  tierRanges,
-  estimateVenue,
-  venueBudgetFor,
-} from "./returnPlan";
-import { money, range } from "../venues/venueData";
+import { formatPlanBudget, getSavedPlanSummary, getWeddingDateDisplay } from "./savedPlanSummary";
 import s from "./returning.module.css";
 
 export { s };
@@ -25,23 +20,19 @@ export function Progress({ value, label = "전체 진행률" }: { value: number;
   return <progress className={s.progress} max={100} value={value} aria-label={label} />;
 }
 
-function Checklist() {
-  const { current } = useProgress();
-  const checked = useReturnPlan((state) => state.checked);
-  const toggleTask = useReturnPlan((state) => state.toggleTask);
-  if (current?.id !== "venue") return <p className={s.empty}>할 일이 없어요</p>;
+function Checklist({ tasks }: { tasks: PlannerState["todos"] }) {
+  const toggleTodo = usePlannerStore((state) => state.toggleTodo);
+  if (tasks.length === 0) return <p className={s.empty}>할 일이 없어요</p>;
   return (
     <ul className={s.tasks}>
       {tasks.map((task) => (
         <li key={task.id}>
           <label>
-            <input
-              type="checkbox"
-              checked={checked.includes(task.id)}
-              onChange={() => toggleTask(task.id)}
-            />
-            <span>{task.label}</span>
-            <small data-owner={task.owner}>{task.owner}</small>
+            <input type="checkbox" checked={task.isDone} onChange={() => toggleTodo(task.id)} />
+            <span>{task.title}</span>
+            <small data-owner={ASSIGNEE_LABEL[task.assignee]}>
+              {ASSIGNEE_LABEL[task.assignee]}
+            </small>
           </label>
         </li>
       ))}
@@ -49,62 +40,81 @@ function Checklist() {
   );
 }
 
-export function ChecklistCard({ landing = false }: { landing?: boolean }) {
-  const { current } = useProgress();
-  const checked = useReturnPlan((state) => state.checked.length);
-  const href = current ? stepHref(current) : "/roadmap";
+export function ChecklistCard({
+  tasks,
+  nextStep,
+  landing = false,
+}: {
+  tasks: PlannerState["todos"];
+  nextStep: StepDefinition | null;
+  landing?: boolean;
+}) {
+  const checked = tasks.filter((task) => task.isDone).length;
+  const href = nextStep ? PLANNER_ROUTES.step(nextStep.id) : PLANNER_ROUTES.roadmap;
   return (
     <section className={s.card}>
       <div className={s.spread}>
         <h2>
           이번 단계 할 일{" "}
-          {!landing && <small>{current?.id === "venue" ? checked + "/3" : "0/0"}</small>}
+          {!landing && (
+            <small>
+              {checked}/{tasks.length}
+            </small>
+          )}
         </h2>
         <Link href={href} className={landing ? s.subtle : s.button}>
           {landing ? "더보기 →" : "단계 보기 ›"}
         </Link>
       </div>
-      <Checklist />
-      {current && (
+      <Checklist tasks={tasks} />
+      {nextStep && (
         <Link href={href} className={landing ? s.fullButton : s.textLink}>
-          {landing ? "단계 상세 보기 ›" : current.title + " 단계 전체 보기 →"}
+          {landing ? "단계 상세 보기 ›" : nextStep.title + " 단계 전체 보기 →"}
         </Link>
       )}
     </section>
   );
 }
 
-export function CostSummary() {
-  const { percent, spent } = useProgress();
-  const tier = useReturnPlan((state) => state.tier);
-  const budget = tierRanges[tier];
-  const conditions = useReturnPlan((state) => state.conditions);
-  const weddingBudget = Number(conditions.budget);
-  const [venueMin, venueMax] = estimateVenue(conditions);
+export function CostSummary({
+  plan,
+  summary,
+}: {
+  plan: PlannerState;
+  summary: ReturnType<typeof getSavedPlanSummary>;
+}) {
+  const { percent, spent, remaining } = summary;
+  const { venue, sdm } = plan.stepEstimates;
+  const estimate =
+    venue && sdm
+      ? formatRange({ min: venue.min + sdm.min, max: venue.max + sdm.max })
+      : "예상 비용 미정";
   return (
     <section className={s.card + " " + s.summary}>
       <div className={s.spread}>
         <h2>우리 결혼 비용</h2>
-        <Link href="/budget" className={s.subtle}>
+        <Link href={PLANNER_ROUTES.estimate} className={s.subtle}>
           상세 ›
         </Link>
       </div>
       <dl>
         <div>
           <dt>예상 총 비용</dt>
-          <dd>{range(venueMin + budget[0], venueMax + budget[1])}</dd>
+          <dd>{estimate}</dd>
         </div>
         <div>
           <dt>설정한 예산</dt>
-          <dd>{money(weddingBudget)}</dd>
+          <dd>{formatPlanBudget(plan.budget)}</dd>
         </div>
         <div>
           <dt>지금까지 쓴 금액</dt>
-          <dd>{spent ? money(spent) : "0원"}</dd>
+          <dd>{formatWon(spent)}</dd>
         </div>
         <div>
           <dt>남은 예산</dt>
-          <dd className={s.green}>{money(weddingBudget - spent)}</dd>
+          <dd className={remaining !== null && remaining >= 0 ? s.green : undefined}>
+            {formatPlanBudget(remaining)}
+          </dd>
         </div>
       </dl>
       <div className={s.spread + " " + s.progressLabel}>
@@ -164,6 +174,8 @@ export function ConfirmNewPlan({
 
 export function ProfileMenu({ iconOnly = false }: { iconOnly?: boolean }) {
   const signOut = useUtAuthStore((state) => state.signOut);
+  const me = usePlannerStore((state) => state.me);
+  const partner = usePlannerStore((state) => (state.hasSavedPlan ? state.partner : null));
   const router = useRouter();
   const menu = useRef<HTMLDetailsElement>(null);
   const close = () => {
@@ -188,8 +200,8 @@ export function ProfileMenu({ iconOnly = false }: { iconOnly?: boolean }) {
           <DiscoveryIcon name="profile" size={20} />
         ) : (
           <>
-            <Image src="/images/avatars/avatar-joongeun.png" width={26} height={26} alt="" /> 준근
-            님 <span aria-hidden="true">⌄</span>
+            <Image src="/images/avatars/avatar-joongeun.png" width={26} height={26} alt="" />{" "}
+            {me.name}님 <span aria-hidden="true">⌄</span>
           </>
         )}
       </summary>
@@ -197,8 +209,8 @@ export function ProfileMenu({ iconOnly = false }: { iconOnly?: boolean }) {
         <div className={s.profileIdentity}>
           <Image src="/images/avatars/avatar-joongeun.png" width={34} height={34} alt="" />
           <div>
-            <strong>최준근</strong>
-            <small>민지 님과 연결됨</small>
+            <strong>{me.fullName}</strong>
+            <small>{partner ? `${partner.name} 님과 연결됨` : "짝꿍 연결 전"}</small>
           </div>
         </div>
         <Link href="/home?panel=profile" onClick={close}>
@@ -207,8 +219,8 @@ export function ProfileMenu({ iconOnly = false }: { iconOnly?: boolean }) {
         <Link href="/home?panel=members" onClick={close}>
           짝꿍 초대하기
         </Link>
-        <Link href="/estimate?mode=edit" onClick={close}>
-          조건 다시 입력
+        <Link href={PLANNER_ROUTES.roadmap} onClick={close}>
+          예산·예식일 수정
         </Link>
         <button
           onClick={() => {
@@ -224,57 +236,57 @@ export function ProfileMenu({ iconOnly = false }: { iconOnly?: boolean }) {
   );
 }
 
-export function CurrentStage() {
-  const { current, count } = useProgress();
-  const checked = useReturnPlan((state) => state.checked.length);
-  const tier = useReturnPlan((state) => state.tier);
-  const conditions = useReturnPlan((state) => state.conditions);
-  const budget =
-    current?.id === "venue"
-      ? venueBudgetFor(conditions)
-      : current?.id === "sdm"
-        ? range(...tierRanges[tier])
-        : null;
+export function CurrentStage({
+  plan,
+  tasks,
+  summary,
+}: {
+  plan: PlannerState;
+  tasks: PlannerState["todos"];
+  summary: ReturnType<typeof getSavedPlanSummary>;
+}) {
+  const { nextStep, nextHref } = summary;
+  const checked = tasks.filter((task) => task.isDone).length;
+  const budget = nextStep ? plan.stepEstimates[nextStep.id] : null;
   return (
     <section className={s.darkCard}>
       <div className={s.spread}>
         <span className={s.darkPill}>
-          ●{" "}
-          {current
-            ? "지금 할 일 · " + (count + 1) + "단계"
-            : "모든 단계 완료"}
+          ● {nextStep ? "지금 할 일 · " + nextStep.order + "단계" : "모든 단계 완료"}
         </span>
-        {current && <span>예식 {weddingDday}</span>}
+        {nextStep && <span>{getWeddingDateDisplay(plan.weddingDate).countdown}</span>}
       </div>
-      <h2>{current?.title ?? "준비를 모두 마쳤어요"}</h2>
-      {current && (
+      <h2>{nextStep?.title ?? "준비를 모두 마쳤어요"}</h2>
+      {nextStep && (
         <>
           <p>
             {budget ? (
               <>
-                이번 단계 예산은 <strong>{budget}</strong>이에요.
+                이번 단계 예상 비용은 <strong>{formatRange(budget)}</strong>이에요.
               </>
             ) : (
               "다음 준비 일정을 확인해 보세요."
             )}
           </p>
           <div className={s.darkBottom}>
-            {current.id === "venue" && (
+            {tasks.length > 0 && (
               <div className={s.stageProgress}>
                 <div className={s.spread}>
                   <span>체크리스트</span>
-                  <strong>{checked} / 3</strong>
+                  <strong>
+                    {checked} / {tasks.length}
+                  </strong>
                 </div>
-                <Progress label="체크리스트 진행률" value={(checked / 3) * 100} />
+                <Progress label="체크리스트 진행률" value={(checked / tasks.length) * 100} />
               </div>
             )}
             <div className={s.actions}>
-              {current.id === "venue" && (
-                <Link className={s.ghost} href="/venues">
+              {nextStep.id === "venue" && (
+                <Link className={s.ghost} href={PLANNER_ROUTES.venueSearch}>
                   예식장 후보
                 </Link>
               )}
-              <Link className={s.button} href={stepHref(current)}>
+              <Link className={s.button} href={nextHref}>
                 이어서 하기 →
               </Link>
             </div>

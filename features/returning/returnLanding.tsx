@@ -1,53 +1,62 @@
 "use client";
 
-import { useUtAuthStore } from "@/src/stores/utAuthStore";
+import { STEP_DEFINITIONS, getStepDefinition } from "@/src/features/planner/mocks/plannerMock";
+import { PLANNER_ROUTES } from "@/src/features/planner/routes";
+import { usePlannerStore } from "@/src/features/planner/stores/plannerStore";
+import type { PlannerState, StepId, WeddingDate } from "@/src/features/planner/types";
+import {
+  getStepDdayLabel,
+  getStepPeriodLabel,
+  resolveWeddingDate,
+} from "@/src/features/planner/utils/schedule";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { Logo } from "../../src/components/common";
-import { DiscoveryIcon } from "../venues/shared";
+import { DiscoveryIcon, type DiscoveryIconName } from "../venues/shared";
 import { useDiscovery } from "../venues/useDiscovery";
-import { money, venues } from "../venues/venueData";
+import { venues } from "../venues/venueData";
 import { ChecklistCard, ConfirmNewPlan, ProfileMenu, Progress, s } from "./returnUi";
-import {
-  recommendedVenueIds,
-  stepHref,
-  steps,
-  useProgress,
-  useReturnPlan,
-  useReturnReady,
-  weddingDday,
-  tierRanges,
-  formatMonth,
-  estimateVenue,
-} from "./returnPlan";
+import { recommendedVenueIds, useReturnReady } from "./returnPlan";
+import { formatPlanBudget, getSavedPlanSummary, getWeddingDateDisplay } from "./savedPlanSummary";
 
-export function Timeline() {
-  const { count } = useProgress();
+const stepIcons: Record<StepId, DiscoveryIconName> = {
+  agreement: "budget",
+  venue: "venue",
+  sdm: "dress",
+  photoTrip: "camera",
+  invitation: "mail",
+  finalCheck: "mood",
+};
+
+function Timeline({ plan, nextId }: { plan: PlannerState; nextId?: StepId }) {
   return (
     <ol className={s.timeline} aria-label="준비 단계">
-      {steps.map((step, index) => (
-        <li
-          key={step.id}
-          data-status={index < count ? "done" : index === count ? "current" : "later"}
-        >
-          <Link href={stepHref(step)} aria-current={index === count ? "step" : undefined}>
-            <span className={s.timelineIcon}>
-              {<DiscoveryIcon name={index < count ? "checkWhite" : step.icon} size={21} />}
-            </span>
-            <strong>{step.short}</strong>
-            <small>{index < count ? "완료" : index === count ? "지금 할 일" : step.timing}</small>
-          </Link>
-        </li>
-      ))}
+      {STEP_DEFINITIONS.map((step) => {
+        const done = plan.steps[step.id].status === "complete";
+        const current = step.id === nextId;
+        return (
+          <li key={step.id} data-status={done ? "done" : current ? "current" : "later"}>
+            <Link href={PLANNER_ROUTES.step(step.id)} aria-current={current ? "step" : undefined}>
+              <span className={s.timelineIcon}>
+                <DiscoveryIcon name={done ? "checkWhite" : stepIcons[step.id]} size={21} />
+              </span>
+              <strong>{step.shortTitle}</strong>
+              <small>{done ? "완료" : current ? "지금 할 일" : getStepDdayLabel(step)}</small>
+            </Link>
+          </li>
+        );
+      })}
     </ol>
   );
 }
 
-function Calendar() {
-  const conditions = useReturnPlan((state) => state.conditions);
+function Calendar({ weddingDate }: { weddingDate: WeddingDate }) {
   const [offset, setOffset] = useState(0);
-  const month = new Date(Date.UTC(2026, 10 + offset, 1));
+  const today = new Date();
+  const date = getWeddingDateDisplay(weddingDate, today);
+  const resolved = resolveWeddingDate(weddingDate, today);
+  const month = new Date(Date.UTC(today.getFullYear(), today.getMonth() + offset, 1));
   const year = month.getUTCFullYear();
   const monthNumber = month.getUTCMonth();
   const last = new Date(Date.UTC(year, monthNumber + 1, 0)).getUTCDate();
@@ -93,7 +102,11 @@ function Calendar() {
           </span>
           <p>
             <strong>예식장 계약 권장 기간</strong>
-            <small>2026.12 ~ 2027.02</small>
+            <small>
+              {resolved.isUndecided
+                ? "예식일 미정"
+                : getStepPeriodLabel(getStepDefinition("venue"), resolved.date)}
+            </small>
           </p>
         </div>
         <div>
@@ -101,8 +114,8 @@ function Calendar() {
             <DiscoveryIcon name="heart" />
           </span>
           <p>
-            <strong>예식일 {weddingDday}</strong>
-            <small>{formatMonth(conditions.month)}</small>
+            <strong>{date.countdown}</strong>
+            {!resolved.isUndecided && <small>{date.label}</small>}
           </p>
         </div>
       </div>
@@ -111,6 +124,7 @@ function Calendar() {
 }
 
 function Recommendations() {
+  useReturnReady();
   const favorites = useDiscovery((state) => state.favorites);
   const toggle = useDiscovery((state) => state.toggleFavorite);
   const ids = [
@@ -169,17 +183,17 @@ function Recommendations() {
   );
 }
 
-function Allocation() {
-  const tier = useReturnPlan((state) => state.tier);
-  const conditions = useReturnPlan((state) => state.conditions);
-  const weddingBudget = Number(conditions.budget);
-  const venueEstimate = estimateVenue(conditions);
-  const venue = (venueEstimate[0] + venueEstimate[1]) / 2;
-  const sdm = (tierRanges[tier][0] + tierRanges[tier][1]) / 2;
-  const parts = [venue, sdm, Math.max(0, weddingBudget - venue - sdm)];
-  const total = parts.reduce((sum, item) => sum + item, 0);
-  const first = (parts[0] / total) * 100;
-  const second = ((parts[0] + parts[1]) / total) * 100;
+function Allocation({
+  budget,
+  spent,
+  remaining,
+}: {
+  budget: number | null;
+  spent: number;
+  remaining: number | null;
+}) {
+  const usedPercent = budget && budget > 0 ? Math.round((spent / budget) * 100) : null;
+  const fill = Math.min(usedPercent ?? 0, 100);
   return (
     <section className={s.card}>
       <div className={s.spread}>
@@ -192,36 +206,34 @@ function Allocation() {
         <div
           className={s.donut}
           style={{
-            background:
-              "conic-gradient(var(--brand800) 0 " +
-              first +
-              "%, var(--brand500) " +
-              first +
-              "% " +
-              second +
-              "%, var(--brand200) " +
-              second +
-              "%)",
+            background: `conic-gradient(var(--brand800) ${fill}%, var(--brand200) ${fill}%)`,
           }}
         >
           <div>
             <small>총 예산</small>
-            <strong>{(weddingBudget * 10000).toLocaleString("ko-KR")}원</strong>
+            <strong>{formatPlanBudget(budget)}</strong>
           </div>
         </div>
         <dl>
-          {["예식장 예상", "스드메 예상", "여유 · 기타"].map((name, index) => (
-            <div key={name}>
-              <dt>
-                <i data-part={index} />
-                {name}
-              </dt>
-              <dd>
-                <strong>{(parts[index] * 10000).toLocaleString("ko-KR")}원</strong>
-                <span>{Math.round((parts[index] / total) * 100)}%</span>
-              </dd>
-            </div>
-          ))}
+          <div>
+            <dt>
+              <i />
+              지금까지 쓴 금액
+            </dt>
+            <dd>
+              <strong>{formatPlanBudget(spent)}</strong>
+              {usedPercent !== null && <span>{usedPercent}%</span>}
+            </dd>
+          </div>
+          <div>
+            <dt>
+              <i data-part="2" />
+              남은 예산
+            </dt>
+            <dd>
+              <strong>{formatPlanBudget(remaining)}</strong>
+            </dd>
+          </div>
         </dl>
       </div>
     </section>
@@ -229,11 +241,10 @@ function Allocation() {
 }
 
 export function ReturningLanding() {
-  const ready = useReturnReady();
-  const signedIn = useUtAuthStore((state) => state.provider !== null);
-  const signIn = useUtAuthStore((state) => state.signIn);
-  const { count, current, percent, spent } = useProgress();
-  const weddingBudget = useReturnPlan((state) => Number(state.conditions.budget));
+  const plan = usePlannerStore();
+  const { completed, nextStep, nextHref, percent, spent, remaining } = getSavedPlanSummary(plan);
+  const date = getWeddingDateDisplay(plan.weddingDate);
+  const tasks = plan.todos.filter((task) => task.stepId === nextStep?.id);
   return (
     <div className={s.landing}>
       <section className={s.hero}>
@@ -253,24 +264,15 @@ export function ReturningLanding() {
             <Link href="/roadmap">내 로드맵</Link>
           </nav>
           <div className={s.actions}>
-            {ready &&
-              (signedIn ? (
-                <>
-                  <Link href="/venues?view=favorites" aria-label="관심 예식장">
-                    <DiscoveryIcon name="heart" size={20} />
-                  </Link>
-                  <ProfileMenu iconOnly />
-                </>
-              ) : (
-                <button onClick={() => signIn()} className={s.button}>
-                  미리보기 로그인
-                </button>
-              ))}
+            <Link href="/venues?view=favorites" aria-label="관심 예식장">
+              <DiscoveryIcon name="heart" size={20} />
+            </Link>
+            <ProfileMenu iconOnly />
           </div>
         </header>
         <div className={s.heroBody}>
           <div className={s.heroCopy}>
-            <p>{ready && signedIn ? "안녕하세요, 준근님" : "WEDID 웨딩 플랜"}</p>
+            <p>안녕하세요, {plan.me.name}님</p>
             <h1>
               우리만의 웨딩을
               <br />
@@ -281,87 +283,85 @@ export function ReturningLanding() {
               <br />더 특별한 날을 만들어줄 거예요.
             </p>
             <div className={s.actions}>
-              {ready && signedIn ? (
-                <>
-                  <Link className={s.primary} href="/roadmap">
-                    내 로드맵 이어서 보기 →
-                  </Link>
-                  <ConfirmNewPlan>새 계획 시작하기</ConfirmNewPlan>
-                </>
-              ) : (
-                <Link className={s.primary} href="/estimate?mode=new">
-                  새 계획 시작하기
-                </Link>
-              )}
+              <Link className={s.primary} href={nextHref}>
+                {nextStep ? "이어서 하기 →" : "준비 로드맵 보기 →"}
+              </Link>
+              <ConfirmNewPlan>새 계획 시작하기</ConfirmNewPlan>
             </div>
           </div>
-          {ready && signedIn && (
-            <div className={s.heroProgress + " " + s.card}>
-              <div className={s.spread}>
-                <strong>전체 준비 진행률</strong>
-                <span className={s.pill}>예식 {weddingDday}</span>
-              </div>
-              <p>
-                <strong>{percent}</strong> %
-              </p>
-              <Progress value={percent} />
-              <small>{count} / 6 단계</small>
+          <div className={s.heroProgress + " " + s.card}>
+            <div className={s.spread}>
+              <strong>전체 준비 진행률</strong>
+              <span className={s.pill}>{date.countdown}</span>
             </div>
-          )}
+            <p>
+              <strong>{percent}</strong> %
+            </p>
+            <Progress value={percent} />
+            <small>
+              {completed} / {STEP_DEFINITIONS.length} 단계
+            </small>
+            <small>
+              {[
+                date.label,
+                plan.conditions.regionLabel,
+                plan.conditions.guestLabel ?? "하객 수 미정",
+                plan.conditions.moods.join(" · ") || "분위기 상관없음",
+              ].join(" · ")}
+            </small>
+          </div>
         </div>
       </section>
-      {ready && signedIn && (
-        <main className={s.landingMain}>
-          <div className={s.statGrid}>
-            <Link href="/budget">
-              <span className={s.iconTile}>
-                <DiscoveryIcon name="budget" />
-              </span>
-              <p>
-                <small>남은 예산</small>
-                <strong>{money(weddingBudget - spent)}</strong>
-              </p>
-            </Link>
-            <Link href={current ? stepHref(current) : "/roadmap"}>
-              <span className={s.iconTile}>
-                <DiscoveryIcon name="flag" />
-              </span>
-              <p>
-                <small>다음 STEP{current ? " · " + current.title : ""}</small>
-                <strong>
-                  {current?.id === "venue" ? "D-34" : (current?.timing ?? "모든 단계 완료")}
-                </strong>
-              </p>
-            </Link>
-            <Link href="/home?panel=members">
-              <span className={s.iconTile}>
-                <DiscoveryIcon name="members" />
-              </span>
-              <p>
-                <small>짝꿍</small>
-                <strong>민지 님이 합류했어요</strong>
-              </p>
+      <main className={s.landingMain}>
+        <div className={s.statGrid}>
+          <Link href="/budget">
+            <span className={s.iconTile}>
+              <DiscoveryIcon name="budget" />
+            </span>
+            <p>
+              <small>남은 예산</small>
+              <strong>{formatPlanBudget(remaining)}</strong>
+            </p>
+          </Link>
+          <Link href={nextHref}>
+            <span className={s.iconTile}>
+              <DiscoveryIcon name="flag" />
+            </span>
+            <p>
+              <small>다음 할 일</small>
+              <strong>{nextStep?.title ?? "모든 단계 완료"}</strong>
+            </p>
+          </Link>
+          <Link href="/home?panel=members">
+            <span className={s.iconTile}>
+              <DiscoveryIcon name="members" />
+            </span>
+            <p>
+              <small>짝꿍</small>
+              <strong>
+                {plan.partner ? `${plan.partner.name} 님이 합류했어요` : "짝꿍 연결 전"}
+              </strong>
+            </p>
+          </Link>
+        </div>
+        <section className={s.card}>
+          <div className={s.spread}>
+            <h2>우리의 결혼 준비 로드맵</h2>
+            <Link href="/roadmap" className={s.subtle}>
+              전체보기 →
             </Link>
           </div>
-          <section className={s.card}>
-            <div className={s.spread}>
-              <h2>우리의 결혼 준비 로드맵</h2>
-              <Link href="/roadmap" className={s.subtle}>
-                전체보기 →
-              </Link>
-            </div>
-            <Timeline />
-          </section>
-          <div className={s.landingColumns}>
-            <Allocation />
-            <ChecklistCard landing />
-          </div>
-          <div className={s.landingRecommendations}>
-            <Recommendations />
-            <Calendar />
-          </div>
-        </main>
-      )}
+          <Timeline plan={plan} nextId={nextStep?.id} />
+        </section>
+        <div className={s.landingColumns}>
+          <Allocation budget={plan.budget} spent={spent} remaining={remaining} />
+          <ChecklistCard tasks={tasks} nextStep={nextStep} landing />
+        </div>
+        <div className={s.landingRecommendations}>
+          <Recommendations />
+          <Calendar weddingDate={plan.weddingDate} />
+        </div>
+      </main>
       <footer className={s.footer}>
         <div>
           <Logo />

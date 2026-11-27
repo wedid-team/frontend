@@ -9,20 +9,16 @@ import { SiteHeader } from "../../src/components/layout/siteHeader";
 import { SideNavigation } from "../../src/components/layout/sideNavigation";
 import { workspaceNavigationItems } from "../../src/components/layout/workspaceNavigation";
 import { PLANNER_ROUTES } from "@/src/features/planner/routes";
+import { STEP_DEFINITIONS } from "@/src/features/planner/mocks/plannerMock";
+import { usePlannerStore } from "@/src/features/planner/stores/plannerStore";
+import { firstVisitHref } from "../firstVisit/model";
 import { useDiscovery } from "./useDiscovery";
 import { venues } from "./venueData";
 import { DiscoveryIcon, discoveryStyles as s, type DiscoveryIconName } from "./shared";
 
 import { ProfileMenu, s as returnStyles } from "../returning/returnUi";
-import {
-  formatMonth,
-  stepHref,
-  steps,
-  useProgress,
-  useReturnPlan,
-  useReturnReady,
-  weddingDday,
-} from "../returning/returnPlan";
+import { useReturnReady } from "../returning/returnPlan";
+import { getSavedPlanSummary, getWeddingDateDisplay } from "../returning/savedPlanSummary";
 
 const menuIcons: DiscoveryIconName[] = ["home", "roadmap", "budget", "pin"];
 const discoveryNavigation = workspaceNavigationItems.map((item, index) => ({
@@ -42,8 +38,10 @@ export function DiscoveryShell({ children }: { children: ReactNode }) {
   const signIn = useUtAuthStore((state) => state.signIn);
   const count = useDiscovery((state) => state.compared.length);
   const ready = useReturnReady();
-  const { count: completed, percent } = useProgress();
-  const conditions = useReturnPlan((state) => state.conditions);
+  const plan = usePlannerStore();
+  const showPlan = ready && signedIn && plan.hasSavedPlan;
+  const summary = showPlan ? getSavedPlanSummary(plan) : null;
+  const date = showPlan ? getWeddingDateDisplay(plan.weddingDate) : null;
   const isHome = pathname === "/home";
   const isBudget = pathname === "/budget";
   const isSdm = pathname === "/sdm";
@@ -71,10 +69,12 @@ export function DiscoveryShell({ children }: { children: ReactNode }) {
         {ready &&
           (signedIn ? (
             <div className={returnStyles.workspaceAccount}>
-              <div className={s.couple} aria-label="준근과 민지">
-                <Image src="/images/avatars/avatar-minji.png" alt="" width={24} height={24} />
-                <Image src="/images/avatars/avatar-joongeun.png" alt="" width={24} height={24} />
-              </div>
+              {showPlan && plan.partner && (
+                <div className={s.couple} aria-label={`${plan.me.name}과 ${plan.partner.name}`}>
+                  <Image src="/images/avatars/avatar-minji.png" alt="" width={24} height={24} />
+                  <Image src="/images/avatars/avatar-joongeun.png" alt="" width={24} height={24} />
+                </div>
+              )}
               <ProfileMenu />
             </div>
           ) : (
@@ -94,19 +94,27 @@ export function DiscoveryShell({ children }: { children: ReactNode }) {
             <b>W</b>
             <div>
               <strong>우리의 웨딩</strong>
-              <small>
-                {formatMonth(conditions.month)} · {conditions.region.replace("서울 ", "")}
-              </small>
+              {date && (
+                <small>
+                  {date.label} · {plan.conditions.regionLabel}
+                </small>
+              )}
             </div>
           </div>
           <SideNavigation items={discoveryNavigation} />
           <nav className={s.steps} aria-label="준비 단계">
             <p>준비 단계</p>
-            {steps.map((step, index) => (
+            {STEP_DEFINITIONS.map((step) => (
               <div key={step.id}>
-                <Link className={s.step} href={stepHref(step)}>
-                  <b data-active={signedIn && index <= completed}>
-                    {signedIn && index < completed ? "✓" : index + 1}
+                <Link className={s.step} href={PLANNER_ROUTES.step(step.id)}>
+                  <b
+                    data-active={
+                      showPlan &&
+                      (plan.steps[step.id].status === "complete" ||
+                        summary?.nextStep?.id === step.id)
+                    }
+                  >
+                    {showPlan && plan.steps[step.id].status === "complete" ? "✓" : step.order}
                   </b>
                   {step.title}
                 </Link>
@@ -144,20 +152,30 @@ export function DiscoveryShell({ children }: { children: ReactNode }) {
           </nav>
           <div className={s.countdown}>
             <p>예식까지</p>
-            <strong>{weddingDday}</strong>
-            <progress max={6} value={signedIn ? completed : 0} />
-            <p>전체 진행률 {signedIn ? percent : 0}%</p>
+            <strong>{date?.countdown ?? "예식일 미정"}</strong>
+            <progress aria-label="전체 진행률" max={100} value={summary?.percent ?? 0} />
+            <p>전체 진행률 {summary?.percent ?? 0}%</p>
           </div>
         </aside>
         <main className={s.main} aria-busy={!ready}>
           {!ready ? (
             <p role="status">계획을 불러오는 중이에요.</p>
-          ) : isHome && !signedIn ? (
+          ) : isHome && !showPlan ? (
             <section className={s.empty}>
-              <h1>로그인하면 내 계획을 볼 수 있어요</h1>
-              <button className={s.primary} onClick={() => signIn()}>
-                미리보기 로그인
-              </button>
+              <h1>
+                {plan.hasSavedPlan
+                  ? "로그인하면 내 계획을 볼 수 있어요"
+                  : "아직 저장된 계획이 없어요"}
+              </h1>
+              {plan.hasSavedPlan ? (
+                <button className={s.primary} onClick={() => signIn()}>
+                  미리보기 로그인
+                </button>
+              ) : (
+                <Link className={s.primary} href={firstVisitHref("region")}>
+                  결혼 비용 계산하기
+                </Link>
+              )}
             </section>
           ) : (
             children
