@@ -1,22 +1,31 @@
 "use client";
 
-import { INVITE_LINK_MOCK } from "../../planner/mocks/plannerMock";
-import { useToastStore } from "../../planner/stores/plannerStore";
+import { useState, useSyncExternalStore } from "react";
+import { PLANNER_ROUTES } from "../../planner/routes";
 
-/** P-09 복사 토스트 문구 */
-export const INVITE_COPY_TOAST = "초대 링크를 복사했어요. 링크는 7일 동안 열 수 있어요";
+// 서버에서 토큰을 발급하기 전까지 기존 초대 미리보기 토큰을 사용한다.
+export const invitePath = PLANNER_ROUTES.invite("a8f3k2");
 
-/** 초대 링크 복사 + 토스트 (P-06 · P-09). 초대 팝업 · 웨딩 플랜 카드에서 같이 쓴다. */
-export function useCopyInviteLink() {
-  const showToast = useToastStore((state) => state.showToast);
+const subscribe = () => () => {};
+const getBrowserInviteUrl = () => new URL(invitePath, window.location.origin).href;
 
-  return async () => {
+export function useCopyInviteLink(onSuccess?: (message: string) => void) {
+  const inviteUrl = useSyncExternalStore(subscribe, getBrowserInviteUrl, () => invitePath);
+  const [feedback, setFeedback] = useState("");
+
+  async function copyLink() {
+    setFeedback("");
     try {
-      // TODO: 실제 초대 링크는 BE가 발급 (7일 유효)
-      await navigator.clipboard.writeText(`https://${INVITE_LINK_MOCK}`);
+      await navigator.clipboard.writeText(getBrowserInviteUrl());
     } catch {
-      // 클립보드 권한이 없어도 화면 흐름은 그대로 둔다.
+      setFeedback("초대 링크를 복사하지 못했어요.");
+      return;
     }
-    showToast(INVITE_COPY_TOAST);
-  };
+
+    const message = "초대 링크를 복사했어요.";
+    if (onSuccess) onSuccess(message);
+    else setFeedback(message);
+  }
+
+  return { inviteUrl, copyLink, feedback };
 }
