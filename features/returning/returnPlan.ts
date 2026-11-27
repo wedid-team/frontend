@@ -141,14 +141,11 @@ export function useReturnReady() {
 }
 
 export function useProgress() {
-  const completed = useReturnPlan((state) => state.completed);
-  const contracted = useDiscovery((state) => state.contracted);
-  const count = Math.max(completed, contracted ? 2 : 1);
+  const count = useReturnPlan((state) => state.completed);
   return {
     count,
     percent: Math.round((count / steps.length) * 100),
     current: steps[count],
     spent: count === steps.length ? 2290 : 0,
-    contracted,
   };
 }
