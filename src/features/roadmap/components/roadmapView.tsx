@@ -20,10 +20,10 @@ import {
 } from "../../planner/components/icons";
 import { AssigneeChip, Avatar, StatusPill, cx } from "../../planner/components/ui";
 import ui from "../../planner/components/ui.module.css";
-import { INVITE_LINK_MOCK, STEP_DEFINITIONS } from "../../planner/mocks/plannerMock";
+import { STEP_DEFINITIONS } from "../../planner/mocks/plannerMock";
 import { useCopyInviteLink } from "../../invite/hooks/useCopyInviteLink";
 import { PLANNER_ROUTES } from "../../planner/routes";
-import { usePlannerStore } from "../../planner/stores/plannerStore";
+import { usePlannerStore, useToastStore } from "../../planner/stores/plannerStore";
 import type { PlannerState, StepDefinition } from "../../planner/types";
 import { formatRange, formatWon } from "../../planner/utils/money";
 import {
@@ -195,7 +195,7 @@ export function RoadmapView() {
         </aside>
       </div>
 
-      <InviteModal onClose={() => setInviteOpen(false)} open={isInviteOpen} />
+      {isInviteOpen && <InviteModal onClose={() => setInviteOpen(false)} />}
       <WeddingDateModal onClose={() => setDateOpen(false)} open={isDateOpen} />
       <OverdueModal
         dday={dday}
@@ -212,7 +212,9 @@ export function RoadmapView() {
 
 function weddingLabel(wedding: ResolvedWeddingDate) {
   if (wedding.isUndecided) return `미정 (${wedding.monthLabel} 기준)`;
-  return wedding.isEstimated ? wedding.monthLabel : `${wedding.monthLabel} ${wedding.date.getDate()}일`;
+  return wedding.isEstimated
+    ? wedding.monthLabel
+    : `${wedding.monthLabel} ${wedding.date.getDate()}일`;
 }
 
 function NextStepCard({
@@ -411,7 +413,8 @@ function BudgetSummaryCard({ state }: { state: PlannerState }) {
 
 /** SCR-06: 짝꿍이 없으면 초대 링크 + [복사] (P-06 · P-09), 합류하면 초대 부분 숨김 */
 function PlanCard({ partnerName }: { partnerName: string | null }) {
-  const copyLink = useCopyInviteLink();
+  const showToast = useToastStore((state) => state.showToast);
+  const { inviteUrl, copyLink, feedback } = useCopyInviteLink(showToast);
   return (
     <section className={cx(ui.card, ui["card--compact"], styles.planCard)}>
       {/* TODO: 피그마 일러스트 에셋을 받으면 넣기 (에셋 서버 접근 불가로 배경만 둠) */}
@@ -424,12 +427,15 @@ function PlanCard({ partnerName }: { partnerName: string | null }) {
           <p className={styles.planCard__text}>링크를 보내 초대하세요.</p>
           <div className={styles.planCard__link}>
             <LinkIcon className={styles.planCard__linkIcon} size={16} />
-            <span className={styles.planCard__url}>{INVITE_LINK_MOCK}</span>
+            <span className={styles.planCard__url} title={inviteUrl}>
+              {inviteUrl}
+            </span>
             <Button onClick={copyLink} size="sm" variant="dark">
               <CopyIcon size={14} />
               복사
             </Button>
           </div>
+          <div role="status">{feedback && <p className={styles.planCard__text}>{feedback}</p>}</div>
         </>
       )}
     </section>

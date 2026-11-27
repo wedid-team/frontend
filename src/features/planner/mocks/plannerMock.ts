@@ -348,9 +348,6 @@ export function createDemoPlannerState(scenario: DemoScenario, today: Date): Pla
   }
 }
 
-/** 초대 링크 — MOCK. 실제로는 BE가 발급한다. */
-export const INVITE_LINK_MOCK = "wedid.app/invite/a8f3k2";
-
 /** SCR-11-B: 초대받은 사람에게 이미 계획(계정 또는 비회원 임시)이 있는지 — MOCK. 실제는 BE · 브라우저 보관값으로 판단 */
 export const INVITEE_HAS_PLAN_MOCK = true;
 

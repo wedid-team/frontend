@@ -3,7 +3,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
+import { useCopyInviteLink } from "@/src/features/invite/hooks/useCopyInviteLink";
 import { usePlannerStore } from "@/src/features/planner/stores/plannerStore";
 import { DiscoveryIcon } from "../venues/shared";
 import { ChecklistCard, CostSummary, CurrentStage, s } from "./returnUi";
@@ -12,17 +13,7 @@ import { getSavedPlanSummary, getWeddingDateDisplay } from "./savedPlanSummary";
 export function MemberPanel({ profile = false }: { profile?: boolean }) {
   const me = usePlannerStore((state) => state.me);
   const partner = usePlannerStore((state) => state.partner);
-  const [feedback, setFeedback] = useState("");
-  async function copyInvite() {
-    try {
-      await navigator.clipboard.writeText(
-        new URL("/roadmap?invite=preview", window.location.origin).href,
-      );
-      setFeedback("미리보기 초대 링크를 복사했어요.");
-    } catch {
-      setFeedback("초대 링크를 복사하지 못했어요.");
-    }
-  }
+  const { copyLink, feedback } = useCopyInviteLink();
   return (
     <section className={s.card} id={profile ? "profile" : "members"}>
       <h2>{profile ? "내 정보" : "함께하는 멤버"}</h2>
@@ -40,15 +31,11 @@ export function MemberPanel({ profile = false }: { profile?: boolean }) {
               <small>연결됨</small>
             </div>
           ) : (
-            <button type="button" className={s.button} onClick={() => void copyInvite()}>
+            <button type="button" className={s.button} onClick={copyLink}>
               초대 링크 만들기
             </button>
           )}
-          {feedback && (
-            <p className={s.muted} role="status">
-              {feedback}
-            </p>
-          )}
+          <div role="status">{feedback && <p className={s.muted}>{feedback}</p>}</div>
         </>
       )}
     </section>
