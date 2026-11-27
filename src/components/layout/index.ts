@@ -1,8 +1,6 @@
 export { Breadcrumbs } from "./breadcrumbs";
 export type { BreadcrumbItem } from "./breadcrumbs";
 export { EstimateShell } from "./estimateShell";
-export { PublicShell } from "./publicShell";
-export { RoutePlaceholder } from "./routePlaceholder";
 export { SideNavigation } from "./sideNavigation";
 export type { SideNavigationItem } from "./sideNavigation";
 export { SiteHeader } from "./siteHeader";
