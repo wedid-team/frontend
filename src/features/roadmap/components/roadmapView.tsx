@@ -98,39 +98,40 @@ export function RoadmapView() {
         </Button>
       </header>
 
-      {wedding.isUndecided && (
-        <div className={styles.notice}>
-          <span className={cx(ui.iconTile, styles.notice__icon)}>
-            <CalendarIcon size={16} />
-          </span>
-          <p className={styles.notice__text}>
-            <strong>예식일이 아직 정해지지 않았어요.</strong> 지금은 {wedding.monthLabel} 예식
-            기준으로 계산한 (예상) 일정이에요.
-          </p>
-          <Button size="sm" variant="outline" onClick={() => setDateOpen(true)}>
-            예식일 정하기
-            <ArrowRightIcon size={14} />
-          </Button>
-        </div>
-      )}
-
-      {overdueSteps.length > 0 && (
-        <div className={styles.notice}>
-          <span className={cx(ui.iconTile, styles.notice__icon)}>
-            <CalendarIcon size={16} />
-          </span>
-          <p className={styles.notice__text}>
-            <strong>확인이 필요한 단계 {overdueSteps.length}개가 있어요.</strong> 이미 했는지
-            알려주시면 남은 예산을 맞게 계산해 드려요
-          </p>
-          <Button size="sm" variant="outline" onClick={() => setOverdueOpenManually(true)}>
-            확인하기
-          </Button>
-        </div>
-      )}
-
       <div className={styles.layout}>
         <div className={styles.layout__main}>
+          {/* 로드맵 04 · 07 피그마: 알림 띠는 왼쪽 칸 맨 위 (오른쪽 요약 카드와 윗줄을 맞춤) */}
+          {wedding.isUndecided && (
+            <div className={styles.notice}>
+              <span className={cx(ui.iconTile, styles.notice__icon)}>
+                <CalendarIcon size={16} />
+              </span>
+              <p className={styles.notice__text}>
+                <strong>예식일이 아직 정해지지 않았어요.</strong> 지금은 {wedding.monthLabel} 예식
+                기준으로 계산한 (예상) 일정이에요.
+              </p>
+              <Button size="sm" variant="outline" onClick={() => setDateOpen(true)}>
+                예식일 정하기
+                <ArrowRightIcon size={16} />
+              </Button>
+            </div>
+          )}
+
+          {overdueSteps.length > 0 && (
+            <div className={styles.notice}>
+              <span className={cx(ui.iconTile, styles.notice__icon)}>
+                <CalendarIcon size={16} />
+              </span>
+              <p className={styles.notice__text}>
+                <strong>확인이 필요한 단계 {overdueSteps.length}개가 있어요.</strong> 이미 했는지
+                알려주시면 남은 예산을 맞게 계산해 드려요
+              </p>
+              <Button size="sm" variant="outline" onClick={() => setOverdueOpenManually(true)}>
+                확인하기
+              </Button>
+            </div>
+          )}
+
           {isAllComplete ? (
             <section className={styles.hero}>
               <StatusPill tone="onDark">모든 단계 완료</StatusPill>
