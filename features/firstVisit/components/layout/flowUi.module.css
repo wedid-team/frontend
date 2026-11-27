@@ -1,0 +1,74 @@
+.brand {
+  display: inline-flex;
+  align-items: center;
+  flex: none;
+  padding: 0;
+  border: 0;
+  background: none;
+}
+.brand img {
+  max-width: none;
+}
+.inlineActions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.textButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  gap: 4px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--brand600);
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+}
+.textButton:disabled {
+  color: var(--text2);
+}
+.panel {
+  min-width: 0;
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  background: var(--surface);
+  padding: 32px;
+}
+.sectionHeading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+.sectionHeading > div {
+  min-width: 0;
+}
+.sectionHeading :is(p, small) {
+  color: var(--text2);
+}
+.mockNotice {
+  color: var(--text2);
+  font-size: 12px;
+  line-height: 20px;
+  padding-top: 20px;
+}
+.conditions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  color: var(--text2);
+  font-size: 15px;
+}
+.conditions .textButton {
+  font-size: 15px;
+}
+@media (max-width: 600px) {
+  .panel {
+    padding: 24px 20px;
+  }
+}

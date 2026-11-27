@@ -1,0 +1,427 @@
+.textButton {
+  composes: textButton from "../layout/flowUi.module.css";
+}
+.sectionHeading {
+  composes: sectionHeading from "../layout/flowUi.module.css";
+}
+.inlineActions {
+  composes: inlineActions from "../layout/flowUi.module.css";
+}
+.brand {
+  composes: brand from "../layout/flowUi.module.css";
+}
+.homeContainer {
+  width: 100%;
+  max-width: 1561px;
+  margin-inline: auto;
+  padding-inline: 4.2%;
+}
+.hero {
+  position: relative;
+  height: 640px;
+  overflow: hidden;
+  background: linear-gradient(var(--sand50), var(--sand100));
+}
+.heroPhoto {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 58%;
+  height: 640px;
+  overflow: hidden;
+  background: var(--sand200);
+}
+.heroPhoto > img {
+  position: absolute;
+  top: -30.64%;
+  left: 0;
+  width: 100%;
+  height: 195.75%;
+  max-width: none;
+  object-fit: cover;
+}
+.heroPhoto::after {
+  position: absolute;
+  inset: 0;
+  content: "";
+  background:
+    linear-gradient(0deg, rgb(243 239 233 / 90%), transparent 30%),
+    linear-gradient(180deg, rgb(246 243 238 / 90%), transparent 22%),
+    linear-gradient(90deg, var(--sand50), transparent 34%);
+}
+.heroCopy {
+  position: relative;
+  padding: 183px 4.2% 0;
+}
+.heroCopy h1 {
+  font-size: clamp(40px, 4.4vw, 72px);
+  line-height: 1.18;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+}
+.heroCopy > p {
+  margin-top: 22px;
+  color: var(--ink700);
+  font-size: 18px;
+  line-height: 30.6px;
+}
+.heroActions {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin-top: 40px;
+}
+.heroActions .heroButton {
+  border-radius: 16px;
+  padding-inline: 28px;
+  font-size: 17px;
+  font-weight: 600;
+  box-shadow: 0 12px 28px rgb(36 69 59 / 40%);
+}
+.heroActions > .textButton {
+  color: var(--text2);
+}
+.featureList {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+  padding-top: 40px;
+  padding-bottom: 72px;
+}
+.featureCard {
+  min-width: 0;
+  padding: 32px 36px;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background: var(--surface);
+  text-align: left;
+}
+.iconTile {
+  display: inline-grid;
+  width: 44px;
+  height: 44px;
+  place-items: center;
+  margin-bottom: 18px;
+  border-radius: 12px;
+  background: var(--brand50);
+}
+.featureCard h2 {
+  font-size: 20px;
+  line-height: 28px;
+  font-weight: 650;
+  letter-spacing: -0.02em;
+}
+.featureCard p {
+  margin-top: 10px;
+  color: var(--text2);
+  font-size: 15px;
+  line-height: 24px;
+}
+.venueSection {
+  padding-top: 72px;
+  padding-bottom: 96px;
+}
+.venueSection .sectionHeading p {
+  margin-top: 4px;
+  font-size: 16px;
+}
+.venueGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 24px;
+  margin-top: 28px;
+}
+.venueCard {
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background: var(--surface);
+}
+.venuePhoto {
+  position: relative;
+  aspect-ratio: 4/3;
+  overflow: hidden;
+}
+.venuePhoto > img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.venueMood {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  padding: 3px 12px;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 92%);
+  color: var(--brand800);
+  font-size: 12px;
+  font-weight: 700;
+}
+.favoriteButton {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  display: grid;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: rgb(255 255 255 / 80%);
+}
+.venueDetails {
+  padding: 20px;
+}
+.venueDetails > small {
+  color: var(--text2);
+  font-size: 12px;
+}
+.venueDetails h3 {
+  margin-top: 4px;
+  font-size: 17px;
+  font-weight: 650;
+}
+.venueTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 12px;
+}
+.venueTags span {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  background: var(--ink50);
+  color: var(--text2);
+  font-size: 11px;
+  border-radius: 5px;
+}
+.venueDetails > p {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+  color: var(--text2);
+  font-size: 12px;
+  line-height: 20px;
+}
+.planSection {
+  border-top: 1px solid var(--line);
+  background: var(--surface);
+}
+.planSection > div {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: center;
+  padding-block: 96px;
+}
+.planSection h2 {
+  margin-top: 12px;
+  font-size: 48px;
+  line-height: 1.15;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+}
+.planSection h2 + p {
+  margin-top: 20px;
+  color: var(--text2);
+  line-height: 26px;
+}
+.planSection .inlineActions {
+  margin-top: 24px;
+}
+.planSection .inlineActions button {
+  border-radius: 999px;
+}
+.planPreview {
+  padding: 40px;
+  border-radius: 28px;
+  background:
+    radial-gradient(ellipse at top right, var(--brand500), transparent 60%), var(--brand900);
+  color: white;
+}
+.planPreview > small {
+  color: var(--brand200);
+  font-size: 12px;
+}
+.planPreview h3 {
+  margin-top: 8px;
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+.planPreview > p {
+  color: var(--brand200);
+  font-size: 13px;
+}
+.miniProgress {
+  display: flex;
+  gap: 6px;
+  margin: 32px 0 12px;
+}
+.miniProgress i {
+  height: 4px;
+  flex: 1;
+  border-radius: 2px;
+  background: rgb(255 255 255 / 18%);
+}
+.miniProgress i:first-child {
+  background: var(--brand200);
+}
+.footer {
+  padding: 64px 4.2% 40px;
+  border-top: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--text2);
+  font-size: 13px;
+}
+.footerColumns {
+  display: grid;
+  grid-template-columns: 2fr repeat(3, 1fr);
+  gap: 40px;
+}
+.footerColumns > div {
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+  gap: 12px;
+}
+.footerColumns strong {
+  color: var(--text);
+}
+.footerColumns button:not([aria-label="WEDID 홈"]) {
+  border: 0;
+  padding: 0;
+  background: none;
+  color: inherit;
+}
+.footerBottom {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 96px;
+  padding-top: 24px;
+  border-top: 1px solid var(--line);
+  font-size: 12px;
+}
+@media (min-width: 1600px) {
+  .heroCopy {
+    max-width: 1561px;
+    margin: auto;
+  }
+}
+@media (max-width: 1250px) {
+  .featureCard {
+    padding-inline: 24px;
+  }
+  .heroActions {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 18px;
+  }
+}
+@media (max-width: 900px) {
+  .heroPhoto {
+    width: 62%;
+    opacity: 0.55;
+  }
+  .heroPhoto::after {
+    background: linear-gradient(90deg, var(--sand50), transparent 90%);
+  }
+  .featureList {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .featureCard {
+    position: relative;
+    padding: 24px 24px 24px 96px;
+  }
+  .featureCard .iconTile {
+    position: absolute;
+    top: 26px;
+    left: 28px;
+  }
+  .featureCard p {
+    margin-top: 4px;
+  }
+  .venueGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .planSection > div {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+}
+@media (max-width: 600px) {
+  .hero,
+  .heroPhoto {
+    height: 640px;
+  }
+  .heroPhoto {
+    width: 100%;
+    opacity: 0.3;
+  }
+  .heroCopy {
+    padding: 170px 24px 0;
+  }
+  .heroCopy > p {
+    font-size: 15px;
+    line-height: 26px;
+  }
+  .heroCopy h1 {
+    font-size: 48px;
+  }
+  .heroActions {
+    margin-top: 32px;
+  }
+  .homeContainer {
+    padding-inline: 20px;
+  }
+  .featureList {
+    padding-top: 24px;
+    padding-bottom: 40px;
+  }
+  .venueSection {
+    padding-top: 32px;
+    padding-bottom: 48px;
+  }
+  .venueSection .sectionHeading {
+    align-items: flex-start;
+  }
+  .venueSection h2 {
+    font-size: 23px;
+  }
+  .venueSection .sectionHeading p {
+    font-size: 14px;
+  }
+  .venueGrid {
+    grid-template-columns: 1fr;
+  }
+  .planSection > div {
+    padding-block: 48px;
+  }
+  .planSection h2 {
+    font-size: 38px;
+  }
+  .planPreview {
+    padding: 28px;
+  }
+  .planPreview h3 {
+    font-size: 26px;
+  }
+  .footer {
+    padding-inline: 20px;
+  }
+  .footerColumns {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 28px;
+  }
+  .footerBottom {
+    margin-top: 48px;
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 12px;
+  }
+}

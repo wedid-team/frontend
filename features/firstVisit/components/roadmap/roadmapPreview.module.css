@@ -1,0 +1,292 @@
+.conditions {
+  composes: conditions from "../layout/flowUi.module.css";
+}
+.sectionHeading {
+  composes: sectionHeading from "../layout/flowUi.module.css";
+}
+.panel {
+  composes: panel from "../layout/flowUi.module.css";
+}
+.textButton {
+  composes: textButton from "../layout/flowUi.module.css";
+}
+.roadmapPage {
+  display: grid;
+  grid-template-columns: 240px minmax(0, 1fr);
+  background: var(--surfaceSunken);
+  min-height: calc(100vh - 64px);
+}
+.roadmapContent {
+  min-width: 0;
+  padding: 40px 46px 60px;
+}
+.roadmapIntro > p:first-child {
+  font-size: 13px;
+}
+.roadmapIntro h1 {
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+.roadmapIntro h1 > small {
+  color: var(--brand700);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+.roadmapIntro h1 + p {
+  margin-top: 8px;
+  color: var(--text2);
+  font-size: 16px;
+}
+.roadmapIntro .conditions {
+  margin-top: 8px;
+}
+.roadmapIntro .conditions > button:last-child {
+  margin-left: auto;
+}
+.roadmapGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 360px;
+  align-items: start;
+  gap: 20px;
+  margin-top: 32px;
+}
+.roadmapGrid > div {
+  min-width: 0;
+}
+.saveBanner {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 18px;
+  border: 1px solid var(--brand100);
+  border-radius: 18px;
+  background: var(--brand50);
+}
+.saveHeart {
+  display: grid;
+  width: 36px;
+  height: 36px;
+  flex: none;
+  place-items: center;
+  border-radius: 10px;
+  background: white;
+}
+.saveBanner p {
+  flex: 1;
+  font-size: 13px;
+  line-height: 22px;
+}
+.saveBanner p strong {
+  font-weight: 600;
+}
+.saveBanner > button {
+  flex: none;
+}
+.nextTask {
+  margin-top: 16px;
+  padding: 32px;
+  border-radius: 24px;
+  background:
+    radial-gradient(ellipse at top right, rgb(167 200 188 / 30%), transparent 60%), var(--brand800);
+  color: white;
+}
+.nextTask > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.nextTaskBadge {
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 12%);
+  font-size: 12px;
+  font-weight: 650;
+}
+.nextTask small {
+  color: var(--brand200);
+  font-size: 12px;
+}
+.nextTask h2 {
+  margin-top: 24px;
+  font-size: 36px;
+  font-weight: 700;
+  line-height: 45px;
+  letter-spacing: -0.03em;
+}
+.nextTask > p {
+  margin-top: 8px;
+  color: var(--brand200);
+  font-size: 16px;
+}
+.nextTask footer {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 28px;
+  padding-top: 20px;
+  border-top: 1px solid rgb(255 255 255 / 14%);
+}
+.nextTask footer strong {
+  display: block;
+  font-size: 22px;
+  font-weight: 700;
+}
+.nextTask footer button {
+  border-radius: 12px;
+}
+.roadmapAside {
+  display: grid;
+  gap: 16px;
+}
+.roadmapAside .panel {
+  padding: 24px;
+  border-radius: 20px;
+}
+.roadmapAside .sectionHeading .textButton {
+  color: var(--text2);
+  font-size: 12px;
+}
+.budgetTable {
+  padding-top: 12px;
+  font-size: 14px;
+}
+.budgetTable > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 14px 0;
+}
+.budgetTable > div + div {
+  border-top: 1px solid var(--line);
+}
+.budgetTable dt {
+  color: var(--text2);
+}
+.budgetTable dd {
+  font-weight: 600;
+}
+.budgetTable > div:last-child dd {
+  color: var(--brand700);
+  font-size: 18px;
+}
+.partnerPreview {
+  text-align: center;
+}
+.partnerPreview > div {
+  display: grid;
+  place-items: center;
+  height: 120px;
+  border-radius: 20px;
+  background: linear-gradient(172deg, var(--brand50), var(--champagne));
+}
+.partnerPreview h2 {
+  margin-top: 20px;
+}
+.partnerPreview p {
+  margin-top: 4px;
+  color: var(--text2);
+  font-size: 14px;
+}
+.memberRow {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding-top: 16px;
+  font-size: 14px;
+}
+.memberRow + .memberRow {
+  margin-top: 12px;
+  border-top: 1px solid var(--line);
+}
+.memberRow > div {
+  flex: 1;
+}
+.memberRow strong {
+  font-size: 14px;
+}
+.memberRow small {
+  display: block;
+  color: var(--text2);
+  font-size: 12px;
+}
+.memberRow > span {
+  padding: 2px 12px;
+  border-radius: 999px;
+  background: var(--brand100);
+  color: var(--brand700);
+  font-size: 11px;
+}
+@media (max-width: 1250px) {
+  .roadmapContent {
+    padding-inline: 28px;
+  }
+  .roadmapGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .roadmapAside {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .saveBanner {
+    flex-wrap: wrap;
+  }
+  .saveBanner > button {
+    margin-left: auto;
+  }
+}
+@media (max-width: 900px) {
+  .roadmapPage {
+    grid-template-columns: 1fr;
+  }
+  .roadmapAside {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 600px) {
+  .roadmapContent {
+    padding: 28px 20px;
+  }
+  .roadmapIntro h1 {
+    font-size: 28px;
+    line-height: 38px;
+    gap: 10px;
+  }
+  .roadmapIntro .conditions {
+    font-size: 13px;
+  }
+  .roadmapGrid {
+    margin-top: 24px;
+  }
+  .saveBanner {
+    gap: 10px;
+    padding: 16px;
+  }
+  .saveBanner p {
+    font-size: 12px;
+  }
+  .saveBanner > button {
+    width: 100%;
+  }
+  .nextTask {
+    padding: 24px;
+  }
+  .nextTask h2 {
+    font-size: 30px;
+  }
+  .nextTask > div {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+  .nextTask footer {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+  .nextTask footer strong {
+    font-size: 20px;
+  }
+}
