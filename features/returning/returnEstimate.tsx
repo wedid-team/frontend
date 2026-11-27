@@ -1,5 +1,7 @@
 "use client";
 
+import { guestRanges, moodOptions, regionsForSavedPlan } from "../mocks/weddingOptions";
+import { defaultSdmTier, tierRanges } from "../sdm/sdmData";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
@@ -10,8 +12,6 @@ import {
   conditionsDefault,
   estimateVenue,
   venueBudgetFor,
-  regions,
-  guestRanges,
   steps,
 } from "./returnPlan";
 import { s } from "./returnUi";
@@ -36,14 +36,15 @@ function EstimateForm({ edit }: { edit: boolean }) {
   const key = keys[question];
   const choices =
     key === "region"
-      ? regions
+      ? regionsForSavedPlan(edit ? existing.region : "")
       : key === "mood"
-        ? ["화사한 · 클래식", "화사한", "웅장한", "럭셔리", "그리너리", "클래식", "상관없어요"]
+        ? moodOptions
         : key === "guests"
           ? guestRanges
           : null;
   if (question === keys.length) {
     const venue = estimateVenue(conditions);
+    const [sdmMin, sdmMax] = tierRanges[defaultSdmTier];
     return (
       <section className={s.question}>
         <p className={s.eyebrow}>새 계획 초안</p>
@@ -58,11 +59,11 @@ function EstimateForm({ edit }: { edit: boolean }) {
           </div>
           <div>
             <dt>스드메</dt>
-            <dd>{range(250, 350)}</dd>
+            <dd>{range(sdmMin, sdmMax)}</dd>
           </div>
           <div>
             <dt>예상 총 비용</dt>
-            <dd>{range(venue[0] + 250, venue[1] + 350)}</dd>
+            <dd>{range(venue[0] + sdmMin, venue[1] + sdmMax)}</dd>
           </div>
           <div>
             <dt>설정한 예산</dt>

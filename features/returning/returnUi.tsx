@@ -1,5 +1,6 @@
 "use client";
 
+import { tierRanges } from "../sdm/sdmData";
 import Image from "next/image";
 import Link from "next/link";
 import { useId, useRef, type ReactNode } from "react";
@@ -12,7 +13,6 @@ import {
   useReturnPlan,
   weddingDday,
   stepHref,
-  tierRanges,
   estimateVenue,
   venueBudgetFor,
 } from "./returnPlan";

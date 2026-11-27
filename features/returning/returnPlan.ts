@@ -3,7 +3,10 @@
 import { useEffect, useState } from "react";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { plan, range } from "../venues/venueData";
+import { toManwon } from "../mocks/money";
+import { defaultSdmTier } from "../sdm/sdmData";
+import { extraGuestEstimate, plan, range } from "../venues/venueData";
+import { returningMock } from "./mocks/returningMock";
 import { useDiscovery } from "../venues/useDiscovery";
 
 export const steps = [
@@ -39,15 +42,8 @@ export const tasks = [
   { id: "tour", label: "후보 예식장 3곳 투어 예약", owner: "나" },
   { id: "share", label: "부모님께 후보 공유", owner: "짝꿍" },
 ];
-export const weddingBudget = 3000;
-export const weddingDday = "D-334";
-export const tierRanges: [number, number][] = [
-  [185, 250],
-  [250, 350],
-  [350, 450],
-  [450, 565],
-];
-export const recommendedVenueIds = ["aw-convention", "raon-classic-hall", "grand-opera-hall"];
+export const weddingDday = returningMock.weddingDday;
+export const recommendedVenueIds = returningMock.recommendedVenueIds;
 
 export type Conditions = {
   month: string;
@@ -57,14 +53,12 @@ export type Conditions = {
   mood: string;
 };
 export const conditionsDefault: Conditions = {
-  month: "2027-10",
+  month: returningMock.month,
   region: plan.region,
   guests: plan.guests,
-  budget: String(weddingBudget),
-  mood: "화사한 · 클래식",
+  budget: String(toManwon(returningMock.budgetWon)),
+  mood: returningMock.mood,
 };
-export const regions = [plan.region, "서울 강남권", "경기·인천", "제주", "그 외 지역"];
-export const guestRanges = ["50~100", "100~150", "150~200", "200~250", "250~300", "300~400"];
 export function formatMonth(value: string) {
   const [year, month] = value.split("-");
   return year + "년 " + Number(month) + "월";
@@ -72,8 +66,8 @@ export function formatMonth(value: string) {
 export function estimateVenue(conditions: Conditions): [number, number] {
   const [low, high] = conditions.guests.split("~").map(Number);
   return [
-    Math.max(0, plan.venueBudget[0] + (low - 150) * 6),
-    Math.max(0, plan.venueBudget[1] + (high - 200) * 6),
+    Math.max(0, plan.venueBudget[0] + (low - 150) * extraGuestEstimate),
+    Math.max(0, plan.venueBudget[1] + (high - 200) * extraGuestEstimate),
   ];
 }
 export const venueBudgetFor = (conditions: Conditions) => range(...estimateVenue(conditions));
@@ -96,7 +90,7 @@ export const useReturnPlan = create<PlanProgress>()(
       setConditions: (conditions) => set({ conditions }),
       completed: 1,
       checked: ["tour"],
-      tier: 1,
+      tier: defaultSdmTier,
       toggleTask: (id) =>
         set((state) => ({
           checked: state.checked.includes(id)
@@ -138,7 +132,7 @@ export function useProgress() {
     count,
     percent: Math.round((count / steps.length) * 100),
     current: steps[count],
-    spent: count === steps.length ? 2290 : 0,
+    spent: count === steps.length ? toManwon(returningMock.completedSpentWon) : 0,
     contracted,
   };
 }

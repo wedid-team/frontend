@@ -1,5 +1,6 @@
 "use client";
 
+import { tierRanges } from "../sdm/sdmData";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
@@ -16,7 +17,6 @@ import {
   useReturnPlan,
   useReturnReady,
   weddingDday,
-  tierRanges,
   formatMonth,
   estimateVenue,
 } from "./returnPlan";

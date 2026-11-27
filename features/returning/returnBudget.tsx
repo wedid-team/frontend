@@ -1,21 +1,14 @@
 "use client";
 
+import { guestRanges, isKnownRegion } from "../mocks/weddingOptions";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { useDiscovery } from "../venues/useDiscovery";
-import { combinations, tiers } from "../sdm/sdmData";
+import { combinations, defaultSdmTier, tierRanges, tiers } from "../sdm/sdmData";
 import { money, range } from "../venues/venueData";
 import { s } from "./returnUi";
-import {
-  tierRanges,
-  useReturnPlan,
-  estimateVenue,
-  formatMonth,
-  regions,
-  guestRanges,
-  type Conditions,
-} from "./returnPlan";
+import { useReturnPlan, estimateVenue, formatMonth, type Conditions } from "./returnPlan";
 
 function sharedConditions(params: URLSearchParams): Conditions | null {
   const region = params.get("region") ?? "";
@@ -24,7 +17,7 @@ function sharedConditions(params: URLSearchParams): Conditions | null {
   const budget = params.get("budget") ?? "";
   const mood = params.get("mood") ?? "";
   if (
-    !regions.includes(region) ||
+    !isKnownRegion(region) ||
     !guestRanges.includes(guests) ||
     !/^\d{4}-(0[1-9]|1[0-2])$/.test(month) ||
     !/^\d{1,7}$/.test(budget) ||
@@ -141,7 +134,7 @@ export function ReturnBudget() {
                     setFeedback("");
                   }}
                 >
-                  {index === 1 && <span>추천</span>}
+                  {index === defaultSdmTier && <span>추천</span>}
                   <strong>{item.name}</strong>
                   <small>{item.label}</small>
                 </button>
