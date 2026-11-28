@@ -11,14 +11,7 @@
   composes: textButton from "../layout/flowUi.module.css";
 }
 .roadmapPage {
-  display: grid;
-  grid-template-columns: 240px minmax(0, 1fr);
-  background: var(--surfaceSunken);
   min-height: calc(100vh - 64px);
-}
-.roadmapContent {
-  min-width: 0;
-  padding: 40px 46px 60px;
 }
 .roadmapIntro > p:first-child {
   font-size: 13px;
@@ -223,9 +216,6 @@
   font-size: 11px;
 }
 @media (max-width: 1250px) {
-  .roadmapContent {
-    padding-inline: 28px;
-  }
   .roadmapGrid {
     grid-template-columns: minmax(0, 1fr);
   }
@@ -240,17 +230,11 @@
   }
 }
 @media (max-width: 900px) {
-  .roadmapPage {
-    grid-template-columns: 1fr;
-  }
   .roadmapAside {
     grid-template-columns: 1fr;
   }
 }
 @media (max-width: 600px) {
-  .roadmapContent {
-    padding: 28px 20px;
-  }
   .roadmapIntro h1 {
     font-size: 28px;
     line-height: 38px;

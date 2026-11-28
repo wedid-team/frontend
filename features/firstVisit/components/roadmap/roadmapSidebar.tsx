@@ -29,7 +29,7 @@ export function RoadmapSidebar({
   ];
   const progress = previewProgress(steps);
   return (
-    <aside className={styles.roadmapSidebar}>
+    <aside aria-label="메뉴" className={styles.roadmapSidebar}>
       <div className={styles.weddingIdentity}>
         <b>W</b>
         <div>

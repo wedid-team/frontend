@@ -117,3 +117,17 @@
     display: none;
   }
 }
+
+.roadmapActions {
+  white-space: nowrap;
+}
+
+@media (max-width: 760px) {
+  .roadmapActions {
+    gap: 0;
+  }
+  .roadmapActions button {
+    padding-inline: 8px;
+    font-size: 12px;
+  }
+}

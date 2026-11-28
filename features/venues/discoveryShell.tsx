@@ -13,7 +13,7 @@ import { useDiscovery } from "./useDiscovery";
 import { venues } from "./venueData";
 import { discoveryStyles as s } from "./shared";
 import { PlannerSidebar } from "@/src/features/planner/components/plannerSidebar";
-import layout from "@/src/app/(planner)/plannerLayout.module.css";
+import layout from "@/src/components/layout/workspaceLayout.module.css";
 
 import { ProfileSignOut, returningProfileUser } from "../returning/returnUi";
 import { useReturnReady } from "../returning/returnPlan";
