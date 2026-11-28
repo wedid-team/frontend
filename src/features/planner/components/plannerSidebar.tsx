@@ -88,7 +88,7 @@ export function PlannerSidebar({ showPlan = true, comparedCount = 0 }: { showPla
             const href = PLANNER_ROUTES.step(step.id);
             const isActive = pathname === href;
             return (
-              <li className={styles.steps__item} key={step.id}>
+              <li key={step.id}>
                 <Link
                   aria-current={isActive ? "page" : undefined}
                   className={cx(styles.steps__link, isActive && styles["steps__link--active"])}

@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { SideNavigation, type SideNavigationItem } from "./sideNavigation";
 import type { SiteHeaderUser } from "./siteHeader";
 import { WorkspaceHeader } from "./workspaceHeader";
+import layout from "./workspaceLayout.module.css";
 import styles from "./workspaceShell.module.css";
 
 type WorkspaceShellProps = {
@@ -14,9 +15,13 @@ export function WorkspaceShell({ children, navigationItems = [], user }: Workspa
   return (
     <div className={styles.frame}>
       <WorkspaceHeader user={user} />
-      <div className={styles.body}>
-        <SideNavigation items={navigationItems} />
-        <main className={styles.content}>{children}</main>
+      <div className={layout.page}>
+        <div className={layout.shell}>
+          <SideNavigation items={navigationItems} />
+          <main className={layout.main}>
+            <div className={layout.main__inner}>{children}</div>
+          </main>
+        </div>
       </div>
     </div>
   );

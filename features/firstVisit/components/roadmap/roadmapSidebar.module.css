@@ -130,8 +130,28 @@
   border-radius: inherit;
   background: white;
 }
-@media (max-width: 900px) {
+.sideSteps li:not(:last-child)::after {
+  position: absolute;
+  top: 29px;
+  bottom: -7px;
+  left: 9px;
+  width: 2px;
+  background: var(--brand200);
+  pointer-events: none;
+  content: "";
+}
+
+@media (max-width: 760px) {
   .roadmapSidebar {
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .weddingIdentity, .sideCountdown {
     display: none;
+  }
+  .roadmapSidebar nav {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 0;
   }
 }

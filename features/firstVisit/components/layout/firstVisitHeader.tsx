@@ -25,6 +25,23 @@ export function FirstVisitHeader({
     home || canOpenPlan ? router.push(PLANNER_ROUTES.roadmap) : navigate("roadmap");
   const openAccount = () => canOpenPlan ? router.push(PLANNER_ROUTES.myInfo) : openLogin();
 
+  if (roadmap) {
+    return (
+      <SiteHeader
+        variant="workspace"
+        breadcrumbs={[{ href: "/", label: "홈" }, { label: "준비 로드맵" }]}
+        guestActions={(
+          <div className={`${styles.headerActions} ${styles.roadmapActions}`}>
+            <Button size="sm" variant="ghost" onClick={openAccount}>
+              {canOpenPlan ? "내 정보" : "로그인"}
+            </Button>
+            <Button size="sm" onClick={openLogin}>계획 저장하기</Button>
+          </div>
+        )}
+      />
+    );
+  }
+
   return (
     <SiteHeader
       className={home ? styles.homeHeader : styles.flowHeader}
@@ -41,9 +58,9 @@ export function FirstVisitHeader({
               </nav>
             ) : (
               <nav className={styles.breadcrumb} aria-label="현재 위치">
-                <button onClick={() => navigate("home")}>{roadmap ? "홈" : "비용 계산"}</button>
+                <button onClick={() => navigate("home")}>비용 계산</button>
                 <FlowIcon icon={assets.icons.breadcrumb} />
-                <strong>{roadmap ? "준비 로드맵" : "결과"}</strong>
+                <strong>결과</strong>
               </nav>
             )}
           </div>
@@ -59,11 +76,9 @@ export function FirstVisitHeader({
           </div>
         ) : (
           <div className={styles.headerActions}>
-            {!roadmap && (
-              <Button size="sm" variant="ghost" onClick={openMyRoadmap}>
-                내 로드맵
-              </Button>
-            )}
+            <Button size="sm" variant="ghost" onClick={openMyRoadmap}>
+              내 로드맵
+            </Button>
             <Button size="sm" variant="ghost" onClick={openAccount}>
               {canOpenPlan ? "내 정보" : "로그인"}
             </Button>
