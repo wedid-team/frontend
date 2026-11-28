@@ -69,3 +69,37 @@ test("세션 저장소 접근이 막혀도 복원이 완료되고 현재 탭의 
   await store.persist.rehydrate();
   assert.equal(store.getState().answers.budget, "4500");
 });
+
+test("새 계획을 시작하면 이전 답변과 등급이 세션에서 다시 복원되지 않는다", async (t) => {
+  const entries = new Map();
+  const before = Object.getOwnPropertyDescriptor(globalThis, "window");
+  t.after(() => {
+    if (before) Object.defineProperty(globalThis, "window", before);
+    else delete globalThis.window;
+  });
+  Object.defineProperty(globalThis, "window", {
+    configurable: true,
+    value: {
+      sessionStorage: {
+        getItem: (key) => entries.get(key) ?? null,
+        setItem: (key, value) => entries.set(key, value),
+      },
+    },
+  });
+
+  const store = useFirstVisitStore;
+  store.getState().updateAnswers({ region: "경기", guests: "150~200명", moods: ["클래식"] });
+  store.getState().setTier("premium");
+  await store.persist.rehydrate();
+  assert.equal(store.getState().answers.region, "경기");
+  assert.equal(store.getState().tier, "premium");
+
+  store.getState().resetDraft();
+  assert.deepEqual(JSON.parse(entries.get("wedidFirstVisitDraft")).state, {
+    answers: initialAnswers,
+    tier: "standard",
+  });
+  await store.persist.rehydrate();
+  assert.deepEqual(store.getState().answers, initialAnswers);
+  assert.equal(store.getState().tier, "standard");
+});

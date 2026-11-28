@@ -14,6 +14,7 @@ type FirstVisitState = {
   tier: EstimateTier;
   updateAnswers: (patch: Partial<WeddingAnswers>) => void;
   setTier: (tier: EstimateTier) => void;
+  resetDraft: () => void;
 };
 
 const draftStorage = createJSONStorage(() => ({
@@ -59,6 +60,7 @@ export const useFirstVisitStore = create<FirstVisitState>()(
           return { answers };
         }),
       setTier: (tier) => set({ tier }),
+      resetDraft: () => set({ answers: initialAnswers, tier: "standard" }),
     }),
     {
       name: "wedidFirstVisitDraft",
