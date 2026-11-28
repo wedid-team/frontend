@@ -32,6 +32,13 @@
   padding: 12px 18px;
 }
 
+/* 스드메 단계: 예산대(베이직~럭셔리)를 바꿔도 박스 크기가 그대로 (피그마 677:6002 · 243 × 97) */
+.amountTag--fixed {
+  box-sizing: border-box;
+  width: 243px;
+  min-height: 97px;
+}
+
 .amountTag__label {
   color: var(--text2);
   font-size: 13px;

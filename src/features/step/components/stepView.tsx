@@ -115,7 +115,12 @@ export function StepView({ stepId }: { stepId: StepId }) {
           )}
           {/* SCR-06-D: 금액 없는 단계는 "이번 단계 예산 —" */}
           {(step.hasAmount || !isComplete) && (
-            <div className={styles.amountTag}>
+            <div
+              className={cx(
+                styles.amountTag,
+                !isComplete && stepId === "sdm" && styles["amountTag--fixed"],
+              )}
+            >
               <span className={styles.amountTag__label}>
                 {isComplete ? "실제 계약 금액" : "이번 단계 예산"}
               </span>
