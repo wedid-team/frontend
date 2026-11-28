@@ -39,3 +39,12 @@
 .emptyActions {
   margin-top: 24px;
 }
+
+@media (max-width: 760px) {
+  .shell {
+    grid-template-columns: minmax(0, 1fr);
+    background: var(--surfaceSunken);
+    box-shadow: none;
+  }
+  .main { padding: 24px 14px 50px; }
+}

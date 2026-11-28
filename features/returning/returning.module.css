@@ -126,7 +126,6 @@
   font-size: 18px;
 }
 .statGrid small,
-.profileIdentity small,
 .workspaceColumns small,
 .venueBody small,
 .events small {
@@ -555,8 +554,7 @@
   margin-top: 12px;
 }
 .events > div,
-.member,
-.profileIdentity {
+.member {
   display: flex;
   align-items: center;
   gap: 10px;
@@ -585,50 +583,6 @@
   border-top: 1px solid var(--line);
   padding-top: 22px;
   color: var(--text2);
-}
-.profile {
-  position: relative;
-  z-index: 24;
-}
-.profile summary {
-  display: flex;
-  gap: 6px;
-  align-items: center;
-  list-style: none;
-  cursor: pointer;
-  font-weight: 700;
-  padding: 5px;
-}
-.profile summary::-webkit-details-marker {
-  display: none;
-}
-.profileMenu {
-  position: absolute;
-  z-index: 30;
-  right: 0;
-  top: calc(100% + 8px);
-  width: min(260px, 80vw);
-  padding: 10px;
-  border: 1px solid var(--line);
-  border-radius: 16px;
-  background: #fff;
-  box-shadow: 0 12px 32px #111a1726;
-}
-.profileIdentity {
-  padding: 7px;
-  margin-bottom: 5px;
-  border-bottom: 1px solid var(--line);
-}
-.profileMenu :is(a, button) {
-  display: block;
-  width: 100%;
-  text-align: left;
-  padding: 8px;
-  border-radius: 8px;
-  cursor: pointer;
-}
-.profileMenu :is(a, button):hover {
-  background: var(--brand50);
 }
 .dialog {
   position: fixed;
@@ -1029,56 +983,6 @@
   }
 }
 
-.workspaceTop {
-  display: flex;
-  align-items: center;
-  background: var(--surface);
-  border-bottom: 1px solid var(--line);
-}
-.workspaceTop > header {
-  flex: 1;
-  min-width: 0;
-  border: 0;
-}
-.workspaceTop > header > div {
-  padding-right: 0;
-}
-.workspaceAccount {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding-inline: 10px 20px;
-  flex-shrink: 0;
-  z-index: 25;
-}
-.workspaceAccount button {
-  cursor: pointer;
-}
-@media (max-width: 760px) {
-  .workspaceAccount {
-    padding-right: 10px;
-  }
-  .workspaceTop > header > div {
-    gap: 6px;
-  }
-}
-
-.workspaceTop > header > div > a img:first-child {
-  width: 34px;
-  height: auto;
-}
-.workspaceTop > header > div > a img:last-child {
-  width: 68px;
-  height: auto;
-}
-.workspaceTop > header > div > nav {
-  margin-left: 0;
-  border-left: 1px solid var(--line2);
-  padding-left: 13px;
-}
-.workspaceTop + div aside > nav:first-of-type a {
-  padding-block: 7px;
-}
 .tasks input {
   appearance: none;
   border: 1px solid var(--ink300);
@@ -1088,9 +992,4 @@
 .tasks input:checked {
   border-color: var(--brand600);
   background: var(--brand600) url("/images/icons/h2d-svg-use-0-79.svg") center / 13px no-repeat;
-}
-@media (max-width: 540px) {
-  .workspaceTop > header > div > nav {
-    padding-left: 6px;
-  }
 }

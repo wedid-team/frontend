@@ -6,7 +6,8 @@ import { PLANNER_ROUTES } from "@/src/features/planner/routes";
 import { usePlannerStore } from "@/src/features/planner/stores/plannerStore";
 import type { PlannerState, StepDefinition } from "@/src/features/planner/types";
 import { formatRange, formatWon } from "@/src/features/planner/utils/money";
-import Image from "next/image";
+import { SiteHeaderAccount } from "@/src/components/layout/siteHeader";
+import headerStyles from "@/src/components/layout/siteHeader.module.css";
 import Link from "next/link";
 import { useId, useRef, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
@@ -172,67 +173,44 @@ export function ConfirmNewPlan({
   );
 }
 
-export function ProfileMenu({ iconOnly = false }: { iconOnly?: boolean }) {
-  const signOut = useUtAuthStore((state) => state.signOut);
-  const me = usePlannerStore((state) => state.me);
-  const partner = usePlannerStore((state) => (state.hasSavedPlan ? state.partner : null));
-  const router = useRouter();
-  const menu = useRef<HTMLDetailsElement>(null);
-  const close = () => {
-    if (menu.current) menu.current.open = false;
+export function returningProfileUser(name: string) {
+  return {
+    name: `${name}님`,
+    avatarSrc: "/images/avatars/avatar-joongeun.png",
+    menuItems: [
+      { href: PLANNER_ROUTES.myInfo, label: "내 정보", iconSrc: "/images/icons/h2d-svg-use-0-78.svg" },
+      { href: "/home?panel=members", label: "짝꿍 초대하기" },
+      { href: PLANNER_ROUTES.roadmap, label: "예산·예식일 수정" },
+    ],
   };
+}
+
+export function ProfileSignOut() {
+  const signOut = useUtAuthStore((state) => state.signOut);
+  const router = useRouter();
   return (
-    <details
-      ref={menu}
-      className={s.profile}
-      onKeyDown={(event) => {
-        if (event.key === "Escape") {
-          close();
-          menu.current?.querySelector("summary")?.focus();
-        }
-      }}
-      onBlur={(event) => {
-        if (!event.currentTarget.contains(event.relatedTarget)) close();
+    <button
+      type="button"
+      className={headerStyles.account__menuLink}
+      onClick={() => {
+        signOut();
+        router.push("/");
       }}
     >
-      <summary aria-label="프로필 메뉴">
-        {iconOnly ? (
-          <DiscoveryIcon name="profile" size={20} />
-        ) : (
-          <>
-            <Image src="/images/avatars/avatar-joongeun.png" width={26} height={26} alt="" />{" "}
-            {me.name}님 <span aria-hidden="true">⌄</span>
-          </>
-        )}
-      </summary>
-      <div className={s.profileMenu}>
-        <div className={s.profileIdentity}>
-          <Image src="/images/avatars/avatar-joongeun.png" width={34} height={34} alt="" />
-          <div>
-            <strong>{me.fullName}</strong>
-            <small>{partner ? `${partner.name} 님과 연결됨` : "짝꿍 연결 전"}</small>
-          </div>
-        </div>
-        <Link href="/home?panel=profile" onClick={close}>
-          내 정보
-        </Link>
-        <Link href="/home?panel=members" onClick={close}>
-          짝꿍 초대하기
-        </Link>
-        <Link href={PLANNER_ROUTES.roadmap} onClick={close}>
-          예산·예식일 수정
-        </Link>
-        <button
-          onClick={() => {
-            close();
-            signOut();
-            router.push("/");
-          }}
-        >
-          로그아웃
-        </button>
-      </div>
-    </details>
+      로그아웃
+    </button>
+  );
+}
+
+export function ProfileMenu() {
+  const name = usePlannerStore((state) => state.me.name);
+  return (
+    <SiteHeaderAccount
+      trigger={<DiscoveryIcon name="profile" size={20} />}
+      user={returningProfileUser(name)}
+    >
+      <ProfileSignOut />
+    </SiteHeaderAccount>
   );
 }
 

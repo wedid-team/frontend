@@ -1,6 +1,8 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
-import type { ReactNode } from "react";
+import { useRef, type ReactNode } from "react";
 import { Logo } from "../common";
 import { Breadcrumbs, type BreadcrumbItem } from "./breadcrumbs";
 import styles from "./siteHeader.module.css";
@@ -8,7 +10,7 @@ import styles from "./siteHeader.module.css";
 export type SiteHeaderUser = {
   name: string;
   avatarSrc?: string;
-  menuItems?: Array<{ href: string; label: string }>;
+  menuItems?: Array<{ href: string; label: string; iconSrc?: string }>;
 };
 
 type SiteHeaderProps = {
@@ -18,12 +20,18 @@ type SiteHeaderProps = {
   loginHref?: string;
   breadcrumbs?: BreadcrumbItem[];
   className?: string;
+  accountLeading?: ReactNode;
+  accountActions?: ReactNode;
+  guestActions?: ReactNode;
   /** 공통 헤더의 기본 UI를 유지하며 기능별 헤더 콘텐츠를 조합한다. */
   slots?: { start: ReactNode; actions: ReactNode };
 };
 
 export function SiteHeader({
+  accountActions,
+  accountLeading,
   breadcrumbs,
+  guestActions,
   className,
   loginHref = "/login",
   profileTone = "soft",
@@ -40,10 +48,6 @@ export function SiteHeader({
     );
   }
   const isWorkspace = variant === "workspace";
-  const toneClass =
-    profileTone === "primary"
-      ? styles["account__trigger--primary"]
-      : styles["account__trigger--soft"];
 
   return (
     <header
@@ -59,44 +63,72 @@ export function SiteHeader({
           <Breadcrumbs className={styles.breadcrumbs} items={breadcrumbs} />
         ) : null}
 
-        {!isWorkspace || user ? (
+        {(!isWorkspace || user || guestActions) && (
           <nav aria-label="계정 메뉴" className={styles.navigation}>
             {user ? (
-              <details className={styles.account}>
-                <summary className={[styles.account__trigger, toneClass].join(" ")}>
-                  {user.avatarSrc ? (
-                    <Image
-                      alt=""
-                      className={styles.account__avatar}
-                      height={36}
-                      src={user.avatarSrc}
-                      width={36}
-                    />
-                  ) : (
-                    <span aria-hidden="true" className={styles.account__avatarFallback}>
-                      {user.name.slice(0, 1)}
-                    </span>
-                  )}
-                  <span className={styles.account__name}>{user.name}</span>
-                  <span aria-hidden="true" className={styles.account__chevron} />
-                </summary>
-                <div className={styles.account__menu}>
-                  <strong className={styles.account__menuTitle}>{user.name}</strong>
-                  {user.menuItems?.map((item) => (
-                    <Link className={styles.account__menuLink} href={item.href} key={item.href}>
-                      {item.label}
-                    </Link>
-                  ))}
-                </div>
-              </details>
-            ) : (
-              <Link className={styles.navigation__login} href={loginHref}>
-                로그인
-              </Link>
+              <>
+                {accountLeading}
+                <SiteHeaderAccount user={user} profileTone={profileTone}>{accountActions}</SiteHeaderAccount>
+              </>
+            ) : guestActions ?? (
+              <Link className={styles.navigation__login} href={loginHref}>로그인</Link>
             )}
           </nav>
-        ) : null}
+        )}
       </div>
     </header>
+  );
+}
+
+export function SiteHeaderAccount({
+  user,
+  profileTone = "soft",
+  trigger,
+  children,
+}: {
+  user: SiteHeaderUser;
+  profileTone?: "soft" | "primary";
+  trigger?: ReactNode;
+  children?: ReactNode;
+}) {
+  const menu = useRef<HTMLDetailsElement>(null);
+  const toneClass =
+    profileTone === "primary"
+      ? styles["account__trigger--primary"]
+      : styles["account__trigger--soft"];
+
+  const avatar = user.avatarSrc ? (
+    <Image alt="" className={styles.account__avatar} height={36} src={user.avatarSrc} width={36} />
+  ) : (
+    <span aria-hidden="true" className={styles.account__avatarFallback}>{user.name.slice(0, 1)}</span>
+  );
+
+  return (
+    <details
+      className={styles.account}
+      ref={menu}
+      onBlur={(event) => {
+        if (!event.currentTarget.contains(event.relatedTarget)) event.currentTarget.open = false;
+      }}
+      onKeyDown={(event) => {
+        if (event.key !== "Escape" || !event.currentTarget.open) return;
+        event.currentTarget.open = false;
+        menu.current?.querySelector("summary")?.focus();
+      }}
+    >
+      <summary aria-label="프로필 메뉴" className={[styles.account__trigger, trigger ? styles.account__iconTrigger : toneClass].join(" ")}>
+        {trigger ?? <>{avatar}<span className={styles.account__name}>{user.name}</span><span aria-hidden="true" className={styles.account__chevron} /></>}
+      </summary>
+      <div className={styles.account__menu}>
+        <div className={styles.account__menuTitle}>{avatar}<strong>{user.name}</strong></div>
+        {user.menuItems?.map((item) => (
+          <Link className={styles.account__menuLink} href={item.href} key={item.href} onClick={() => { if (menu.current) menu.current.open = false; }}>
+            {item.iconSrc && <Image alt="" height={17} src={item.iconSrc} width={17} />}
+            {item.label}
+          </Link>
+        ))}
+        {children}
+      </div>
+    </details>
   );
 }

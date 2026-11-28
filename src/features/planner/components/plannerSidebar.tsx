@@ -1,9 +1,5 @@
 "use client";
 
-/**
- * 임시 사이드바 — 공통 레이아웃(헤더 · 사이드바)은 C파트 담당.
- * C파트 공통 사이드바가 나오면 이 컴포넌트는 지우고 그쪽으로 교체한다.
- */
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { STEP_DEFINITIONS } from "../mocks/plannerMock";
@@ -29,21 +25,21 @@ const STEP_SUB_LINKS: Partial<Record<string, Array<{ label: string; href: string
   sdm: [{ label: "스드메 후보 보기", href: PLANNER_ROUTES.sdmSearch }],
 };
 
-export function PlannerSidebar() {
+export function PlannerSidebar({ showPlan = true, comparedCount = 0 }: { showPlan?: boolean; comparedCount?: number } = {}) {
   const pathname = usePathname();
   const state = usePlannerStore();
   const today = new Date();
   const wedding = resolveWeddingDate(state.weddingDate, today);
   const dday = getDday(wedding.date, today);
-  const percent = getProgressPercent(state);
+  const percent = showPlan ? getProgressPercent(state) : 0;
   const nextStepId = getNextStep(state)?.id;
-  const isRoadmap = pathname === PLANNER_ROUTES.roadmap;
+  const isVenue = pathname === PLANNER_ROUTES.venueSearch || pathname.startsWith(PLANNER_ROUTES.venueSearch + "/");
 
   const mainLinks = [
-    { label: "홈", href: PLANNER_ROUTES.home, icon: HomeIcon, active: false },
-    { label: "준비 로드맵", href: PLANNER_ROUTES.roadmap, icon: MapIcon, active: isRoadmap },
-    { label: "예상 비용", href: PLANNER_ROUTES.estimate, icon: WonCircleIcon, active: false },
-    { label: "예식장 찾기", href: PLANNER_ROUTES.venueSearch, icon: PinIcon, active: false },
+    { label: "홈", href: PLANNER_ROUTES.home, icon: HomeIcon, active: pathname === PLANNER_ROUTES.home },
+    { label: "준비 로드맵", href: PLANNER_ROUTES.roadmap, icon: MapIcon, active: pathname === PLANNER_ROUTES.roadmap },
+    { label: "예상 비용", href: PLANNER_ROUTES.estimate, icon: WonCircleIcon, active: pathname === PLANNER_ROUTES.estimate },
+    { label: "예식장 찾기", href: PLANNER_ROUTES.venueSearch, icon: PinIcon, active: isVenue },
   ];
 
   return (
@@ -54,10 +50,10 @@ export function PlannerSidebar() {
         </span>
         <span className={styles.plan__copy}>
           <strong className={styles.plan__title}>우리의 웨딩</strong>
-          <span className={styles.plan__meta}>
+          {showPlan && <span className={styles.plan__meta}>
             {wedding.isUndecided ? "예식일 미정" : wedding.monthLabel} ·{" "}
             {state.conditions.regionLabel.replace(/^서울\s/, "")}
-          </span>
+          </span>}
         </span>
       </div>
 
@@ -80,13 +76,13 @@ export function PlannerSidebar() {
         <ol className={styles.steps__list}>
           {STEP_DEFINITIONS.map((step) => {
             // SCR-06 · 06-D: 완료 ✓ · 다음 할 일 강조(채운 원) · 시기 지난 미완료 ⚠ · 나머지 빈 원
-            const isComplete = state.steps[step.id].status === "complete";
-            const isOverdue = isStepOverdue(step, state, dday);
+            const isComplete = showPlan && state.steps[step.id].status === "complete";
+            const isOverdue = showPlan && isStepOverdue(step, state, dday);
             const marker = isComplete
               ? "complete"
               : isOverdue
                 ? "overdue"
-                : step.id === nextStepId
+                : (showPlan && step.id === nextStepId)
                   ? "next"
                   : "upcoming";
             const href = PLANNER_ROUTES.step(step.id);
@@ -107,17 +103,22 @@ export function PlannerSidebar() {
                   <span
                     className={cx(
                       styles.steps__label,
-                      (isComplete || step.id === nextStepId) && styles["steps__label--strong"],
+                      (isComplete || (showPlan && step.id === nextStepId)) && styles["steps__label--strong"],
                     )}
                   >
                     {step.title}
                   </span>
                 </Link>
-                {STEP_SUB_LINKS[step.id]?.map((sub) => (
-                  <Link className={styles.steps__subLink} href={sub.href} key={sub.label}>
-                    {sub.label}
-                  </Link>
-                ))}
+                {STEP_SUB_LINKS[step.id]?.map((sub) => {
+                  const active = pathname === sub.href ||
+                    (sub.href === PLANNER_ROUTES.venueSearch && isVenue && pathname !== PLANNER_ROUTES.compare);
+                  return (
+                    <Link aria-current={active ? "page" : undefined} className={styles.steps__subLink} href={sub.href} key={sub.label}>
+                      {sub.label}
+                      {sub.href === PLANNER_ROUTES.compare && comparedCount > 0 && <span>{comparedCount}</span>}
+                    </Link>
+                  );
+                })}
               </li>
             );
           })}
@@ -126,7 +127,7 @@ export function PlannerSidebar() {
 
       <div className={styles.dday}>
         <p className={styles.dday__label}>예식까지</p>
-        <p className={styles.dday__value}>{formatDday(dday, false)}</p>
+        <p className={styles.dday__value}>{showPlan ? formatDday(dday, false) : "예식일 미정"}</p>
         <div
           aria-label={`전체 진행률 ${percent}%`}
           aria-valuemax={100}
@@ -138,7 +139,7 @@ export function PlannerSidebar() {
           <span className={styles.dday__bar} style={{ width: `${percent}%` }} />
         </div>
         <p className={styles.dday__label}>
-          전체 진행률 {percent}%{wedding.isEstimated && " · 예상"}
+          전체 진행률 {percent}%{showPlan && wedding.isEstimated && " · 예상"}
         </p>
       </div>
     </aside>
