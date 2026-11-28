@@ -1,5 +1,7 @@
 "use client";
 
+import { firstVisitHref } from "@/features/firstVisit/model";
+import { useFirstVisitStore } from "@/features/firstVisit/store";
 import { useUtAuthStore } from "@/src/stores/utAuthStore";
 import { ASSIGNEE_LABEL } from "@/src/features/planner/components/ui";
 import { PLANNER_ROUTES } from "@/src/features/planner/routes";
@@ -136,6 +138,7 @@ export function ConfirmNewPlan({
   const dialog = useRef<HTMLDialogElement>(null);
   const title = useId();
   const router = useRouter();
+  const resetDraft = useFirstVisitStore((state) => state.resetDraft);
   return (
     <>
       <button className={className ?? s.button} onClick={() => dialog.current?.showModal()}>
@@ -150,8 +153,8 @@ export function ConfirmNewPlan({
         </span>
         <h2 id={title}>새 계획을 시작할까요?</h2>
         <p>
-          질문 5개에 처음부터 답해 새 예상 비용과 로드맵을 만들어요. 지금 계획의 완료 기록과 할 일은
-          그대로 남아요.
+          질문 5개에 처음부터 답해 새 예상 비용과 로드맵을 미리 볼 수 있어요. 지금 계획의 완료
+          기록과 할 일은 그대로 남아요.
         </p>
         <div className={s.dialogActions}>
           <button className={s.button} autoFocus onClick={() => dialog.current?.close()}>
@@ -161,7 +164,8 @@ export function ConfirmNewPlan({
             className={s.primary}
             onClick={() => {
               dialog.current?.close();
-              router.push("/estimate?mode=new");
+              resetDraft();
+              router.push(firstVisitHref("region"));
             }}
           >
             새 계획 시작하기
