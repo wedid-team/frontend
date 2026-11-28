@@ -205,3 +205,41 @@
 .header--workspace .header__inner {
   min-height: 64px;
 }
+
+.header--workspace .header__inner {
+  max-width: 1440px;
+  margin-inline: auto;
+  padding-inline: 20px;
+}
+
+.header--workspace .navigation {
+  gap: 10px;
+  margin-inline-start: auto;
+}
+
+.account__menuTitle,
+.account__menuLink {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.account__iconTrigger {
+  padding: 5px;
+  min-height: 32px;
+}
+
+@media (max-width: 760px) {
+  .header--workspace .header__inner {
+    padding-inline: 12px;
+  }
+  .header--workspace .breadcrumbs {
+    min-width: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .header--workspace .breadcrumbs {
+    display: none;
+  }
+}

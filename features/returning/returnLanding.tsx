@@ -267,7 +267,7 @@ export function ReturningLanding() {
             <Link href="/venues?view=favorites" aria-label="관심 예식장">
               <DiscoveryIcon name="heart" size={20} />
             </Link>
-            <ProfileMenu iconOnly />
+            <ProfileMenu />
           </div>
         </header>
         <div className={s.heroBody}>

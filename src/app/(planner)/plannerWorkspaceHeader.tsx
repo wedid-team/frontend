@@ -16,7 +16,7 @@ export function PlannerWorkspaceHeader() {
       ? {
           name: `${name}님`,
           avatarSrc: "/images/avatars/avatar-joongeun.png",
-          menuItems: [{ href: PLANNER_ROUTES.myInfo, label: "내 정보" }],
+          menuItems: [{ href: PLANNER_ROUTES.myInfo, label: "내 정보", iconSrc: "/images/icons/h2d-svg-use-0-78.svg" }],
         }
       : null;
 

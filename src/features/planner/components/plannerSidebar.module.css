@@ -101,11 +101,13 @@
 
 .steps__item:not(:last-child)::after {
   position: absolute;
-  top: 27px;
-  bottom: -7px;
+  z-index: 2;
+  top: 28px;
+  bottom: -6px;
+  pointer-events: none;
   left: 19px;
   width: 2px;
-  background: var(--ink200);
+  background: var(--brand200);
   content: "";
 }
 
@@ -169,8 +171,8 @@
 
 .steps__subLink {
   position: relative;
-  z-index: 1;
   display: flex;
+  justify-content: space-between;
   height: 30px;
   align-items: center;
   border-radius: 10px;
@@ -223,4 +225,23 @@
   height: 100%;
   border-radius: 999px;
   background: white;
+}
+
+.steps__subLink[aria-current="page"] {
+  background: var(--brand50);
+  color: var(--brand700);
+  font-weight: 700;
+}
+
+@media (max-width: 760px) {
+  .sidebar {
+    position: static;
+    height: auto;
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+    gap: 8px;
+  }
+  .plan, .dday { display: none; }
+  .nav { display: flex; flex-wrap: wrap; }
+  .steps__list { grid-template-columns: 1fr; }
 }
