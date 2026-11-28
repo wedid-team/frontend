@@ -383,8 +383,7 @@
   font-size: clamp(12px, 1.1vw, 16px);
 }
 .allocation dl > div,
-.summary dl > div,
-.draftAmounts > div {
+.summary dl > div {
   display: flex;
   justify-content: space-between;
   gap: 10px;
@@ -392,8 +391,7 @@
   border-bottom: 1px solid var(--line);
 }
 .allocation dl > div:last-child,
-.summary dl > div:last-child,
-.draftAmounts > div:last-child {
+.summary dl > div:last-child {
   border: 0;
 }
 .allocation dd {
@@ -757,8 +755,7 @@
 .summary dl > div {
   padding-block: 12px;
 }
-.summary dd,
-.draftAmounts dd {
+.summary dd {
   font-weight: 750;
   text-align: right;
 }
@@ -921,35 +918,6 @@
 }
 .total .actions button {
   flex: 1 0 auto;
-}
-.question {
-  width: min(590px, 100%);
-  padding: clamp(18px, 4vw, 40px);
-  border: 1px solid var(--line);
-  border-radius: 22px;
-  background: #fff;
-  margin: 36px auto;
-}
-.question h1 {
-  font-size: clamp(23px, 4vw, 34px);
-  font-weight: 800;
-  margin: 10px 0 17px;
-}
-.question form {
-  display: grid;
-  gap: 20px;
-}
-.question :is(input, select) {
-  display: block;
-  width: 100%;
-  margin-top: 8px;
-  border: 1px solid var(--line2);
-  border-radius: 10px;
-  padding: 10px;
-}
-.question .actions {
-  justify-content: space-between;
-  margin-top: 10px;
 }
 @media (max-width: 1000px) {
   .workspaceColumns {
